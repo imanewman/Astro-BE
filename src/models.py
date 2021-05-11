@@ -1,6 +1,6 @@
 from typing import List, Tuple, Dict
 
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field
 
 from src.enums import *
 
@@ -133,7 +133,7 @@ class PointInTime(BaseModel):
     declination: float = Field(
         ...,
         title="Declination",
-        description="The latitude of the planets relative to the sun"
+        description="The latitude of the planet"
     )
     sign: ZodiacSign = Field(
         ZodiacSign.aries,
@@ -150,4 +150,3 @@ class PointInTime(BaseModel):
         title="Minutes of current degree",
         description="The minutes (out of 60) within a degree that this point is located at"
     )
-
