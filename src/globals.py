@@ -183,7 +183,7 @@ pointTraits = PointTraitsCollection(**{
         },
         Point.mars: {
             "swe_id": swe.MARS,
-            "name": Point.moon,
+            "name": Point.mars,
             "is_traditional": True,
         },
         Point.jupiter: {

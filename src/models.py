@@ -130,6 +130,11 @@ class PointInTime(BaseModel):
         ge=0,
         lt=360
     )
+    declination: float = Field(
+        ...,
+        title="Declination",
+        description="The latitude of the planets relative to the sun"
+    )
     sign: ZodiacSign = Field(
         ZodiacSign.aries,
         title="Zodiac Sign",
@@ -145,29 +150,4 @@ class PointInTime(BaseModel):
         title="Minutes of current degree",
         description="The minutes (out of 60) within a degree that this point is located at"
     )
-
-    @root_validator()
-    def set_sign_and_degrees(cls, values):
-        degrees_from_aries = values.get("degrees_from_aries")
-
-        values.update({
-            "sign": [
-                ZodiacSign.aries,
-                ZodiacSign.taurus,
-                ZodiacSign.gemini,
-                ZodiacSign.cancer,
-                ZodiacSign.leo,
-                ZodiacSign.virgo,
-                ZodiacSign.libra,
-                ZodiacSign.scorpio,
-                ZodiacSign.sagittarius,
-                ZodiacSign.capricorn,
-                ZodiacSign.aquarius,
-                ZodiacSign.pisces
-            ][int(degrees_from_aries / 30)],
-            "degrees_in_sign": int(degrees_from_aries % 30),
-            "minutes_in_degree": int(degrees_from_aries % 1 * 60),
-        })
-
-        return values
 

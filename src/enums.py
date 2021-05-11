@@ -1,29 +1,38 @@
 from enum import Enum
 
 
-# Enumerates all of the elements
 class Polarity(str, Enum):
+    """
+    Enumerates all of the polarities.
+    """
     yang = "Yang"
     yin = "Yin"
 
 
-# Enumerates all of the elements
 class Modality(str, Enum):
+    """
+    Enumerates all of the modalities.
+    """
     cardinal = "Cardinal"
     fixed = "Fixed"
     mutable = "Mutable"
 
 
-# Enumerates all of the elements
 class Element(str, Enum):
+    """
+    Enumerates all of the elements.
+    """
     fire = "Fire"
     air = "Air"
     water = "Water"
     earth = "Earth"
 
 
-# Enumerates all of the zodiac signs.
 class ZodiacSign(str, Enum):
+    """
+    Enumerates all of the zodiac signs.
+    """
+
     aries = "Aries"
     taurus = "Taurus"
     gemini = "Gemini"
@@ -47,6 +56,14 @@ class Point(str, Enum):
     mars = "Mars"
     jupiter = "Jupiter"
     saturn = "Saturn"
+
     uranus = "Uranus"
     neptune = "Neptune"
     pluto = "Pluto"
+
+    chiron = "Chiron"
+    pholus = "Pholus"
+    ceres = "Ceres"
+    pallas = "Pallas"
+    juno = "Juno"
+    vesta = "Vesta"
