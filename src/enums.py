@@ -1,6 +1,25 @@
 from enum import Enum
 
-from pydantic import BaseModel
+
+# Enumerates all of the elements
+class Polarity(str, Enum):
+    yang = "Yang"
+    yin = "Yin"
+
+
+# Enumerates all of the elements
+class Modality(str, Enum):
+    cardinal = "Cardinal"
+    fixed = "Fixed"
+    mutable = "Mutable"
+
+
+# Enumerates all of the elements
+class Element(str, Enum):
+    fire = "Fire"
+    air = "Air"
+    water = "Water"
+    earth = "Earth"
 
 
 # Enumerates all of the zodiac signs.
@@ -28,17 +47,6 @@ class Point(str, Enum):
     mars = "Mars"
     jupiter = "Jupiter"
     saturn = "Saturn"
-
-
-# Defines any planetary body's position relative to Earth.
-class PointInTime(BaseModel):
-    # The name of the point.
-    name: Point
-    # The degrees (out of 360) that this point is located at.
-    degrees_from_aries: float
-    # The zodiac sign this point is located within.
-    sign: ZodiacSign
-    # The degrees (out of 30) within a sign that this point is located at.
-    degrees_in_sign: int
-    # The minutes (out of 60) within a degree that this point is located at.
-    minutes_in_sign: int
+    uranus = "Uranus"
+    neptune = "Neptune"
+    pluto = "Pluto"
