@@ -2,8 +2,53 @@ from typing import List, Tuple
 
 from src.enums import ZodiacSign, Point
 from src.globals import pointTraits, zodiacSignOrder
-from src.models import PointInTime, CalculationSettings
+from src.models import PointInTime, CalculationSettings, CalculationResults
 from src.ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc
+
+
+def create_results(settings: CalculationSettings) -> CalculationResults:
+    """
+    Calculates the default settings for the given time.
+
+    :param settings: The current calculation settings, including the time and location.
+
+    :return: Calculated points and aspects.
+    """
+
+    results = CalculationResults(
+        **settings.dict(),
+        points=create_all_points(settings)
+    )
+
+    create_results_summary(results)
+
+    return results
+
+
+def create_results_summary(results: CalculationResults):
+    """
+    Creates a summary of the big 3 signs in a given chart,
+    as well as whether the chart is during the day.
+
+    :param results: The current calculation results.
+    """
+
+    asc_degrees_from_aries = 0
+    sun_degrees_from_aries = 0
+
+    for point in results.points:
+        if point.name == Point.ascendant:
+            results.asc = point.sign
+            asc_degrees_from_aries = point.degrees_from_aries
+        elif point.name == Point.sun:
+            results.sun = point.sign
+            sun_degrees_from_aries = point.degrees_from_aries
+        elif point.name == Point.moon:
+            results.moon = point.sign
+
+    positive_difference_in_degrees = (sun_degrees_from_aries - asc_degrees_from_aries) % 360
+
+    results.is_day_time = positive_difference_in_degrees > 180
 
 
 def create_all_points(settings: CalculationSettings) -> List[PointInTime]:

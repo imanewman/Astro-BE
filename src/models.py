@@ -192,6 +192,26 @@ class CalculationResults(BaseModel):
         title="Start Date",
         description="The UTC date of calculations"
     )
+    sun: Optional[ZodiacSign] = Field(
+        None,
+        title="Sun Sign",
+        description="The current zodiac sign of the sun"
+    )
+    moon: Optional[ZodiacSign] = Field(
+        None,
+        title="Moon Sign",
+        description="The current zodiac sign of the moon"
+    )
+    asc: Optional[ZodiacSign] = Field(
+        None,
+        title="Ascendant Sign",
+        description="The current zodiac sign of the ascendant"
+    )
+    is_day_time: Optional[bool] = Field(
+        None,
+        title="Is Day Time",
+        description="Whether the current time is during the day"
+    )
     latitude: float = Field(
         ...,
         title="Location Latitude",
