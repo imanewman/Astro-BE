@@ -1,10 +1,41 @@
-
-
 import swisseph as swe
 
 from src.enums import *
 from src.models import ZodiacSignCollection, PointTraitsCollection
 
+# Exports the traditional order of zodiac signs.
+zodiacSignOrder = [
+    ZodiacSign.aries,
+    ZodiacSign.taurus,
+    ZodiacSign.gemini,
+    ZodiacSign.cancer,
+    ZodiacSign.leo,
+    ZodiacSign.virgo,
+    ZodiacSign.libra,
+    ZodiacSign.scorpio,
+    ZodiacSign.sagittarius,
+    ZodiacSign.capricorn,
+    ZodiacSign.aquarius,
+    ZodiacSign.pisces
+]
+
+# Maps each house number, as an index, to the planet that has its joy there, if one exists.
+# Planetary joys: http://theastrologydictionary.com/j/joys/
+planetaryJoys = [
+    None,
+    Point.mercury,  # 1st House
+    None,
+    Point.moon,     # 3rd House
+    None,
+    Point.venus,    # 5th House
+    Point.mars,     # 6th House
+    None,
+    None,
+    Point.sun,      # 9th House
+    None,
+    Point.jupiter,  # 11th House
+    Point.saturn    # 12th House
+]
 
 # Associates each zodiac sign with relevant information.
 # Reference for essential dignities: https://www.astro.com/astrowiki/en/Essential_Dignities
@@ -157,22 +188,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
         },
     }
 })
-
-# Exports the traditional order of zodiac signs.
-zodiacSignOrder = [
-    ZodiacSign.aries,
-    ZodiacSign.taurus,
-    ZodiacSign.gemini,
-    ZodiacSign.cancer,
-    ZodiacSign.leo,
-    ZodiacSign.virgo,
-    ZodiacSign.libra,
-    ZodiacSign.scorpio,
-    ZodiacSign.sagittarius,
-    ZodiacSign.capricorn,
-    ZodiacSign.aquarius,
-    ZodiacSign.pisces
-]
 
 # Associates each point with relevant information.
 pointTraits = PointTraitsCollection(**{
