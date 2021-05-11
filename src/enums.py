@@ -49,6 +49,9 @@ class ZodiacSign(str, Enum):
 
 # Enumerates all of the available points and planetary bodies.
 class Point(str, Enum):
+    ascendant = "Ascendant"
+    midheaven = "Midheaven"
+
     moon = "Moon"
     mercury = "Mercury"
     venus = "Venus"

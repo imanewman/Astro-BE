@@ -1,11 +1,8 @@
-from datetime import datetime
-
 from fastapi import FastAPI
 import swisseph as swe
 
-from src.globals import pointTraits
-from src.planets import create_point
-from src.time import get_julian_day
+from src.models import CalculationSettings, CalculationResults
+from src.planets import create_all_points
 
 app = FastAPI()
 
@@ -13,15 +10,25 @@ swe.set_ephe_path()
 
 
 @app.get("/")
-async def root():
-    current = datetime.utcnow()
-    day = get_julian_day(current)
-    planets = {}
+async def root() -> CalculationResults:
+    """
+    Calculates the default settings for the current time.
 
-    for point in pointTraits.points:
-        planets[point.name] = create_point(day, point)
+    :return: Calculated points and aspects.
+    """
 
-    return {
-        "now": current,
-        "planets": planets
-    }
+    return await calc(CalculationSettings())
+
+
+@app.post("/calc")
+async def calc(settings: CalculationSettings) -> CalculationResults:
+    """
+    Calculates the default settings for the given time.
+
+    :return: Calculated points and aspects.
+    """
+
+    return CalculationResults(
+        **settings.dict(),
+        points=create_all_points(settings)
+    )

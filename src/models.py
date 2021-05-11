@@ -1,4 +1,5 @@
-from typing import List, Tuple, Dict
+from datetime import datetime
+from typing import List, Tuple, Dict, Optional
 
 from pydantic import BaseModel, Field
 
@@ -130,10 +131,10 @@ class PointInTime(BaseModel):
         ge=0,
         lt=360
     )
-    declination: float = Field(
-        ...,
+    declination: Optional[float] = Field(
+        None,
         title="Declination",
-        description="The latitude of the planet"
+        description="The latitude of the point"
     )
     sign: ZodiacSign = Field(
         ZodiacSign.aries,
@@ -149,4 +150,60 @@ class PointInTime(BaseModel):
         0,
         title="Minutes of current degree",
         description="The minutes (out of 60) within a degree that this point is located at"
+    )
+    house: Optional[int] = Field(
+        None,
+        title="House",
+        description="The house that this planet is in, relative to the ascendant",
+        ge=1,
+        le=12
+    )
+
+
+class CalculationSettings(BaseModel):
+    """
+    Defines the input parameters for running a calculation.
+    """
+
+    startDate: datetime = Field(
+        default_factory=lambda: datetime.utcnow(),
+        title="Start Date",
+        description="The UTC date of calculations, defaulting to now"
+    )
+    latitude: float = Field(
+        36.0544,
+        title="Location Latitude",
+        description="The latitude of the location of calculations"
+    )
+    longitude: float = Field(
+        -112.1401,
+        title="Location Longitude",
+        description="The longitude of the location of calculations"
+    )
+
+
+class CalculationResults(BaseModel):
+    """
+    Defines the results returned after running a calculation.
+    """
+
+    startDate: datetime = Field(
+        ...,
+        title="Start Date",
+        description="The UTC date of calculations"
+    )
+    latitude: float = Field(
+        ...,
+        title="Location Latitude",
+        description="The latitude of the location of calculations"
+    )
+    longitude: float = Field(
+        ...,
+        title="Location Longitude",
+        description="The longitude of the location of calculations"
+    )
+    points: List[PointInTime] = Field(
+        [],
+        title="Planets and Points",
+        description="A list of the planets and points calculated"
     )

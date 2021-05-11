@@ -158,6 +158,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
     }
 })
 
+# Exports the traditional order of zodiac signs.
+zodiacSignOrder = [
+    ZodiacSign.aries,
+    ZodiacSign.taurus,
+    ZodiacSign.gemini,
+    ZodiacSign.cancer,
+    ZodiacSign.leo,
+    ZodiacSign.virgo,
+    ZodiacSign.libra,
+    ZodiacSign.scorpio,
+    ZodiacSign.sagittarius,
+    ZodiacSign.capricorn,
+    ZodiacSign.aquarius,
+    ZodiacSign.pisces
+]
+
 # Associates each point with relevant information.
 pointTraits = PointTraitsCollection(**{
     "points": {

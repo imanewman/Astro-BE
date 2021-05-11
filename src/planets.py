@@ -1,32 +1,77 @@
-from typing import Any
-
-import swisseph as swe
+from typing import List, Tuple
 
 from src.enums import ZodiacSign, Point
-from src.globals import pointTraits
-from src.models import PointInTime
+from src.globals import pointTraits, zodiacSignOrder
+from src.models import PointInTime, CalculationSettings
+from src.ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc
 
 
-def create_point(day: Any, point: Point) -> PointInTime:
+def create_all_points(settings: CalculationSettings) -> List[PointInTime]:
+    """
+    Creates a list of all calculated points.
+
+    :param settings: The current calculation settings, including the time and location.
+
+    :return: The calculated points.
+    """
+
+    points = []
+
+    # Add the ascendant and midheaven
+    asc, mc = create_as_mc(settings)
+
+    points.append(asc)
+    points.append(mc)
+
+    # add each of the points with traits
+    for point in pointTraits.points:
+        points.append(create_point(settings, point))
+
+    # calculate the derived point attributes for each point
+    for point in points:
+        calculate_point_attributes(point, asc)
+
+    return points
+
+
+def create_as_mc(settings: CalculationSettings) -> Tuple[PointInTime, PointInTime]:
+    """
+    Creates the points for the Ascendant and Midheaven
+
+    :param settings: The current calculation settings, including the time and location.
+
+    :return: The ascendant and midheaven points.
+    """
+
+    day = get_julian_day(settings.startDate)
+    ascendant, midheaven = get_asc_mc(day, settings.latitude, settings.longitude)
+
+    return (
+        PointInTime(
+            name=Point.ascendant,
+            degrees_from_aries=round(ascendant, 2),
+        ),
+        PointInTime(
+            name=Point.midheaven,
+            degrees_from_aries=round(midheaven, 2),
+        )
+    )
+
+
+def create_point(settings: CalculationSettings, point: Point) -> PointInTime:
     """
     Creates a point object for he given planet on the given day.
 
-    :param day: The day to find the location of the point for
+    :param settings: The current calculation settings, including the time and location.
     :param point: The point to find.
 
-    :return point_in_time: The calculated point.
+    :return: The calculated point.
     """
 
     traits = pointTraits.points[point]
-
-    # Calculate the current degrees from aries of the point
-    degrees_from_aries = swe.calc_ut(day, traits.swe_id)[0][0]
-
-    # Calculate the declination of the point
-    declination = swe.calc_ut(
-        day, traits.swe_id,
-        swe.FLG_SWIEPH + swe.FLG_SPEED + swe.FLG_EQUATORIAL
-    )[0][1]
+    day = get_julian_day(settings.startDate)
+    degrees_from_aries = get_degrees_from_aries(day, traits.swe_id)
+    declination = get_declination(day, traits.swe_id)
 
     point_in_time = PointInTime(
         name=traits.name,
@@ -34,38 +79,27 @@ def create_point(day: Any, point: Point) -> PointInTime:
         declination=round(declination, 2)
     )
 
-    calculate_point_attributes(point_in_time)
-
     return point_in_time
 
 
-def calculate_point_attributes(point: PointInTime):
+def calculate_point_attributes(point: PointInTime, asc: PointInTime):
     """
     Calculates all derived attributes for a point.
 
     :param point: The point to calculate attributes for.
+    :param asc: The ascendant point, for calculating house.
     """
 
     point.sign = calculate_sign(point.degrees_from_aries)
     point.degrees_in_sign = calculate_degrees_in_sign(point.degrees_from_aries)
     point.minutes_in_degree = calculate_minutes_in_degree(point.degrees_from_aries)
+    point.house = calculate_whole_sign_house(point, asc)
 
 
 def calculate_sign(degrees_from_aries: float) -> ZodiacSign:
-    return [
-        ZodiacSign.aries,
-        ZodiacSign.taurus,
-        ZodiacSign.gemini,
-        ZodiacSign.cancer,
-        ZodiacSign.leo,
-        ZodiacSign.virgo,
-        ZodiacSign.libra,
-        ZodiacSign.scorpio,
-        ZodiacSign.sagittarius,
-        ZodiacSign.capricorn,
-        ZodiacSign.aquarius,
-        ZodiacSign.pisces
-    ][int(degrees_from_aries / 30)]
+    twelfth_of_circle = int(degrees_from_aries / 30)
+
+    return zodiacSignOrder[twelfth_of_circle]
 
 
 def calculate_degrees_in_sign(degrees_from_aries: float) -> int:
@@ -73,4 +107,15 @@ def calculate_degrees_in_sign(degrees_from_aries: float) -> int:
 
 
 def calculate_minutes_in_degree(degrees_from_aries: float) -> int:
-    return int(degrees_from_aries % 1 * 60)
+    fraction_of_degree = degrees_from_aries % 1
+    degrees_per_minute = 60
+
+    return int(fraction_of_degree * degrees_per_minute)
+
+
+def calculate_whole_sign_house(point: PointInTime, asc: PointInTime) -> int:
+    index_of_ascendant = zodiacSignOrder.index(asc.sign)
+    index_of_point = zodiacSignOrder.index(point.sign)
+    difference_in_index = index_of_point - index_of_ascendant
+
+    return difference_in_index % 12 + 1
