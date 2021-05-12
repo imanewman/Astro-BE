@@ -1,12 +1,34 @@
 from fastapi import FastAPI
-import swisseph as swe
 
-from src.models import CalculationSettings, CalculationResults
+from src.globals import *
+from src.models import *
 from src.planets import create_results
 
 app = FastAPI()
 
 swe.set_ephe_path()
+
+
+@app.get("/signs")
+async def root() -> ZodiacSignCollection:
+    """
+    Calculates the default settings for the current time.
+
+    :return: Calculated points and aspects.
+    """
+
+    return zodiacSignTraits
+
+
+@app.get("/points")
+async def root() -> PointTraitsCollection:
+    """
+    Calculates the default settings for the current time.
+
+    :return: Calculated points and aspects.
+    """
+
+    return pointTraits
 
 
 @app.get("/")

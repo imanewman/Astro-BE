@@ -70,3 +70,8 @@ class Point(str, Enum):
     pallas = "Pallas"
     juno = "Juno"
     vesta = "Vesta"
+
+
+class PointCategory(str, Enum):
+    visible = "Visible Planet"
+    outer = "Outer Planet"

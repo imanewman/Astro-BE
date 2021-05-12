@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from src.enums import ZodiacSign, Point
-from src.globals import pointTraits, zodiacSignOrder
+from src.globals import pointTraits, zodiacSignOrder, zodiacSignTraits
 from src.models import PointInTime, CalculationSettings, CalculationResults
 from src.ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc
 
@@ -17,7 +17,7 @@ def create_results(settings: CalculationSettings) -> CalculationResults:
 
     results = CalculationResults(
         **settings.dict(),
-        points=create_all_points(settings)
+        startPoints=create_all_points(settings)
     )
 
     create_results_summary(results)
@@ -36,13 +36,16 @@ def create_results_summary(results: CalculationResults):
     asc_degrees_from_aries = 0
     sun_degrees_from_aries = 0
 
-    for point in results.points:
+    for point in results.startPoints:
         if point.name == Point.ascendant:
             results.asc = point.sign
+            results.ascRuler = zodiacSignTraits.signs[point.sign].rulership
             asc_degrees_from_aries = point.degrees_from_aries
+
         elif point.name == Point.sun:
             results.sun = point.sign
             sun_degrees_from_aries = point.degrees_from_aries
+
         elif point.name == Point.moon:
             results.moon = point.sign
 

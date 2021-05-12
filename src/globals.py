@@ -3,7 +3,9 @@ import swisseph as swe
 from src.enums import *
 from src.models import ZodiacSignCollection, PointTraitsCollection
 
-# Exports the traditional order of zodiac signs.
+"""
+Exports the traditional order of zodiac signs.
+"""
 zodiacSignOrder = [
     ZodiacSign.aries,
     ZodiacSign.taurus,
@@ -19,27 +21,12 @@ zodiacSignOrder = [
     ZodiacSign.pisces
 ]
 
-# Maps each house number, as an index, to the planet that has its joy there, if one exists.
-# Planetary joys: http://theastrologydictionary.com/j/joys/
-planetaryJoys = [
-    None,
-    Point.mercury,  # 1st House
-    None,
-    Point.moon,     # 3rd House
-    None,
-    Point.venus,    # 5th House
-    Point.mars,     # 6th House
-    None,
-    None,
-    Point.sun,      # 9th House
-    None,
-    Point.jupiter,  # 11th House
-    Point.saturn    # 12th House
-]
+"""
+Associates each zodiac sign with relevant information.
 
-# Associates each zodiac sign with relevant information.
-# Reference for essential dignities: https://www.astro.com/astrowiki/en/Essential_Dignities
-# Reference for decans: https://www.astro.com/astrowiki/en/Face
+- Reference for essential dignities: https://www.astro.com/astrowiki/en/Essential_Dignities
+- Reference for decans: https://www.astro.com/astrowiki/en/Face
+"""
 zodiacSignTraits = ZodiacSignCollection(**{
     "signs": {
         ZodiacSign.aries: {
@@ -48,10 +35,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.fire,
             "rulership": Point.mars,
-            "domicile": [Point.mars],
-            "exaltation": [Point.sun],
-            "detriment": [Point.venus],
-            "fall": [Point.saturn],
             "decans": [Point.mars, Point.sun, Point.venus]
         },
         ZodiacSign.taurus: {
@@ -60,10 +43,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.earth,
             "rulership": Point.venus,
-            "domicile": [Point.venus],
-            "exaltation": [Point.moon],
-            "detriment": [Point.mars, Point.pluto],
-            "fall": [Point.uranus],
             "decans": [Point.mercury, Point.moon, Point.saturn],
         },
         ZodiacSign.gemini: {
@@ -72,10 +51,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.air,
             "rulership": Point.mercury,
-            "domicile": [Point.mercury],
-            "exaltation": [],
-            "detriment": [Point.jupiter],
-            "fall": [],
             "decans": [Point.jupiter, Point.mars, Point.sun],
         },
         ZodiacSign.cancer: {
@@ -84,10 +59,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.water,
             "rulership": Point.moon,
-            "domicile": [Point.moon],
-            "exaltation": [Point.jupiter],
-            "detriment": [Point.saturn],
-            "fall": [Point.mars],
             "decans": [Point.venus, Point.mercury, Point.moon],
         },
         ZodiacSign.leo: {
@@ -96,10 +67,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.fire,
             "rulership": Point.sun,
-            "domicile": [Point.sun],
-            "exaltation": [Point.pluto],
-            "detriment": [Point.saturn, Point.uranus],
-            "fall": [],
             "decans": [Point.saturn, Point.jupiter, Point.mars],
         },
         ZodiacSign.virgo: {
@@ -108,10 +75,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.earth,
             "rulership": Point.mercury,
-            "domicile": [Point.mercury],
-            "exaltation": [],
-            "detriment": [Point.jupiter, Point.neptune],
-            "fall": [Point.venus],
             "decans": [Point.sun, Point.venus, Point.mercury],
         },
         ZodiacSign.libra: {
@@ -120,10 +83,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.air,
             "rulership": Point.venus,
-            "domicile": [Point.venus],
-            "exaltation": [Point.saturn],
-            "detriment": [Point.mars],
-            "fall": [Point.sun],
             "decans": [Point.moon, Point.saturn, Point.jupiter],
         },
         ZodiacSign.scorpio: {
@@ -132,10 +91,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.water,
             "rulership": Point.mars,
-            "domicile": [Point.mars, Point.pluto],
-            "exaltation": [Point.uranus],
-            "detriment": [Point.venus],
-            "fall": [Point.moon],
             "decans": [Point.mars, Point.sun, Point.venus],
         },
         ZodiacSign.sagittarius: {
@@ -144,10 +99,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.fire,
             "rulership": Point.jupiter,
-            "domicile": [Point.jupiter],
-            "exaltation": [],
-            "detriment": [Point.mercury],
-            "fall": [],
             "decans": [Point.mercury, Point.moon, Point.saturn],
         },
         ZodiacSign.capricorn: {
@@ -156,10 +107,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.earth,
             "rulership": Point.saturn,
-            "domicile": [Point.saturn],
-            "exaltation": [Point.mars],
-            "detriment": [Point.moon],
-            "fall": [Point.jupiter, Point.neptune],
             "decans": [Point.jupiter, Point.mars, Point.sun],
         },
         ZodiacSign.aquarius: {
@@ -168,10 +115,6 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.air,
             "rulership": Point.saturn,
-            "domicile": [Point.saturn, Point.uranus],
-            "exaltation": [],
-            "detriment": [Point.sun],
-            "fall": [Point.pluto],
             "decans": [Point.venus, Point.mercury, Point.moon],
         },
         ZodiacSign.pisces: {
@@ -180,67 +123,119 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.water,
             "rulership": Point.jupiter,
-            "domicile": [Point.jupiter, Point.neptune],
-            "exaltation": [Point.venus],
-            "detriment": [Point.mercury],
-            "fall": [],
             "decans": [Point.saturn, Point.jupiter, Point.mars],
         },
     }
 })
 
-# Associates each point with relevant information.
+"""
+Associates each point with relevant information.
+
+- Planetary joys: https://theastrologydictionary.com/j/joys/
+- Domiciles: https://www.astro.com/astrowiki/en/Domicile
+  - Domicile (at home) and exaltation (a welcome guest) are like constructive interference,
+    the sign and the planets have archetypal harmony which empowers the planet.
+  - Detriment and fall are like deconstructive interference, not necessarily bad but
+    there is more need for balancing their conflicting archetypal perspectives.
+"""
 pointTraits = PointTraitsCollection(**{
     "points": {
         Point.moon: {
             "swe_id": swe.MOON,
             "name": Point.moon,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 3,
+            "domicile": [ZodiacSign.cancer],
+            "exaltation": [ZodiacSign.taurus],
+            "detriment": [ZodiacSign.capricorn],
+            "fall": [ZodiacSign.libra],
         },
         Point.mercury: {
             "swe_id": swe.MERCURY,
             "name": Point.mercury,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 1,
+            "domicile": [ZodiacSign.gemini, ZodiacSign.virgo],
+            "exaltation": [],
+            "detriment": [ZodiacSign.sagittarius],
+            "fall": [],
         },
         Point.venus: {
             "swe_id": swe.VENUS,
             "name": Point.venus,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 5,
+            "domicile": [ZodiacSign.taurus, ZodiacSign.libra],
+            "exaltation": [ZodiacSign.pisces],
+            "detriment": [ZodiacSign.aries, ZodiacSign.scorpio],
+            "fall": [ZodiacSign.virgo],
         },
         Point.sun: {
             "swe_id": swe.SUN,
             "name": Point.sun,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 9,
+            "domicile": [ZodiacSign.leo],
+            "exaltation": [ZodiacSign.aries],
+            "detriment": [ZodiacSign.aquarius],
+            "fall": [ZodiacSign.libra],
         },
         Point.mars: {
             "swe_id": swe.MARS,
             "name": Point.mars,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 6,
+            "domicile": [ZodiacSign.aries, ZodiacSign.scorpio],
+            "exaltation": [ZodiacSign.capricorn],
+            "detriment": [ZodiacSign.libra, ZodiacSign.taurus],
+            "fall": [ZodiacSign.cancer],
         },
         Point.jupiter: {
             "swe_id": swe.JUPITER,
             "name": Point.jupiter,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 11,
+            "domicile": [ZodiacSign.sagittarius, ZodiacSign.pisces],
+            "exaltation": [ZodiacSign.cancer],
+            "detriment": [ZodiacSign.gemini, ZodiacSign.virgo],
+            "fall": [ZodiacSign.capricorn],
         },
         Point.saturn: {
             "swe_id": swe.SATURN,
             "name": Point.saturn,
-            "is_traditional": True,
+            "category": PointCategory.visible,
+            "joy": 12,
+            "domicile": [ZodiacSign.capricorn, ZodiacSign.aquarius],
+            "exaltation": [ZodiacSign.libra],
+            "detriment": [ZodiacSign.cancer, ZodiacSign.leo],
+            "fall": [ZodiacSign.aries],
         },
         Point.uranus: {
             "swe_id": swe.URANUS,
             "name": Point.uranus,
-            "is_outer": True,
+            "category": PointCategory.outer,
+            "domicile": [ZodiacSign.aquarius],
+            "exaltation": [ZodiacSign.scorpio],
+            "detriment": [ZodiacSign.leo],
+            "fall": [ZodiacSign.taurus],
         },
         Point.neptune: {
             "swe_id": swe.NEPTUNE,
             "name": Point.neptune,
-            "is_outer": True,
+            "category": PointCategory.outer,
+            "domicile": [ZodiacSign.pisces],
+            "exaltation": [ZodiacSign.cancer],
+            "detriment": [ZodiacSign.virgo],
+            "fall": [ZodiacSign.capricorn],
         },
         Point.pluto: {
             "swe_id": swe.PLUTO,
             "name": Point.pluto,
-            "is_outer": True,
+            "category": PointCategory.outer,
+            "domicile": [ZodiacSign.scorpio],
+            "exaltation": [ZodiacSign.leo],
+            "detriment": [ZodiacSign.taurus],
+            "fall": [ZodiacSign.aquarius],
         },
     }
 })

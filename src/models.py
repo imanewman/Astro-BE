@@ -36,26 +36,6 @@ class ZodiacSignTraits(BaseModel):
         title="Planetary Ruler",
         description="The traditional planet that rules this sign"
     )
-    domicile: List[Point] = Field(
-        ...,
-        title="Domicile",
-        description="The planets at home in this sign"
-    )
-    exaltation: List[Point] = Field(
-        ...,
-        title="Exalted",
-        description="The planets exalted in this sign"
-    )
-    detriment: List[Point] = Field(
-        ...,
-        title="Detriment",
-        description="The planets in detriment in this sign"
-    )
-    fall: List[Point] = Field(
-        ...,
-        title="Fall",
-        description="The planets at fall in this sign"
-    )
     decans: Tuple[Point, Point, Point] = Field(
         ...,
         title="Decans",
@@ -90,15 +70,37 @@ class PointTraits(BaseModel):
         title="Name",
         description="The name of this planet or point",
     )
-    is_traditional: bool = Field(
-        False,
-        title="Is Traditional Planet",
-        description="Whether this planet is a traditional planet",
+    category: Optional[PointCategory] = Field(
+        None,
+        title="Point Category",
+        description="The category of point this is",
     )
-    is_outer: bool = Field(
-        False,
-        title="Is Outer Planet",
-        description="Whether this planet is an outer planet",
+    joy: Optional[int] = Field(
+        None,
+        title="Planetary Joy House",
+        description="The house that this planet is at its joy in",
+        ge=1,
+        le=12
+    )
+    domicile: List[ZodiacSign] = Field(
+        ...,
+        title="Domicile",
+        description="The signs this planet is at home in"
+    )
+    exaltation: List[ZodiacSign] = Field(
+        ...,
+        title="Exalted",
+        description="The signs this planet is exalted in"
+    )
+    detriment: List[ZodiacSign] = Field(
+        ...,
+        title="Detriment",
+        description="The signs this planet is in detriment in"
+    )
+    fall: List[ZodiacSign] = Field(
+        ...,
+        title="Fall",
+        description="The signs this planet is in fall in"
     )
 
 
@@ -192,6 +194,17 @@ class CalculationResults(BaseModel):
         title="Start Date",
         description="The UTC date of calculations"
     )
+    latitude: float = Field(
+        ...,
+        title="Location Latitude",
+        description="The latitude of the location of calculations"
+    )
+    longitude: float = Field(
+        ...,
+        title="Location Longitude",
+        description="The longitude of the location of calculations"
+    )
+
     sun: Optional[ZodiacSign] = Field(
         None,
         title="Sun Sign",
@@ -207,22 +220,19 @@ class CalculationResults(BaseModel):
         title="Ascendant Sign",
         description="The current zodiac sign of the ascendant"
     )
+
+    ascRuler: Optional[Point] = Field(
+        None,
+        title="Ascendant Ruler",
+        description="The ruling planet of the ascendant"
+    )
     is_day_time: Optional[bool] = Field(
         None,
         title="Is Day Time",
         description="Whether the current time is during the day"
     )
-    latitude: float = Field(
-        ...,
-        title="Location Latitude",
-        description="The latitude of the location of calculations"
-    )
-    longitude: float = Field(
-        ...,
-        title="Location Longitude",
-        description="The longitude of the location of calculations"
-    )
-    points: List[PointInTime] = Field(
+
+    startPoints: List[PointInTime] = Field(
         [],
         title="Planets and Points",
         description="A list of the planets and points calculated"
