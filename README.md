@@ -6,6 +6,14 @@ Setup instructions can be found [on notion](https://www.notion.so/Local-Developm
 
 ## Scripts
 
+### Export the current packages
+
+To export the current package requirements to the requirements file, run:
+
+```shell
+pip freeze > requirements.txt
+```
+
 ### Start the server
 
 To start the server, run:

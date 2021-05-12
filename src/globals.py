@@ -237,5 +237,10 @@ pointTraits = PointTraitsCollection(**{
             "detriment": [ZodiacSign.taurus],
             "fall": [ZodiacSign.aquarius],
         },
+        Point.north_mode: {
+            "swe_id": swe.MEAN_NODE,
+            "name": Point.north_mode,
+            "category": PointCategory.point,
+        },
     }
 })

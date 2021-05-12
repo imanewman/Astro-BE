@@ -1,12 +1,33 @@
 from datetime import datetime
 from typing import List, Tuple, Dict, Optional
 
+from humps import camelize
 from pydantic import BaseModel, Field
 
 from src.enums import *
 
 
-class ZodiacSignTraits(BaseModel):
+class BaseSchema(BaseModel):
+    """
+    A base schema that all models inherit configuration from.
+    """
+
+    class Config:
+        # CamelCase to snake_case translation automatically for every field
+        alias_generator = camelize
+        # Create the Pydantic models normally from python with snake_case
+        allow_population_by_field_name = True
+        # Strip extra whitespace around strings
+        anystr_strip_whitespace = True
+        # Try to access attributes by dot notation
+        orm_mode = True
+        # Make private attributes that won’t show up in the docs
+        underscore_attrs_are_private = True
+        # Gives you strings instead of the Enum class if you use enums anywhere
+        use_enum_values = True
+
+
+class ZodiacSignTraits(BaseSchema):
     """
     Defines traits about a specific zodiac sign
     """
@@ -43,7 +64,7 @@ class ZodiacSignTraits(BaseModel):
     )
 
 
-class ZodiacSignCollection(BaseModel):
+class ZodiacSignCollection(BaseSchema):
     """
     A collection of all 12 zodiac signs.
     """
@@ -55,7 +76,7 @@ class ZodiacSignCollection(BaseModel):
     )
 
 
-class PointTraits(BaseModel):
+class PointTraits(BaseSchema):
     """
     Information about a specific planet or point.
     """
@@ -83,28 +104,28 @@ class PointTraits(BaseModel):
         le=12
     )
     domicile: List[ZodiacSign] = Field(
-        ...,
+        [],
         title="Domicile",
         description="The signs this planet is at home in"
     )
     exaltation: List[ZodiacSign] = Field(
-        ...,
+        [],
         title="Exalted",
         description="The signs this planet is exalted in"
     )
     detriment: List[ZodiacSign] = Field(
-        ...,
+        [],
         title="Detriment",
         description="The signs this planet is in detriment in"
     )
     fall: List[ZodiacSign] = Field(
-        ...,
+        [],
         title="Fall",
         description="The signs this planet is in fall in"
     )
 
 
-class PointTraitsCollection(BaseModel):
+class PointTraitsCollection(BaseSchema):
     """
     A collection of all points available to use.
     """
@@ -116,7 +137,7 @@ class PointTraitsCollection(BaseModel):
     )
 
 
-class PointInTime(BaseModel):
+class PointInTime(BaseSchema):
     """
     Defines any planetary body's position relative to Earth.
     """
@@ -162,78 +183,89 @@ class PointInTime(BaseModel):
     )
 
 
-class CalculationSettings(BaseModel):
+class DateTimeLocation(BaseSchema):
     """
-    Defines the input parameters for running a calculation.
+    Defines a time and a day at a geographic location.
     """
 
-    startDate: datetime = Field(
+    date: datetime = Field(
         default_factory=lambda: datetime.utcnow(),
-        title="Start Date",
-        description="The UTC date of calculations, defaulting to now"
+        title="Date",
+        description="The UTC date to use, defaulting to now"
     )
     latitude: float = Field(
         36.0544,
         title="Location Latitude",
-        description="The latitude of the location of calculations"
+        description="The latitude of the location, defaulting to Grand Canyon, AZ"
     )
     longitude: float = Field(
         -112.1401,
         title="Location Longitude",
-        description="The longitude of the location of calculations"
+        description="The longitude of the location, defaulting to Grand Canyon, AZ"
     )
 
 
-class CalculationResults(BaseModel):
+class CalculationSettings(BaseSchema):
     """
-    Defines the results returned after running a calculation.
+    Defines the input parameters for running a calculation.
     """
 
-    startDate: datetime = Field(
-        ...,
-        title="Start Date",
-        description="The UTC date of calculations"
-    )
-    latitude: float = Field(
-        ...,
-        title="Location Latitude",
-        description="The latitude of the location of calculations"
-    )
-    longitude: float = Field(
-        ...,
-        title="Location Longitude",
-        description="The longitude of the location of calculations"
+    start: DateTimeLocation = Field(
+        DateTimeLocation(),
+        title="Start Time and Location",
+        description="The base date, time, and location of calculations"
     )
 
-    sun: Optional[ZodiacSign] = Field(
-        None,
+
+class ChartSummary(BaseSchema):
+    """
+    Summarizes the most important details of a generated chart.
+    """
+
+    sun: ZodiacSign = Field(
+        ...,
         title="Sun Sign",
         description="The current zodiac sign of the sun"
     )
-    moon: Optional[ZodiacSign] = Field(
-        None,
+    moon: ZodiacSign = Field(
+        ...,
         title="Moon Sign",
         description="The current zodiac sign of the moon"
     )
-    asc: Optional[ZodiacSign] = Field(
-        None,
+    asc: ZodiacSign = Field(
+        ...,
         title="Ascendant Sign",
         description="The current zodiac sign of the ascendant"
     )
-
-    ascRuler: Optional[Point] = Field(
-        None,
+    asc_ruler: Point = Field(
+        ...,
         title="Ascendant Ruler",
         description="The ruling planet of the ascendant"
     )
-    is_day_time: Optional[bool] = Field(
-        None,
+    is_day_time: bool = Field(
+        ...,
         title="Is Day Time",
         description="Whether the current time is during the day"
     )
 
-    startPoints: List[PointInTime] = Field(
+
+class CalculationResults(BaseSchema):
+    """
+    Defines the results returned after running a calculation.
+    """
+
+    start: DateTimeLocation = Field(
+        ...,
+        title="Start Time and Location",
+        description="The base date, time, and location of calculations"
+    )
+    summary: Optional[ChartSummary] = Field(
+        None,
+        title="Chart Summary",
+        description="Summarizes the most important information in a chart"
+    )
+    start_points: Dict[Point, PointInTime] = Field(
         [],
         title="Planets and Points",
-        description="A list of the planets and points calculated"
+        description="A map of the base planets and points calculated"
     )

@@ -71,7 +71,11 @@ class Point(str, Enum):
     juno = "Juno"
     vesta = "Vesta"
 
+    north_mode = "North Node"
+    south_node = "South Node"
+
 
 class PointCategory(str, Enum):
     visible = "Visible Planet"
     outer = "Outer Planet"
+    point = "Calculated Point"

@@ -20,6 +20,7 @@ MarkupSafe==1.1.1
 orjson==3.5.2
 promise==2.3
 pydantic==1.8.1
+pyhumps==3.0.2
 pyswisseph==2.8.0.post1
 python-dotenv==0.17.1
 python-multipart==0.0.5

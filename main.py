@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from src.globals import *
 from src.models import *
-from src.planets import create_results
+from src.calculate import create_results
 
 app = FastAPI()
 
