@@ -1,6 +1,6 @@
 from typing import Tuple, Dict
 
-from astro.util import ZodiacSign, Point, pointTraits, zodiacSignOrder
+from astro.util import ZodiacSign, Point, pointTraits, zodiacSignOrder, STATIONARY_PERCENT_OF_AVG_SPEED
 from astro.schema import DateTimeLocation, PointInTime
 from .ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc, get_speed
 
@@ -174,7 +174,7 @@ def calculate_speed_properties(point: PointInTime):
 
         if point.name in pointTraits.points and pointTraits.points[point.name].speed_avg:
             average_speed = pointTraits.points[point.name].speed_avg
-            threshold_speed = average_speed * 0.30
+            threshold_speed = average_speed * STATIONARY_PERCENT_OF_AVG_SPEED
 
             point.is_stationary = 0 < point.speed < threshold_speed or 0 > point.speed > -threshold_speed
             point.is_retrograde = point.speed < 0

@@ -6,6 +6,20 @@ from .enums import *
 from .functions import convert_to_degrees
 
 """
+Uses the percent of the average speed calculated here: 
+https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
+"""
+STATIONARY_PERCENT_OF_AVG_SPEED = 0.30
+
+"""
+Uses ranges found here:
+https://crystalbastrology.com/meaning-of-cazimi-in-astrology/
+"""
+DEGREES_FROM_SUN_UNDER_BEAMS = 17
+DEGREES_FROM_SUN_COMBUST = 8
+DEGREES_FROM_SUN_CAZIMI = 17 / 60
+
+"""
 Exports the traditional order of zodiac signs.
 """
 zodiacSignOrder = [
@@ -134,13 +148,8 @@ zodiacSignTraits = ZodiacSignCollection(**{
 Associates each point with relevant information.
 
 - Planetary joys: https://theastrologydictionary.com/j/joys/
-- Domiciles: https://www.astro.com/astrowiki/en/Domicile
-  - Domicile (at home) and exaltation (a welcome guest) are like constructive interference,
-    the sign and the planets have archetypal harmony which empowers the planet.
-  - Detriment and fall are like deconstructive interference, not necessarily bad but
-    there is more need for balancing their conflicting archetypal perspectives.
+- Essential dignities: https://www.astro.com/astrowiki/en/Domicile
 - Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
-    - Uses 30% of average speed to determine stationing.
 """
 pointTraits = PointTraitsCollection(**{
     "points": {
@@ -311,6 +320,22 @@ pointTraits = PointTraitsCollection(**{
         #     "speed_avg": convert_to_degrees(0, 16, 15),
         #     "speed_high": convert_to_degrees(0, 36, 0),
         #     "speed_low": convert_to_degrees(0, -17, -32),
+        # },
+        # Point.psyche: {
+        #     "swe_id": None,
+        #     "name": Point.psyche,
+        # },
+        # Point.charklo: {
+        #     "swe_id": None,
+        #     "name": Point.charklo,
+        # },
+        # Point.eros: {
+        #     "swe_id": None,
+        #     "name": Point.eros,
+        # },
+        # Point.eris: {
+        #     "swe_id": None,
+        #     "name": Point.eris,
         # },
 
         Point.north_mode: {

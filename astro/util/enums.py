@@ -70,6 +70,10 @@ class Point(str, Enum):
     pallas = "Pallas"
     juno = "Juno"
     vesta = "Vesta"
+    psyche = "Psyche"
+    charklo = "Charklo"
+    eros = "Eros"
+    eris = "Eris"
 
     north_mode = "North Node"
     south_node = "South Node"
