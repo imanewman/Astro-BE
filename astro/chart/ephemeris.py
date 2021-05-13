@@ -1,7 +1,11 @@
 from datetime import datetime
+from math import floor
 from typing import Tuple
 
 import swisseph as swe
+
+
+swe.set_ephe_path()
 
 
 def get_julian_day(timestamp: datetime) -> float:
@@ -45,6 +49,19 @@ def get_declination(jul_day: float, swe_id: int) -> float:
         jul_day, swe_id,
         swe.FLG_SWIEPH + swe.FLG_SPEED + swe.FLG_EQUATORIAL
     )[0][1]
+
+
+def get_speed(jul_day: float, swe_id: int) -> Tuple[int, int]:
+    """
+    Calculates the speed of a point at a given time.
+
+    :param jul_day: The time to find the point at.
+    :param swe_id: The swiss ephemeris ID of the point.
+
+    :return The degrees and the minutes of the points speed:
+    """
+
+    return swe.calc_ut(jul_day, swe_id,  swe.FLG_SPEED)[0][3]
 
 
 def get_asc_mc(jul_day: float, lat: float, long: float) -> Tuple[float, float]:

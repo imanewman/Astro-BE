@@ -1,16 +1,14 @@
 from fastapi import FastAPI
 
-from src.globals import *
-from src.models import *
-from src.calculate import create_results
+from astro.schema import ZodiacSignCollection, PointTraitsCollection, Chart, ChartSettings
+from astro.util import zodiacSignTraits, pointTraits
+from astro import create_chart
 
 app = FastAPI()
 
-swe.set_ephe_path()
-
 
 @app.get("/signs")
-async def root() -> ZodiacSignCollection:
+async def get_signs() -> ZodiacSignCollection:
     """
     Calculates the default settings for the current time.
 
@@ -21,7 +19,7 @@ async def root() -> ZodiacSignCollection:
 
 
 @app.get("/points")
-async def root() -> PointTraitsCollection:
+async def get_points() -> PointTraitsCollection:
     """
     Calculates the default settings for the current time.
 
@@ -32,18 +30,18 @@ async def root() -> PointTraitsCollection:
 
 
 @app.get("/")
-async def root() -> CalculationResults:
+async def calc_now() -> Chart:
     """
     Calculates the default settings for the current time.
 
     :return: Calculated points and aspects.
     """
 
-    return await calc(CalculationSettings())
+    return await calc_chart(ChartSettings())
 
 
-@app.post("/calc")
-async def calc(settings: CalculationSettings) -> CalculationResults:
+@app.post("/chart")
+async def calc_chart(settings: ChartSettings) -> Chart:
     """
     Calculates the default settings for the given time.
 
@@ -52,4 +50,4 @@ async def calc(settings: CalculationSettings) -> CalculationResults:
     :return: Calculated points and aspects.
     """
 
-    return create_results(settings)
+    return create_chart(settings)

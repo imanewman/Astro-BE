@@ -1,9 +1,8 @@
-from src.models import CalculationSettings, CalculationResults
-from src.points import create_all_points
-from src.summary import create_summary
+from astro.schema import Chart, ChartSettings
+from astro.chart import create_all_points, create_summary, calculate_houses
 
 
-def create_results(settings: CalculationSettings) -> CalculationResults:
+def create_chart(settings: ChartSettings) -> Chart:
     """
     Calculates the default settings for the given time.
 
@@ -14,11 +13,11 @@ def create_results(settings: CalculationSettings) -> CalculationResults:
 
     start_points = create_all_points(settings.start)
 
-    results = CalculationResults(
+    results = Chart(
         start=settings.dict(),
         start_points=start_points,
-        summary=create_summary(start_points)
-
+        houses=calculate_houses(start_points),
+        summary=create_summary(start_points),
     )
 
     return results

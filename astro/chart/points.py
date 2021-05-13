@@ -1,9 +1,8 @@
 from typing import Tuple, Dict
 
-from src.enums import ZodiacSign, Point
-from src.globals import pointTraits, zodiacSignOrder
-from src.models import PointInTime, DateTimeLocation
-from src.ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc
+from astro.util import ZodiacSign, Point, pointTraits, zodiacSignOrder
+from astro.schema import DateTimeLocation, PointInTime
+from .ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc, get_speed
 
 
 def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
@@ -15,7 +14,7 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
     :return: The calculated points.
     """
 
-    # Add the ascendant and midheaven
+    # Add the ascendant and midheaven.
     asc, mc = create_as_mc(datetime)
 
     points = {
@@ -23,15 +22,15 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
         Point.midheaven: mc
     }
 
-    # Add each of the points with traits
+    # Add each of the points with traits.
     for point in pointTraits.points:
         points[point] = create_point(datetime, point)
 
     points[Point.south_node] = create_south_node(points[Point.north_mode])
 
-    # Calculate the derived point attributes for each point
+    # Calculate the derived point attributes for each point.
     for point in points.values():
-        calculate_point_attributes(point, asc)
+        calculate_point_attributes(point)
 
     return points
 
@@ -74,7 +73,8 @@ def create_south_node(north_node: PointInTime) -> PointInTime:
     return PointInTime(
         name=Point.south_node,
         degrees_from_aries=round(south_node_degrees_from_aries, 2),
-        declination=-north_node.declination
+        declination=-north_node.declination,
+        speed=north_node.speed
     )
 
 
@@ -92,28 +92,30 @@ def create_point(datetime: DateTimeLocation, point: Point) -> PointInTime:
     day = get_julian_day(datetime.date)
     degrees_from_aries = get_degrees_from_aries(day, traits.swe_id)
     declination = get_declination(day, traits.swe_id)
+    speed = get_speed(day, traits.swe_id)
 
     point_in_time = PointInTime(
         name=traits.name,
         degrees_from_aries=round(degrees_from_aries, 2),
-        declination=round(declination, 2)
+        declination=round(declination, 2),
+        speed=speed,
     )
 
     return point_in_time
 
 
-def calculate_point_attributes(point: PointInTime, asc: PointInTime):
+def calculate_point_attributes(point: PointInTime):
     """
     Calculates all derived attributes for a point.
 
     :param point: The point to calculate attributes for.
-    :param asc: The ascendant point, for calculating house.
     """
 
     point.sign = calculate_sign(point.degrees_from_aries)
     point.degrees_in_sign = calculate_degrees_in_sign(point.degrees_from_aries)
     point.minutes_in_degree = calculate_minutes_in_degree(point.degrees_from_aries)
-    point.house = calculate_whole_sign_house(point, asc)
+
+    calculate_speed_properties(point)
 
 
 def calculate_sign(degrees_from_aries: float) -> ZodiacSign:
@@ -157,18 +159,22 @@ def calculate_minutes_in_degree(degrees_from_aries: float) -> int:
     return int(fraction_of_degree * degrees_per_minute)
 
 
-def calculate_whole_sign_house(point: PointInTime, asc: PointInTime) -> int:
+def calculate_speed_properties(point: PointInTime):
     """
-    Calculates what whole sign house this point falls in.
+    Calculates whether the planet is retrograde and stationing.
 
-    :param point: The point to find the house of.
-    :param asc: The ascendant point located within the first house.
+    Uses the speed averages and the 30% of average speed for stationing found here:
+    https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 
-    :return: The whole sign house of the point.
+    :param point: The point to calculate speed attributes for.
     """
 
-    zodiac_index_of_ascendant = zodiacSignOrder.index(asc.sign)
-    zodiac_index_of_point = zodiacSignOrder.index(point.sign)
-    difference_in_index = zodiac_index_of_point - zodiac_index_of_ascendant
+    if point.speed:
+        point.is_retrograde = point.speed < 0
 
-    return difference_in_index % 12 + 1
+        if point.name in pointTraits.points and pointTraits.points[point.name].speed_avg:
+            average_speed = pointTraits.points[point.name].speed_avg
+            threshold_speed = average_speed * 0.30
+
+            point.is_stationary = 0 < point.speed < threshold_speed or 0 > point.speed > -threshold_speed
+            point.is_retrograde = point.speed < 0

@@ -1,8 +1,7 @@
 from typing import Dict
 
-from src.enums import Point
-from src.globals import zodiacSignTraits
-from src.models import PointInTime, ChartSummary
+from astro.util import Point, zodiacSignTraits
+from astro.schema import ChartSummary, PointInTime
 
 
 def create_summary(points: Dict[Point, PointInTime]) -> ChartSummary:
@@ -15,9 +14,7 @@ def create_summary(points: Dict[Point, PointInTime]) -> ChartSummary:
     :return: The calculated chart summary.
     """
 
-    sun = points[Point.sun]
-    moon = points[Point.moon]
-    asc = points[Point.ascendant]
+    sun, moon, asc = points[Point.sun], points[Point.moon], points[Point.ascendant]
 
     return ChartSummary(
         sun=sun.sign,
