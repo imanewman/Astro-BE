@@ -1,10 +1,10 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
-from astro.schema import PointInTime
+from astro.schema import PointInTime, HousePlacement
 from astro.util import zodiacSignOrder, Point, zodiacSignTraits, ZodiacSign
 
 
-def calculate_houses(points: Dict[Point, PointInTime]) -> List[ZodiacSign]:
+def calculate_houses(points: Dict[Point, PointInTime]) -> List[HousePlacement]:
     """
     Calculates the whole sign houses for each point, and calculates
     the traditional rulers for each sign.
@@ -12,29 +12,35 @@ def calculate_houses(points: Dict[Point, PointInTime]) -> List[ZodiacSign]:
     :param points: A collection of points and planets at a certain time.
     """
 
-    houses = calculate_whole_sign_houses(points[Point.ascendant])
+    houses, house_signs = calculate_whole_sign_houses(points[Point.ascendant])
 
     for point in points.values():
-        point.house = calculate_house_of_sign(point.sign, houses)
+        calculate_house_of_point(point, houses)
 
-    calculate_traditional_house_rulers(points, houses)
+    calculate_traditional_house_rulers(points, house_signs)
 
     return houses
 
 
-def calculate_house_of_sign(sign: ZodiacSign, houses: List[ZodiacSign]):
+def calculate_house_of_point(point: PointInTime, houses: List[HousePlacement]):
     """
-    Calculates what house a sign falls in.
+    Calculates what house a point falls in.
 
-    :param sign: The zodiac sign to look for.
+    :param point: The point to find.
     :param houses: The sign current order of houses.
     :return:
     """
 
-    return houses.index(sign) + 1
+    for house in houses:
+        if house.sign == point.sign:
+            point.house = house.number
+
+            house.points.append(point.name)
+
+            return
 
 
-def calculate_whole_sign_houses(asc: PointInTime) -> List[ZodiacSign]:
+def calculate_whole_sign_houses(asc: PointInTime) -> Tuple[List[HousePlacement], List[ZodiacSign]]:
     """
     Calculates a 12 item list of the signs in each house, with index 0 being the 1st house.
 
@@ -45,26 +51,33 @@ def calculate_whole_sign_houses(asc: PointInTime) -> List[ZodiacSign]:
 
     zodiac_index_of_ascendant = zodiacSignOrder.index(asc.sign)
     houses = []
+    house_signs = []
 
     for house in range(12):
-        current_sign = zodiacSignOrder[(zodiac_index_of_ascendant + house) % 12]
+        house_placement = HousePlacement(
+            number=house + 1,
+            sign=zodiacSignOrder[(zodiac_index_of_ascendant + house) % 12]
+        )
 
-        houses.append(current_sign)
+        houses.append(house_placement)
+        house_signs.append(house_placement.sign)
 
-    return houses
+    return houses, house_signs
 
 
-def calculate_traditional_house_rulers(points: Dict[Point, PointInTime], houses: List[ZodiacSign]):
+def calculate_traditional_house_rulers(
+        points: Dict[Point, PointInTime],
+        house_signs: List[ZodiacSign]
+):
     """
     Calculates the houses that the traditional planets rule.
 
     :param points: A collection of points and planets at a certain time.
-    :param houses: The sign current order of houses.
+    :param house_signs: The sign current order of houses.
     """
 
     for sign, traits in zodiacSignTraits.signs.items():
         ruler = points[traits.rulership]
-        house_ruled = calculate_house_of_sign(sign, houses)
+        house_ruled = house_signs.index(ruler.sign) + 1
 
         ruler.ruled_houses.append(house_ruled)
-

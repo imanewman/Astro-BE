@@ -1,7 +1,10 @@
+import datetime
+
 from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, PointTraitsCollection, Chart, ChartSettings
-from astro.util import zodiacSignTraits, pointTraits
+from astro.schema.aspect import AspectTraitsCollection
+from astro.util import zodiacSignTraits, pointTraits, aspectTraits
 from astro import create_chart
 
 app = FastAPI()
@@ -10,9 +13,9 @@ app = FastAPI()
 @app.get("/signs")
 async def get_signs() -> ZodiacSignCollection:
     """
-    Calculates the default settings for the current time.
+    Returns information about each zodiac sign.
 
-    :return: Calculated points and aspects.
+    :return: The zodiac signs.
     """
 
     return zodiacSignTraits
@@ -21,18 +24,29 @@ async def get_signs() -> ZodiacSignCollection:
 @app.get("/points")
 async def get_points() -> PointTraitsCollection:
     """
-    Calculates the default settings for the current time.
+    Returns information about each planet and point.
 
-    :return: Calculated points and aspects.
+    :return: The points.
     """
 
     return pointTraits
 
 
+@app.get("/aspects")
+async def get_aspects() -> AspectTraitsCollection:
+    """
+    Returns information about each degree aspect between points.
+
+    :return: The zodiac signs.
+    """
+
+    return aspectTraits
+
+
 @app.get("/")
 async def calc_now() -> Chart:
     """
-    Calculates the default settings for the current time.
+    Calculates the chart for the current time.
 
     :return: Calculated points and aspects.
     """
@@ -43,11 +57,32 @@ async def calc_now() -> Chart:
 @app.post("/chart")
 async def calc_chart(settings: ChartSettings) -> Chart:
     """
-    Calculates the default settings for the given time.
+    Calculates the chart for a given time.
 
     :param settings: The current calculation settings, including the time and location.
 
     :return: Calculated points and aspects.
     """
 
+    print(settings)
+
     return create_chart(settings)
+
+
+@app.get("/tim")
+async def calc_tim() -> Chart:
+    """
+    Calculates the default settings for the current time.
+
+    :return: Calculated points and aspects.
+    """
+
+    return await calc_chart(
+        ChartSettings(**{
+            "start": {
+                "date": "1997-10-11T15:09:00.000Z",
+                "latitude": 40.78343,
+                "longitude": -73.96625,
+            }
+        })
+    )

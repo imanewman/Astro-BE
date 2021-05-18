@@ -3,6 +3,8 @@ from typing import Optional, Dict, List
 from pydantic import Field
 
 from astro.util import ZodiacSign, Point
+from .aspect import CalculatedAspects
+from .house import HousePlacement
 from .base import BaseSchema, DateTimeLocation
 from .point import PointInTime
 
@@ -59,8 +61,13 @@ class Chart(BaseSchema):
         title="Planets and Points",
         description="A map of the base planets and points calculated"
     )
-    houses: List[ZodiacSign] = Field(
+    houses: List[HousePlacement] = Field(
         [],
-        title="Signs In Houses",
-        description="The signs ruling each house, it index 0 being the 1st house"
+        title="Houses",
+        description="Each house, its sign, and the points within it"
+    )
+    aspects: CalculatedAspects = Field(
+        CalculatedAspects(),
+        title="Aspects",
+        description="Aspects calculated between points"
     )

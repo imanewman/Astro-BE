@@ -47,8 +47,10 @@ class ZodiacSign(str, Enum):
     pisces = "Pisces"
 
 
-# Enumerates all of the available points and planetary bodies.
 class Point(str, Enum):
+    """
+    Enumerates all of the available points and planetary bodies.
+    """
     ascendant = "Ascendant"
     midheaven = "Midheaven"
 
@@ -80,6 +82,33 @@ class Point(str, Enum):
 
 
 class PointCategory(str, Enum):
+    """
+    Enumerates the different types of points.
+    """
+
     visible = "Visible Planet"
     outer = "Outer Planet"
     point = "Calculated Point"
+
+
+class AspectType(str, Enum):
+    """
+    Enumerates the different types of aspects between points.
+    """
+    conjunction = "Conjunction"
+    opposition = "Opposition"
+    square = "Square"
+    trine = "Trine"
+    sextile = "Sextile"
+
+    quintile = "Quintile"
+    septile = "Septile"
+    octile = "Octile"
+    novile = "Novile"
+    semi_sextile = "Semi-Sextile"
+    quincunx = "Quincunx"
+    sesquiquadrate = "Sesquiquadrate"
+    bi_quintile = "Bi-Quintile"
+
+    parallel = "Parallel"
+    contraparallel = "Contraparallel"
