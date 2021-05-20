@@ -15,7 +15,7 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
     """
 
     # Add the ascendant and midheaven.
-    asc, mc = create_as_mc(datetime)
+    asc, mc = create_asc_mc(datetime)
 
     points = {
         Point.ascendant: asc,
@@ -35,7 +35,7 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
     return points
 
 
-def create_as_mc(datetime: DateTimeLocation) -> Tuple[PointInTime, PointInTime]:
+def create_asc_mc(datetime: DateTimeLocation) -> Tuple[PointInTime, PointInTime]:
     """
     Creates the points for the Ascendant and Midheaven
 
@@ -80,7 +80,7 @@ def create_south_node(north_node: PointInTime) -> PointInTime:
 
 def create_point(datetime: DateTimeLocation, point: Point) -> PointInTime:
     """
-    Creates a point object for he given planet on the given day.
+    Creates a point object for the given planet on the given day.
 
     :param datetime: The current time and location.
     :param point: The point to find.

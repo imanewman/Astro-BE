@@ -4,6 +4,7 @@ from astro.schema.point import PointTraitsCollection
 from astro.schema.sign import ZodiacSignCollection
 from .enums import *
 from .functions import convert_to_degrees
+from ..schema import DateTimeLocation
 from ..schema.aspect import AspectTraitsCollection
 
 """
@@ -406,3 +407,13 @@ aspectTraits = AspectTraitsCollection(**{
         },
     }
 })
+
+
+"""
+The date time of Tim's birth.
+"""
+tim_natal = DateTimeLocation(
+    date="1997-10-11T15:09:00.000Z",
+    latitude=40.78343,
+    longitude=-73.96625
+)

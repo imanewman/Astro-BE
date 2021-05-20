@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, PointTraitsCollection, Chart, ChartSettings
 from astro.schema.aspect import AspectTraitsCollection
-from astro.util import zodiacSignTraits, pointTraits, aspectTraits
+from astro.util import zodiacSignTraits, pointTraits, aspectTraits, tim_natal
 from astro import create_chart
 
 app = FastAPI()
@@ -77,12 +77,4 @@ async def calc_tim() -> Chart:
     :return: Calculated points and aspects.
     """
 
-    return await calc_chart(
-        ChartSettings(**{
-            "start": {
-                "date": "1997-10-11T15:09:00.000Z",
-                "latitude": 40.78343,
-                "longitude": -73.96625,
-            }
-        })
-    )
+    return await calc_chart(ChartSettings(start=tim_natal))
