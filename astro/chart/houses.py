@@ -22,24 +22,6 @@ def calculate_houses(points: Dict[Point, PointInTime]) -> List[HousePlacement]:
     return houses
 
 
-def calculate_house_of_point(point: PointInTime, houses: List[HousePlacement]):
-    """
-    Calculates what house a point falls in.
-
-    :param point: The point to find.
-    :param houses: The sign current order of houses.
-    :return:
-    """
-
-    for house in houses:
-        if house.sign == point.sign:
-            point.house = house.number
-
-            house.points.append(point.name)
-
-            return
-
-
 def calculate_whole_sign_houses(asc: PointInTime) -> Tuple[List[HousePlacement], List[ZodiacSign]]:
     """
     Calculates a 12 item list of the signs in each house, with index 0 being the 1st house.
@@ -65,6 +47,24 @@ def calculate_whole_sign_houses(asc: PointInTime) -> Tuple[List[HousePlacement],
     return houses, house_signs
 
 
+def calculate_house_of_point(point: PointInTime, houses: List[HousePlacement]):
+    """
+    Calculates what house a point falls in.
+
+    :param point: The point to find.
+    :param houses: The sign current order of houses.
+    :return:
+    """
+
+    for house in houses:
+        if house.sign == point.sign:
+            point.house = house.number
+
+            house.points.append(point.name)
+
+            return
+
+
 def calculate_traditional_house_rulers(
         points: Dict[Point, PointInTime],
         house_signs: List[ZodiacSign]
@@ -78,6 +78,6 @@ def calculate_traditional_house_rulers(
 
     for sign, traits in zodiacSignTraits.signs.items():
         ruler = points[traits.rulership]
-        house_ruled = house_signs.index(ruler.sign) + 1
+        house_ruled = house_signs.index(sign) + 1
 
         ruler.ruled_houses.append(house_ruled)

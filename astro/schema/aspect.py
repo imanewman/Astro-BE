@@ -160,10 +160,10 @@ class CalculatedAspects(BaseSchema):
         title="Aspects By Degree",
         description="All aspects calculated by degree"
     )
-    by_sign_not_degree: List[AspectInTime] = Field(
+    by_sign: List[AspectInTime] = Field(
         [],
         title="Aspects By Sign",
-        description="All aspects calculated by sign that arent exact by degree"
+        description="All traditional aspects calculated by sign"
     )
     by_declination: List[AspectInTime] = Field(
         [],

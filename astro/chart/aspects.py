@@ -21,11 +21,9 @@ def calculate_aspects(
     :return: All calculated aspects.
     """
 
-    by_degree = calculate_degree_based_aspects(from_points, to_points, orbs, is_natal)
-
     return CalculatedAspects(
-        by_degree=by_degree,
-        by_sign_not_degree=calculate_sign_based_aspects(from_points, to_points, by_degree, is_natal),
+        by_degree=calculate_degree_based_aspects(from_points, to_points, orbs, is_natal),
+        by_sign=calculate_sign_based_aspects(from_points, to_points, is_natal),
         by_declination=calculate_declination_aspects(from_points, to_points, orbs, is_natal)
     )
 
@@ -85,10 +83,40 @@ def calculate_degree_based_aspects(
 def calculate_sign_based_aspects(
         from_points: List[PointInTime],
         to_points: List[PointInTime],
-        aspects_by_degree: List[AspectInTime],
         is_natal: bool
 ) -> List[AspectInTime]:
+    """
+    Calculates sign based aspects for the given points.
+
+    :param from_points: The points to calculate aspects from.
+    :param to_points: The points to calculate aspects to.
+    :param is_natal: If true, aspects will not be duplicated.
+    :return:
+    """
     aspects = []
+
+    for from_point in from_points:
+        if is_natal:
+            # For natal charts, skip the points that have been calculated already to avoid duplicates.
+            to_points = to_points[1:]
+
+        for to_point in to_points:
+            aspect_traits = {"from_point": from_point.name, "to_point": to_point.name}
+
+            if from_point.house is to_point.house:
+                aspects.append(AspectInTime(type=AspectType.conjunction, **aspect_traits))
+
+            if abs(from_point.house - to_point.house) is 6:
+                aspects.append(AspectInTime(type=AspectType.opposition, **aspect_traits))
+
+            elif abs(from_point.house - to_point.house) in [4, 8]:
+                aspects.append(AspectInTime(type=AspectType.trine, **aspect_traits))
+
+            elif abs(from_point.house - to_point.house) in [3, 9]:
+                aspects.append(AspectInTime(type=AspectType.square, **aspect_traits))
+
+            elif abs(from_point.house - to_point.house) in [2, 10]:
+                aspects.append(AspectInTime(type=AspectType.sextile, **aspect_traits))
 
     return aspects
 
@@ -121,14 +149,14 @@ def calculate_declination_aspects(
                     and not (from_point.name == Point.north_mode and to_point.name == Point.south_node):
                 parallel_orb = round(abs(from_point.declination - to_point.declination), 2)
                 contraparallel_orb = round(abs(from_point.declination + to_point.declination), 2)
+                aspect_traits = {"from_point": from_point.name, "to_point": to_point.name}
 
                 if parallel_orb < orbs.parallel:
                     aspects.append(
                         AspectInTime(
                             type=AspectType.parallel,
-                            from_point=from_point.name,
-                            to_point=to_point.name,
-                            orb=parallel_orb
+                            orb=parallel_orb,
+                            **aspect_traits
                         )
                     )
 
@@ -136,9 +164,8 @@ def calculate_declination_aspects(
                     aspects.append(
                         AspectInTime(
                             type=AspectType.contraparallel,
-                            from_point=from_point.name,
-                            to_point=to_point.name,
-                            orb=contraparallel_orb
+                            orb=contraparallel_orb,
+                            **aspect_traits
                         )
                     )
 
