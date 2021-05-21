@@ -14,6 +14,9 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
     :return: The calculated points.
     """
 
+    # Set the julian day for the time
+    datetime.julian_day = get_julian_day(datetime.date)
+
     # Add the ascendant and midheaven.
     asc, mc = create_asc_mc(datetime)
 
@@ -37,15 +40,14 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
 
 def create_asc_mc(datetime: DateTimeLocation) -> Tuple[PointInTime, PointInTime]:
     """
-    Creates the points for the Ascendant and Midheaven
+    Creates the points for the Ascendant and Midheaven.
 
-    :param datetime: The current time and location.
+    :param datetime: The current time and location. Assumes the julian day has been calculated.
 
     :return: The ascendant and midheaven points.
     """
 
-    day = get_julian_day(datetime.date)
-    ascendant, midheaven = get_asc_mc(day, datetime.latitude, datetime.longitude)
+    ascendant, midheaven = get_asc_mc(datetime.julian_day, datetime.latitude, datetime.longitude)
 
     return (
         PointInTime(
@@ -69,11 +71,12 @@ def create_south_node(north_node: PointInTime) -> PointInTime:
     """
 
     south_node_degrees_from_aries = (north_node.degrees_from_aries + 180) % 360
+    declination = -north_node.declination if north_node.declination else None
 
     return PointInTime(
         name=Point.south_node,
         degrees_from_aries=round(south_node_degrees_from_aries, 2),
-        declination=-north_node.declination,
+        declination=declination,
         speed=north_node.speed
     )
 
@@ -82,17 +85,16 @@ def create_point(datetime: DateTimeLocation, point: Point) -> PointInTime:
     """
     Creates a point object for the given planet on the given day.
 
-    :param datetime: The current time and location.
+    :param datetime: The current time and location. Assumes the julian day has been calculated.
     :param point: The point to find.
 
     :return: The calculated point.
     """
 
     traits = pointTraits.points[point]
-    day = get_julian_day(datetime.date)
-    degrees_from_aries = get_degrees_from_aries(day, traits.swe_id)
-    declination = get_declination(day, traits.swe_id)
-    speed = get_speed(day, traits.swe_id)
+    degrees_from_aries = get_degrees_from_aries(datetime.julian_day, traits.swe_id)
+    declination = get_declination(datetime.julian_day, traits.swe_id)
+    speed = get_speed(datetime.julian_day, traits.swe_id)
 
     point_in_time = PointInTime(
         name=traits.name,

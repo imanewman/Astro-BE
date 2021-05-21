@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from humps import camelize
 from pydantic import BaseModel, Field
@@ -43,4 +44,9 @@ class DateTimeLocation(BaseSchema):
         -112.1401,
         title="Location Longitude",
         description="The longitude of the location, defaulting to Grand Canyon, AZ"
+    )
+    julian_day: float = Field(
+        0,
+        title="Julian Day",
+        description="The standardized julian day for this date"
     )
