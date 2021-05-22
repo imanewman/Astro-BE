@@ -20,7 +20,7 @@ def create_chart(settings: ChartSettings) -> Chart:
         start_points=start_points,
         houses=calculate_houses(start_points),
         summary=create_summary(start_points),
-        aspects=calculate_aspects(natal_points, natal_points, settings.orbs, True)
+        aspects=calculate_aspects(natal_points, natal_points, True, settings.orbs)
     )
 
     return results

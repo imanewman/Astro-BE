@@ -7,8 +7,8 @@ from astro.util import AspectType, Point, aspectTraits
 def calculate_aspects(
         from_points: List[PointInTime],
         to_points: List[PointInTime],
-        orbs: AspectOrbs,
-        is_natal: bool
+        is_natal: bool = False,
+        orbs: AspectOrbs = AspectOrbs(),
 ) -> CalculatedAspects:
     """
     Calculates all aspects between points.
@@ -22,18 +22,29 @@ def calculate_aspects(
     """
 
     return CalculatedAspects(
-        by_degree=calculate_degree_based_aspects(from_points, to_points, orbs, is_natal),
+        by_degree=calculate_degree_based_aspects(from_points, to_points, is_natal, orbs),
         by_sign=calculate_sign_based_aspects(from_points, to_points, is_natal),
-        by_declination=calculate_declination_aspects(from_points, to_points, orbs, is_natal)
+        by_declination=calculate_declination_aspects(from_points, to_points, is_natal, orbs)
     )
 
 
 def calculate_degree_based_aspects(
         from_points: List[PointInTime],
         to_points: List[PointInTime],
-        orbs: AspectOrbs,
-        is_natal: bool
+        is_natal: bool = False,
+        orbs: AspectOrbs = AspectOrbs(),
 ) -> List[AspectInTime]:
+    """
+   Calculates aspects by degree.
+
+   :param from_points: The points to calculate aspects from.
+   :param to_points: The points to calculate aspects to.
+   :param orbs: The orbs to use for calculations.
+   :param is_natal: If true, aspects will not be bi-directionally duplicated.
+
+   :return: All degree based aspects.
+   """
+
     aspects = []
 
     aspect_to_orb = {
@@ -58,16 +69,19 @@ def calculate_degree_based_aspects(
             to_points = to_points[1:]
 
         for to_point in to_points:
+            # The relative degrees between two points
             separation = abs(from_point.degrees_from_aries - to_point.degrees_from_aries)
 
             for aspect_type, aspect in aspectTraits.aspects.items():
-                orbs = [round(abs(aspect.degrees - separation), 2)]
-
-                if aspect.name is AspectType.conjunction:
-                    orbs.append(round(abs(separation - 360), 2))
+                # for each type of aspect, calculate whether the degrees of separation between points
+                # is within the orb of the degrees for this aspect.
+                orbs = [
+                    round(aspect.degrees - separation, 2),
+                    round(360 - aspect.degrees - separation, 2)
+                ]
 
                 for orb in orbs:
-                    if orb < aspect_to_orb[aspect_type]:
+                    if abs(orb) <= aspect_to_orb[aspect_type]:
                         aspects.append(
                             AspectInTime(
                                 type=aspect_type,
@@ -77,13 +91,15 @@ def calculate_degree_based_aspects(
                             )
                         )
 
+                        break
+
     return aspects
 
 
 def calculate_sign_based_aspects(
         from_points: List[PointInTime],
         to_points: List[PointInTime],
-        is_natal: bool
+        is_natal: bool = False
 ) -> List[AspectInTime]:
     """
     Calculates sign based aspects for the given points.
@@ -106,7 +122,7 @@ def calculate_sign_based_aspects(
             if from_point.house is to_point.house:
                 aspects.append(AspectInTime(type=AspectType.conjunction, **aspect_traits))
 
-            if abs(from_point.house - to_point.house) is 6:
+            if abs(from_point.house - to_point.house) == 6:
                 aspects.append(AspectInTime(type=AspectType.opposition, **aspect_traits))
 
             elif abs(from_point.house - to_point.house) in [4, 8]:
@@ -124,8 +140,8 @@ def calculate_sign_based_aspects(
 def calculate_declination_aspects(
         from_points: List[PointInTime],
         to_points: List[PointInTime],
-        orbs: AspectOrbs,
-        is_natal: bool
+        is_natal: bool = False,
+        orbs: AspectOrbs = AspectOrbs(),
 ) -> List[AspectInTime]:
     """
     Calculates aspects by declination.
@@ -133,9 +149,9 @@ def calculate_declination_aspects(
     :param from_points: The points to calculate aspects from.
     :param to_points: The points to calculate aspects to.
     :param orbs: The orbs to use for calculations.
-    :param is_natal: If true, aspects will not be duplicated.
+    :param is_natal: If true, aspects will not be bi-directionally duplicated.
 
-    :return: All declination aspects
+    :return: All declination aspects.
     """
     aspects = []
 
@@ -145,13 +161,13 @@ def calculate_declination_aspects(
             to_points = to_points[1:]
 
         for to_point in to_points:
-            if from_point.declination and to_point.declination \
+            if from_point.declination is not None and to_point.declination is not None \
                     and not (from_point.name == Point.north_mode and to_point.name == Point.south_node):
                 parallel_orb = round(abs(from_point.declination - to_point.declination), 2)
                 contraparallel_orb = round(abs(from_point.declination + to_point.declination), 2)
                 aspect_traits = {"from_point": from_point.name, "to_point": to_point.name}
 
-                if parallel_orb < orbs.parallel:
+                if parallel_orb <= orbs.parallel:
                     aspects.append(
                         AspectInTime(
                             type=AspectType.parallel,
@@ -160,7 +176,7 @@ def calculate_declination_aspects(
                         )
                     )
 
-                elif contraparallel_orb < orbs.contraparallel:
+                elif contraparallel_orb <= orbs.contraparallel:
                     aspects.append(
                         AspectInTime(
                             type=AspectType.contraparallel,
