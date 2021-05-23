@@ -1,9 +1,7 @@
-from typing import Dict
-
 from astro.chart.aspects import calculate_declination_aspects, calculate_sign_based_aspects, \
     calculate_degree_based_aspects, calculate_aspects
-from astro.schema import PointInTime
-from astro.util import Point, AspectType
+from astro.util import AspectType
+from test.utils import create_test_points
 
 
 def test_calculate_aspects():
@@ -453,24 +451,3 @@ def test_calculate_declination_aspects__threshold():
     assert aspects[0].orb == 1
 
 
-def create_test_points(*point_args: Dict):
-    """
-    Creates points with different attributes.
-    Point names are iterated in the chaldean order.
-
-    :param point_args: A list of point args to
-    map to created points.
-
-    :return: A list of created points in time.
-    """
-
-    names = [name.value for name in Point][2:]
-    points = []
-
-    for args, point_name in zip(point_args, names):
-        if "degrees_from_aries" not in args:
-            args["degrees_from_aries"] = 0
-
-        points.append(PointInTime(name=point_name, **args))
-
-    return points

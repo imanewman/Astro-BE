@@ -120,7 +120,7 @@ def calculate_triplicity(point: PointInTime, is_day_time: bool):
     if is_day_time:
         point.rulers.triplicity = traits.triplicity
     else:
-        point.rulers.triplicity = [traits.triplicity[1], traits.triplicity[0], traits.triplicity[2]]
+        point.rulers.triplicity = (traits.triplicity[1], traits.triplicity[0], traits.triplicity[2])
 
 
 def calculate_divisions(point: PointInTime):
