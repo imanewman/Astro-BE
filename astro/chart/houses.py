@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple
 
 from astro.schema import PointInTime, HousePlacement
-from astro.util import zodiacSignOrder, Point, zodiacSignTraits, ZodiacSign
+from astro.util import zodiac_sign_order, Point, zodiac_sign_traits, ZodiacSign
 
 
 def calculate_houses(points: Dict[Point, PointInTime]) -> List[HousePlacement]:
@@ -31,14 +31,14 @@ def calculate_whole_sign_houses(asc: PointInTime) -> Tuple[List[HousePlacement],
     :return: The signs in each house
     """
 
-    zodiac_index_of_ascendant = zodiacSignOrder.index(asc.sign)
+    zodiac_index_of_ascendant = zodiac_sign_order.index(asc.sign)
     houses = []
     house_signs = []
 
     for house in range(12):
         house_placement = HousePlacement(
             number=house + 1,
-            sign=zodiacSignOrder[(zodiac_index_of_ascendant + house) % 12]
+            sign=zodiac_sign_order[(zodiac_index_of_ascendant + house) % 12]
         )
 
         houses.append(house_placement)
@@ -76,7 +76,7 @@ def calculate_traditional_house_rulers(
     :param house_signs: The sign current order of houses.
     """
 
-    for sign, traits in zodiacSignTraits.signs.items():
+    for sign, traits in zodiac_sign_traits.signs.items():
         ruler = points[traits.rulership]
         house_ruled = house_signs.index(sign) + 1
 

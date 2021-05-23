@@ -105,6 +105,22 @@ class AspectOrbs(BaseSchema):
         description="Orb of contraparallel declination"
     )
 
+    sun_under_beams_orb: float = Field(
+        17,
+        title="Under The Beams Orb",
+        description="The orb of conjunction for a planet to be under the beams of the sun"
+    )
+    sun_combust_orb: float = Field(
+        8,
+        title="Combust Orb",
+        description="The orb of conjunction for a planet to be combust by the sun"
+    )
+    sun_cazimi_orb: float = Field(
+        17 / 60,
+        title="Cazimi Orb",
+        description="The orb of conjunction for a planet to be cazimi the sun"
+    )
+
 
 class AspectTraitsCollection(BaseSchema):
     """

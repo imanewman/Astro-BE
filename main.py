@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, PointTraitsCollection, Chart, ChartSettings
 from astro.schema.aspect import AspectTraitsCollection
-from astro.util import zodiacSignTraits, pointTraits, aspectTraits, tim_natal
+from astro.util import zodiac_sign_traits, point_traits, aspectTraits, tim_natal
 from astro import create_chart
 
 app = FastAPI()
@@ -18,7 +18,7 @@ async def get_signs() -> ZodiacSignCollection:
     :return: The zodiac signs.
     """
 
-    return zodiacSignTraits
+    return zodiac_sign_traits
 
 
 @app.get("/points")
@@ -29,7 +29,7 @@ async def get_points() -> PointTraitsCollection:
     :return: The points.
     """
 
-    return pointTraits
+    return point_traits
 
 
 @app.get("/aspects")

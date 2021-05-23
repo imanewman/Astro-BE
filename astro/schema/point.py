@@ -2,7 +2,7 @@ from typing import Optional, List, Dict
 
 from pydantic import Field
 
-from astro.util.enums import PointCategory, ZodiacSign, Point
+from astro.util.enums import PointCategory, ZodiacSign, Point, SectPlacement
 from .base import BaseSchema
 
 
@@ -93,6 +93,7 @@ class PointCondition(BaseSchema):
         title="In Joy",
         description="Whether a planet is in its joy"
     )
+
     in_domicile: bool = Field(
         False,
         title="In Domicile",
@@ -103,6 +104,22 @@ class PointCondition(BaseSchema):
         title="In Exaltation",
         description="Whether a planet is in its exaltation"
     )
+    in_triplicity: Optional[int] = Field(
+        None,
+        title="Triplicity Ruler Order",
+        description="If it is in its triplicity, the order of triplicity importance between 1 and 3"
+    )
+    in_bound: bool = Field(
+        False,
+        title="Is Bound Ruler",
+        description="Whether a planet is in its bound"
+    )
+    in_decan: bool = Field(
+        False,
+        title="Is Decan Ruler",
+        description="Whether a planet is in its decan"
+    )
+
     in_detriment: bool = Field(
         False,
         title="In Detriment",
@@ -113,20 +130,27 @@ class PointCondition(BaseSchema):
         title="In Fall",
         description="Whether a planet is in its fall"
     )
-    in_decan: bool = Field(
-        False,
-        title="Is Decan Ruler",
-        description="Whether a planet is in its decan"
-    )
-    in_bound: bool = Field(
-        False,
-        title="Is Bound Ruler",
-        description="Whether a planet is in its bound"
-    )
-    in_triplicity: Optional[int] = Field(
+
+    sect_placement: Optional[SectPlacement] = Field(
         None,
-        title="Triplicity Ruler Order",
-        description="If it is in its triplicity, the order of triplicity importance between 1 and 3"
+        title="Sect Placement",
+        description="Properties about this planet determined by sect"
+    )
+
+    is_under_beams: bool = Field(
+        False,
+        title="Is Under The Beams",
+        description="Whether the planet is under the beams of the sun"
+    )
+    is_combust: bool = Field(
+        False,
+        title="Is Combust",
+        description="Whether the planet is combust the sun"
+    )
+    is_cazimi: bool = Field(
+        False,
+        title="Is Cazimi",
+        description="Whether the planet is cazimi the sun"
     )
 
 
@@ -231,7 +255,7 @@ class PointInTime(BaseSchema):
         description="The rulers of the segment of the chart this point falls in"
     )
     condition: PointCondition = Field(
-        PointRulers(),
+        PointCondition(),
         title="Condition",
         description="The state of bonification and maltreatment if this is a planet"
     )

@@ -1,17 +1,18 @@
 from typing import Tuple, Dict
 
-from astro.util import ZodiacSign, Point, pointTraits, zodiacSignOrder, STATIONARY_PERCENT_OF_AVG_SPEED
+from astro.util import ZodiacSign, Point, point_traits, zodiac_sign_order
 from astro.schema import DateTimeLocation, PointInTime
 from .ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc, get_speed
 
 
-def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
+def create_all_points(datetime: DateTimeLocation, stationary_pct_of_avg_speed: float = 0.3) -> Dict[Point, PointInTime]:
     """
     Creates a list of all calculated points.
 
     :param datetime: The current time and location.
 
     :return: The calculated points.
+    :param stationary_pct_of_avg_speed: The percent of the average planet speed needed to be considered stationary.
     """
 
     # Set the julian day for the time
@@ -26,14 +27,14 @@ def create_all_points(datetime: DateTimeLocation) -> Dict[Point, PointInTime]:
     }
 
     # Add each of the points with traits.
-    for point in pointTraits.points:
+    for point in point_traits.points:
         points[point] = create_point(datetime, point)
 
     points[Point.south_node] = create_south_node(points[Point.north_mode])
 
     # Calculate the derived point attributes for each point.
     for point in points.values():
-        calculate_point_attributes(point)
+        calculate_point_attributes(point, stationary_pct_of_avg_speed)
 
     return points
 
@@ -91,7 +92,7 @@ def create_point(datetime: DateTimeLocation, point: Point) -> PointInTime:
     :return: The calculated point.
     """
 
-    traits = pointTraits.points[point]
+    traits = point_traits.points[point]
     degrees_from_aries = get_degrees_from_aries(datetime.julian_day, traits.swe_id)
     declination = get_declination(datetime.julian_day, traits.swe_id)
     speed = get_speed(datetime.julian_day, traits.swe_id)
@@ -106,18 +107,19 @@ def create_point(datetime: DateTimeLocation, point: Point) -> PointInTime:
     return point_in_time
 
 
-def calculate_point_attributes(point: PointInTime):
+def calculate_point_attributes(point: PointInTime, stationary_pct_of_avg_speed: float = 0.3):
     """
     Calculates all derived attributes for a point.
 
     :param point: The point to calculate attributes for.
+    :param stationary_pct_of_avg_speed: The percent of the average planet speed needed to be considered stationary.
     """
 
     point.sign = calculate_sign(point.degrees_from_aries)
     point.degrees_in_sign = calculate_degrees_in_sign(point.degrees_from_aries)
     point.minutes_in_degree = calculate_minutes_in_degree(point.degrees_from_aries)
 
-    calculate_speed_properties(point)
+    calculate_speed_properties(point, stationary_pct_of_avg_speed)
 
 
 def calculate_sign(degrees_from_aries: float) -> ZodiacSign:
@@ -131,7 +133,7 @@ def calculate_sign(degrees_from_aries: float) -> ZodiacSign:
 
     twelfth_of_circle = int(degrees_from_aries / 30)
 
-    return zodiacSignOrder[twelfth_of_circle]
+    return zodiac_sign_order[twelfth_of_circle]
 
 
 def calculate_degrees_in_sign(degrees_from_aries: float) -> int:
@@ -161,7 +163,7 @@ def calculate_minutes_in_degree(degrees_from_aries: float) -> int:
     return int(fraction_of_degree * degrees_per_minute)
 
 
-def calculate_speed_properties(point: PointInTime):
+def calculate_speed_properties(point: PointInTime, stationary_pct_of_avg_speed: float = 0.3):
     """
     Calculates whether the planet is retrograde and stationing.
 
@@ -169,14 +171,15 @@ def calculate_speed_properties(point: PointInTime):
     https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 
     :param point: The point to calculate speed attributes for.
+    :param stationary_pct_of_avg_speed: The percent of the average planet speed needed to be considered stationary.
     """
 
     if point.speed:
         point.is_retrograde = point.speed < 0
 
-        if point.name in pointTraits.points and pointTraits.points[point.name].speed_avg:
-            average_speed = pointTraits.points[point.name].speed_avg
-            threshold_speed = average_speed * STATIONARY_PERCENT_OF_AVG_SPEED
+        if point.name in point_traits.points and point_traits.points[point.name].speed_avg:
+            average_speed = point_traits.points[point.name].speed_avg
+            threshold_speed = average_speed * stationary_pct_of_avg_speed
 
             point.is_stationary = 0 < point.speed < threshold_speed or 0 > point.speed > -threshold_speed
             point.is_retrograde = point.speed < 0

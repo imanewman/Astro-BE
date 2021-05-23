@@ -1,6 +1,6 @@
 from typing import Dict
 
-from astro.util import Point, zodiacSignTraits
+from astro.util import Point, zodiac_sign_traits
 from astro.schema import ChartSummary, PointInTime
 
 
@@ -20,7 +20,7 @@ def create_summary(points: Dict[Point, PointInTime]) -> ChartSummary:
         sun=sun.sign,
         moon=moon.sign,
         asc=asc.sign,
-        asc_ruler=zodiacSignTraits.signs[asc.sign].rulership,
+        asc_ruler=zodiac_sign_traits.signs[asc.sign].rulership,
         is_day_time=calculate_is_day_time(sun.degrees_from_aries, asc.degrees_from_aries)
     )
 

@@ -112,3 +112,14 @@ class AspectType(str, Enum):
 
     parallel = "Parallel"
     contraparallel = "Contraparallel"
+
+
+class SectPlacement(str, Enum):
+    """
+    Enumerates the possible sect based statuses of a planet.
+    """
+    sect_light = "Sect Light"
+    benefic_by_sect = "Benefic By Sect"
+    benefic_contrary_sect = "Benefic Contrary To Sect"
+    malefic_by_sect = "Malefic By Sect"
+    malefic_contrary_sect = "Malefic Contrary To Sect"

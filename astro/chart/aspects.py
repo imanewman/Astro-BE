@@ -75,12 +75,7 @@ def calculate_degree_based_aspects(
             for aspect_type, aspect in aspectTraits.aspects.items():
                 # for each type of aspect, calculate whether the degrees of separation between points
                 # is within the orb of the degrees for this aspect.
-                orbs = [
-                    round(aspect.degrees - separation, 2),
-                    round(360 - aspect.degrees - separation, 2)
-                ]
-
-                for orb in orbs:
+                for orb in calculate_aspect_orbs(aspect.degrees, separation):
                     if abs(orb) <= aspect_to_orb[aspect_type]:
                         aspects.append(
                             AspectInTime(
@@ -94,6 +89,22 @@ def calculate_degree_based_aspects(
                         break
 
     return aspects
+
+
+def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float):
+    """
+    Calculates the orbs between an aspect of the given amount of degrees and the actual degrees of separation
+    between points.
+
+    :param aspect_degrees: The degrees corresponding to an exact aspect, such as 180 for an opposition.
+    :param degrees_of_separation: The degrees of separation between the planets.
+    :return:
+    """
+
+    return [
+        round(aspect_degrees - degrees_of_separation, 2),
+        round(360 - aspect_degrees - degrees_of_separation, 2)
+    ]
 
 
 def calculate_sign_based_aspects(

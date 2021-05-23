@@ -9,23 +9,9 @@ from ..schema import DateTimeLocation
 from ..schema.aspect import AspectTraitsCollection
 
 """
-Uses the percent of the average speed calculated here: 
-https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
-"""
-STATIONARY_PERCENT_OF_AVG_SPEED = 0.30
-
-"""
-Uses ranges found here:
-https://crystalbastrology.com/meaning-of-cazimi-in-astrology/
-"""
-DEGREES_FROM_SUN_UNDER_BEAMS = 17
-DEGREES_FROM_SUN_COMBUST = 8
-DEGREES_FROM_SUN_CAZIMI = 17 / 60
-
-"""
 Exports the traditional order of zodiac signs.
 """
-zodiacSignOrder = [
+zodiac_sign_order = [
     ZodiacSign.aries,
     ZodiacSign.taurus,
     ZodiacSign.gemini,
@@ -43,10 +29,10 @@ zodiacSignOrder = [
 """
 Associates each zodiac sign with relevant information.
 
-- Reference for essential dignities: https://www.astro.com/astrowiki/en/Essential_Dignities
-- Reference for decans: https://www.astro.com/astrowiki/en/Face
+- Reference for essential dignities: 
+    https://theastrologypodcast.com/wp-content/uploads/2018/05/essential-dignities-table-large.jpg
 """
-zodiacSignTraits = ZodiacSignCollection(**{
+zodiac_sign_traits = ZodiacSignCollection(**{
     "signs": {
         ZodiacSign.aries: {
             "sign": ZodiacSign.aries,
@@ -54,7 +40,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.fire,
             "rulership": Point.mars,
-            "decans": [Point.mars, Point.sun, Point.venus]
+            "exaltation": Point.sun,
+            "triplicity": [Point.sun, Point.jupiter, Point.saturn],
+            "bounds": [
+                {"ruler": Point.jupiter, "from_degree": 0, "to_degree": 6},
+                {"ruler": Point.venus, "from_degree": 6, "to_degree": 12},
+                {"ruler": Point.mercury, "from_degree": 12, "to_degree": 20},
+                {"ruler": Point.mars, "from_degree": 20, "to_degree": 25},
+                {"ruler": Point.saturn, "from_degree": 25, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.mars, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.sun, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.venus, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.venus,
+            "fall": Point.saturn,
         },
         ZodiacSign.taurus: {
             "sign": ZodiacSign.taurus,
@@ -62,7 +63,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.earth,
             "rulership": Point.venus,
-            "decans": [Point.mercury, Point.moon, Point.saturn],
+            "exaltation": Point.moon,
+            "triplicity": [Point.venus, Point.moon, Point.mars],
+            "bounds": [
+                {"ruler": Point.venus, "from_degree": 0, "to_degree": 8},
+                {"ruler": Point.mercury, "from_degree": 8, "to_degree": 14},
+                {"ruler": Point.jupiter, "from_degree": 14, "to_degree": 22},
+                {"ruler": Point.saturn, "from_degree": 22, "to_degree": 27},
+                {"ruler": Point.mars, "from_degree": 27, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.mercury, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.moon, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.saturn, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.mars,
+            "fall": None,
         },
         ZodiacSign.gemini: {
             "sign": ZodiacSign.gemini,
@@ -70,7 +86,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.air,
             "rulership": Point.mercury,
-            "decans": [Point.jupiter, Point.mars, Point.sun],
+            "exaltation": None,
+            "triplicity": [Point.saturn, Point.mercury, Point.jupiter],
+            "bounds": [
+                {"ruler": Point.mercury, "from_degree": 0, "to_degree": 6},
+                {"ruler": Point.jupiter, "from_degree": 6, "to_degree": 12},
+                {"ruler": Point.venus, "from_degree": 12, "to_degree": 17},
+                {"ruler": Point.mars, "from_degree": 17, "to_degree": 24},
+                {"ruler": Point.saturn, "from_degree": 24, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.jupiter, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.mars, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.sun, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.jupiter,
+            "fall": None,
         },
         ZodiacSign.cancer: {
             "sign": ZodiacSign.cancer,
@@ -78,7 +109,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.water,
             "rulership": Point.moon,
-            "decans": [Point.venus, Point.mercury, Point.moon],
+            "exaltation": Point.jupiter,
+            "triplicity": [Point.venus, Point.mars, Point.moon],
+            "bounds": [
+                {"ruler": Point.mars, "from_degree": 0, "to_degree": 7},
+                {"ruler": Point.venus, "from_degree": 7, "to_degree": 13},
+                {"ruler": Point.mercury, "from_degree": 13, "to_degree": 19},
+                {"ruler": Point.jupiter, "from_degree": 19, "to_degree": 26},
+                {"ruler": Point.saturn, "from_degree": 26, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.venus, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.mercury, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.moon, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.saturn,
+            "fall": Point.mars,
         },
         ZodiacSign.leo: {
             "sign": ZodiacSign.leo,
@@ -86,7 +132,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.fire,
             "rulership": Point.sun,
-            "decans": [Point.saturn, Point.jupiter, Point.mars],
+            "exaltation": None,
+            "triplicity": [Point.sun, Point.jupiter, Point.saturn],
+            "bounds": [
+                {"ruler": Point.jupiter, "from_degree": 0, "to_degree": 7},
+                {"ruler": Point.venus, "from_degree": 7, "to_degree": 13},
+                {"ruler": Point.saturn, "from_degree": 13, "to_degree": 19},
+                {"ruler": Point.mercury, "from_degree": 19, "to_degree": 26},
+                {"ruler": Point.mars, "from_degree": 26, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.saturn, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.jupiter, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.mars, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.saturn,
+            "fall": None,
         },
         ZodiacSign.virgo: {
             "sign": ZodiacSign.virgo,
@@ -94,7 +155,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.earth,
             "rulership": Point.mercury,
-            "decans": [Point.sun, Point.venus, Point.mercury],
+            "exaltation": Point.mercury,
+            "triplicity": [Point.mercury, Point.moon, Point.mars],
+            "bounds": [
+                {"ruler": Point.mercury, "from_degree": 0, "to_degree": 7},
+                {"ruler": Point.venus, "from_degree": 7, "to_degree": 17},
+                {"ruler": Point.jupiter, "from_degree": 17, "to_degree": 21},
+                {"ruler": Point.mars, "from_degree": 21, "to_degree": 28},
+                {"ruler": Point.saturn, "from_degree": 28, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.sun, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.venus, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.mercury, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.jupiter,
+            "fall": Point.venus,
         },
         ZodiacSign.libra: {
             "sign": ZodiacSign.libra,
@@ -102,7 +178,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.air,
             "rulership": Point.venus,
-            "decans": [Point.moon, Point.saturn, Point.jupiter],
+            "exaltation": Point.saturn,
+            "triplicity": [Point.saturn, Point.mercury, Point.jupiter],
+            "bounds": [
+                {"ruler": Point.saturn, "from_degree": 0, "to_degree": 6},
+                {"ruler": Point.mercury, "from_degree": 6, "to_degree": 14},
+                {"ruler": Point.jupiter, "from_degree": 14, "to_degree": 21},
+                {"ruler": Point.venus, "from_degree": 21, "to_degree": 28},
+                {"ruler": Point.mars, "from_degree": 28, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.moon, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.saturn, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.jupiter, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.mars,
+            "fall": Point.sun,
         },
         ZodiacSign.scorpio: {
             "sign": ZodiacSign.scorpio,
@@ -110,7 +201,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.water,
             "rulership": Point.mars,
-            "decans": [Point.mars, Point.sun, Point.venus],
+            "exaltation": None,
+            "triplicity": [Point.venus, Point.mars, Point.moon],
+            "bounds": [
+                {"ruler": Point.mars, "from_degree": 0, "to_degree": 7},
+                {"ruler": Point.venus, "from_degree": 7, "to_degree": 11},
+                {"ruler": Point.mercury, "from_degree": 11, "to_degree": 19},
+                {"ruler": Point.jupiter, "from_degree": 19, "to_degree": 24},
+                {"ruler": Point.saturn, "from_degree": 24, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.mars, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.sun, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.venus, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.venus,
+            "fall": Point.moon,
         },
         ZodiacSign.sagittarius: {
             "sign": ZodiacSign.sagittarius,
@@ -118,7 +224,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.fire,
             "rulership": Point.jupiter,
-            "decans": [Point.mercury, Point.moon, Point.saturn],
+            "exaltation": None,
+            "triplicity": [Point.sun, Point.jupiter, Point.saturn],
+            "bounds": [
+                {"ruler": Point.jupiter, "from_degree": 0, "to_degree": 12},
+                {"ruler": Point.venus, "from_degree": 12, "to_degree": 17},
+                {"ruler": Point.mercury, "from_degree": 17, "to_degree": 21},
+                {"ruler": Point.saturn, "from_degree": 21, "to_degree": 26},
+                {"ruler": Point.mars, "from_degree": 26, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.mercury, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.moon, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.saturn, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.mercury,
+            "fall": None,
         },
         ZodiacSign.capricorn: {
             "sign": ZodiacSign.capricorn,
@@ -126,7 +247,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.cardinal,
             "element": Element.earth,
             "rulership": Point.saturn,
-            "decans": [Point.jupiter, Point.mars, Point.sun],
+            "exaltation": Point.mars,
+            "triplicity": [Point.venus, Point.moon, Point.mars],
+            "bounds": [
+                {"ruler": Point.mercury, "from_degree": 0, "to_degree": 12},
+                {"ruler": Point.jupiter, "from_degree": 12, "to_degree": 17},
+                {"ruler": Point.venus, "from_degree": 17, "to_degree": 21},
+                {"ruler": Point.saturn, "from_degree": 21, "to_degree": 26},
+                {"ruler": Point.mars, "from_degree": 26, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.jupiter, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.mars, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.sun, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.moon,
+            "fall": Point.jupiter,
         },
         ZodiacSign.aquarius: {
             "sign": ZodiacSign.aquarius,
@@ -134,7 +270,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.fixed,
             "element": Element.air,
             "rulership": Point.saturn,
-            "decans": [Point.venus, Point.mercury, Point.moon],
+            "exaltation": None,
+            "triplicity": [Point.saturn, Point.mercury, Point.jupiter],
+            "bounds": [
+                {"ruler": Point.mercury, "from_degree": 0, "to_degree": 7},
+                {"ruler": Point.venus, "from_degree": 7, "to_degree": 13},
+                {"ruler": Point.jupiter, "from_degree": 13, "to_degree": 20},
+                {"ruler": Point.mars, "from_degree": 20, "to_degree": 25},
+                {"ruler": Point.saturn, "from_degree": 25, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.venus, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.mercury, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.moon, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.sun,
+            "fall": None,
         },
         ZodiacSign.pisces: {
             "sign": ZodiacSign.pisces,
@@ -142,7 +293,22 @@ zodiacSignTraits = ZodiacSignCollection(**{
             "modality": Modality.mutable,
             "element": Element.water,
             "rulership": Point.jupiter,
-            "decans": [Point.saturn, Point.jupiter, Point.mars],
+            "exaltation": Point.venus,
+            "triplicity": [Point.venus, Point.mars, Point.moon],
+            "bounds": [
+                {"ruler": Point.venus, "from_degree": 0, "to_degree": 12},
+                {"ruler": Point.jupiter, "from_degree": 12, "to_degree": 16},
+                {"ruler": Point.mercury, "from_degree": 16, "to_degree": 19},
+                {"ruler": Point.mars, "from_degree": 19, "to_degree": 28},
+                {"ruler": Point.saturn, "from_degree": 28, "to_degree": 30},
+            ],
+            "decans": [
+                {"ruler": Point.saturn, "from_degree": 0, "to_degree": 10},
+                {"ruler": Point.jupiter, "from_degree": 10, "to_degree": 20},
+                {"ruler": Point.mars, "from_degree": 20, "to_degree": 30},
+            ],
+            "detriment": Point.mercury,
+            "fall": None,
         },
     }
 })
@@ -154,7 +320,7 @@ Associates each point with relevant information.
 - Essential dignities: https://www.astro.com/astrowiki/en/Domicile
 - Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 """
-pointTraits = PointTraitsCollection(**{
+point_traits = PointTraitsCollection(**{
     "points": {
         Point.moon: {
             "swe_id": swe.MOON,
@@ -175,7 +341,7 @@ pointTraits = PointTraitsCollection(**{
             "category": PointCategory.visible,
             "joy": 1,
             "domicile": [ZodiacSign.gemini, ZodiacSign.virgo],
-            "exaltation": [],
+            "exaltation": [ZodiacSign.virgo],
             "detriment": [ZodiacSign.sagittarius],
             "fall": [],
             "speed_avg": convert_to_degrees(1, 23, 0),
