@@ -82,6 +82,81 @@ class PointTraitsCollection(BaseSchema):
     )
 
 
+class PointCondition(BaseSchema):
+    """
+    Defines the bonification and maltreatment of a planet.
+    For points that arent planets, all values are false.
+    """
+
+    in_joy: bool = Field(
+        False,
+        title="In Joy",
+        description="Whether a planet is in its joy"
+    )
+    in_domicile: bool = Field(
+        False,
+        title="In Domicile",
+        description="Whether a planet is in its domicile"
+    )
+    in_exaltation: bool = Field(
+        False,
+        title="In Exaltation",
+        description="Whether a planet is in its exaltation"
+    )
+    in_detriment: bool = Field(
+        False,
+        title="In Detriment",
+        description="Whether a planet is in its detriment"
+    )
+    in_fall: bool = Field(
+        False,
+        title="In Fall",
+        description="Whether a planet is in its fall"
+    )
+    in_decan: bool = Field(
+        False,
+        title="Is Decan Ruler",
+        description="Whether a planet is in its decan"
+    )
+    in_bound: bool = Field(
+        False,
+        title="Is Bound Ruler",
+        description="Whether a planet is in its bound"
+    )
+    in_triplicity: Optional[int] = Field(
+        None,
+        title="Triplicity Ruler Order",
+        description="If it is in its triplicity, the order of triplicity importance between 1 and 3"
+    )
+
+
+class PointRulers(BaseSchema):
+    """
+    Defines the traditional rulers of the segment of the chart this point falls in.
+    """
+
+    sign: Point = Field(
+        Point.moon,
+        title="Sign Ruler",
+        description="The traditional planet that rules this sign",
+    )
+    decan: Point = Field(
+        Point.moon,
+        title="Decan Ruler",
+        description="The traditional planet that rules this decan",
+    )
+    bound: Point = Field(
+        Point.moon,
+        title="Bound Ruler",
+        description="The traditional planet that rules this bound",
+    )
+    triplicity: List[Point] = Field(
+        [],
+        title="Triplicity Ruler",
+        description="The traditional planets that rule this sign in the order of importance",
+    )
+
+
 class PointInTime(BaseSchema):
     """
     Defines any planetary body's position relative to Earth.
@@ -148,4 +223,15 @@ class PointInTime(BaseSchema):
         None,
         title="Is Retrograde",
         description="Whether this point is retrograde"
+    )
+
+    rulers: PointRulers = Field(
+        PointRulers(),
+        title="Point Rulers",
+        description="The rulers of the segment of the chart this point falls in"
+    )
+    condition: PointCondition = Field(
+        PointRulers(),
+        title="Condition",
+        description="The state of bonification and maltreatment if this is a planet"
     )
