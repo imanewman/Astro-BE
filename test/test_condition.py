@@ -1,7 +1,107 @@
 from astro.chart.condition import calculate_divisions, calculate_triplicity, calculate_sun_conjunctions, \
-    calculate_sect_placement
-from astro.util import Point, SectPlacement
+    calculate_sect_placement, calculate_primary_dignities, calculate_condition
+from astro.util import Point, SectPlacement, ZodiacSign
 from test.utils import create_test_points
+
+
+def test_calculate_condition():
+    """
+    Tests calculating the complete condition of a planet.
+    """
+    moon, sun = create_test_points(
+        {"degrees_from_aries": 40, "house": 3},
+        {"degrees_from_aries": 40, "name": Point.sun},
+        do_init_point=True
+    )
+
+    calculate_condition({
+        Point.moon: moon,
+        Point.sun: sun,
+    }, False)
+
+    assert moon.condition.in_joy is True
+    assert moon.condition.in_exaltation is True
+    assert moon.condition.sect_placement == SectPlacement.sect_light
+    assert moon.condition.in_triplicity is True
+    assert moon.condition.in_decan is True
+    assert moon.condition.is_cazimi is True
+
+
+
+def test_calculate_primary_dignities__none():
+    """
+    Tests calculating when a planet is in joy, domicile, exaltation, detriment, or fall.
+    """
+
+    moon = create_test_points({"house": 1})[0]
+
+    calculate_primary_dignities(moon)
+
+    assert moon.condition.in_joy is False
+    assert moon.condition.in_domicile is False
+    assert moon.condition.in_exaltation is False
+    assert moon.condition.in_detriment is False
+    assert moon.condition.in_fall is False
+
+
+def test_calculate_primary_dignities__joy():
+    """
+    Tests calculating when a planet is in joy.
+    """
+
+    moon = create_test_points({"house": 3})[0]
+
+    calculate_primary_dignities(moon)
+
+    assert moon.condition.in_joy is True
+
+
+def test_calculate_primary_dignities__domicile():
+    """
+    Tests calculating when a planet is in domicile.
+    """
+
+    moon = create_test_points({"sign": ZodiacSign.cancer})[0]
+
+    calculate_primary_dignities(moon)
+
+    assert moon.condition.in_domicile is True
+
+
+def test_calculate_primary_dignities__exaltation():
+    """
+    Tests calculating when a planet is in exaltation.
+    """
+
+    moon = create_test_points({"sign": ZodiacSign.taurus})[0]
+
+    calculate_primary_dignities(moon)
+
+    assert moon.condition.in_exaltation is True
+
+
+def test_calculate_primary_dignities__detriment():
+    """
+    Tests calculating when a planet is in detriment.
+    """
+
+    moon = create_test_points({"sign": ZodiacSign.capricorn})[0]
+
+    calculate_primary_dignities(moon)
+
+    assert moon.condition.in_detriment is True
+
+
+def test_calculate_primary_dignities__fall():
+    """
+    Tests calculating when a planet is in fall.
+    """
+
+    moon = create_test_points({"sign": ZodiacSign.scorpio})[0]
+
+    calculate_primary_dignities(moon)
+
+    assert moon.condition.in_fall is True
 
 
 def test_calculate_sect_placement__none():

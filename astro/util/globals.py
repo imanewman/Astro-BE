@@ -317,7 +317,10 @@ zodiac_sign_traits = ZodiacSignCollection(**{
 Associates each point with relevant information.
 
 - Planetary joys: https://theastrologydictionary.com/j/joys/
-- Essential dignities: https://www.astro.com/astrowiki/en/Domicile
+- Essential dignities: https://www.astro.com/astrowiki/en/Domicile, 
+  https://astrostyle.com/the-essential-dignities-of-planets-exalted-detriment-domicile-and-fall/, 
+  https://www.into-it.com/blog/outerplanetdignities
+  - outer planets are missing debated dignities
 - Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 """
 point_traits = PointTraitsCollection(**{
@@ -330,7 +333,7 @@ point_traits = PointTraitsCollection(**{
             "domicile": [ZodiacSign.cancer],
             "exaltation": [ZodiacSign.taurus],
             "detriment": [ZodiacSign.capricorn],
-            "fall": [ZodiacSign.libra],
+            "fall": [ZodiacSign.scorpio],
             "speed_avg": convert_to_degrees(13, 59, 8),
             "speed_high": convert_to_degrees(16, 30, 0),
             "speed_low": convert_to_degrees(11, 45, 36),
@@ -342,8 +345,8 @@ point_traits = PointTraitsCollection(**{
             "joy": 1,
             "domicile": [ZodiacSign.gemini, ZodiacSign.virgo],
             "exaltation": [ZodiacSign.virgo],
-            "detriment": [ZodiacSign.sagittarius],
-            "fall": [],
+            "detriment": [ZodiacSign.sagittarius, ZodiacSign.pisces],
+            "fall": [ZodiacSign.pisces],
             "speed_avg": convert_to_degrees(1, 23, 0),
             "speed_high": convert_to_degrees(2, 25, 0),
             "speed_low": convert_to_degrees(-1, -30, 0),
@@ -430,9 +433,9 @@ point_traits = PointTraitsCollection(**{
             "name": Point.neptune,
             "category": PointCategory.outer,
             "domicile": [ZodiacSign.pisces],
-            "exaltation": [ZodiacSign.cancer],
+            "exaltation": [],
             "detriment": [ZodiacSign.virgo],
-            "fall": [ZodiacSign.capricorn],
+            "fall": [],
             "speed_avg": convert_to_degrees(0, 0, 24),
             "speed_high": convert_to_degrees(0, 2, 25),
             "speed_low": convert_to_degrees(0, -1, -45),
@@ -442,9 +445,9 @@ point_traits = PointTraitsCollection(**{
             "name": Point.pluto,
             "category": PointCategory.outer,
             "domicile": [ZodiacSign.scorpio],
-            "exaltation": [ZodiacSign.leo],
+            "exaltation": [],
             "detriment": [ZodiacSign.taurus],
-            "fall": [ZodiacSign.aquarius],
+            "fall": [],
             "speed_avg": convert_to_degrees(0, 0, 15),
             "speed_high": convert_to_degrees(0, 2, 30),
             "speed_low": convert_to_degrees(0, -1, -48),
