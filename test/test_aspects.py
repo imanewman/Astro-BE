@@ -1,5 +1,3 @@
-from astro.chart.aspects import calculate_declination_aspects, calculate_sign_based_aspects, \
-    calculate_degree_based_aspects, calculate_aspects
 from astro.util import AspectType
 from test.utils import create_test_points
 
@@ -366,6 +364,19 @@ def test_calculate_sign_based_aspects__sextile():
     assert len(aspects) is 2
     assert aspects[0].type == AspectType.sextile
     assert aspects[1].type == AspectType.sextile
+
+
+def test_calculate_sign_based_aspects__aversion():
+    """
+    Tests calculating planets with a sextile by sign.
+    """
+
+    points = create_test_points({"house": 1}, {"house": 2}, {"house": 12})
+    aspects = calculate_sign_based_aspects(points[0:1], points[1:])
+
+    assert len(aspects) is 2
+    assert aspects[0].type == AspectType.aversion
+    assert aspects[1].type == AspectType.aversion
 
 
 def test_calculate_declination_aspects__none():

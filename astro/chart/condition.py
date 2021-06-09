@@ -1,6 +1,6 @@
 from typing import Dict
 
-from astro.chart.aspects import calculate_aspect_orbs
+from astro.chart.relationships import calculate_aspect_orbs
 from astro.schema import PointInTime, AspectOrbs
 from astro.util import Point, point_traits, zodiac_sign_traits, SectPlacement, AspectType
 

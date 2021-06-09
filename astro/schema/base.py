@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from humps import camelize
 from pydantic import BaseModel, Field
@@ -30,20 +29,25 @@ class DateTimeLocation(BaseSchema):
     Defines a time and a day at a geographic location.
     """
 
-    date: datetime = Field(
+    local_date: datetime = Field(
         default_factory=lambda: datetime.utcnow(),
         title="Date",
-        description="The UTC date to use, defaulting to now"
+        description="The local time for the location, defaulting to now"
+    )
+    utc_date: datetime = Field(
+        default_factory=lambda: datetime.utcnow(),
+        title="Date",
+        description="The UTC time for the location used for all calculations, defaulting to now"
     )
     latitude: float = Field(
-        36.0544,
+        0,
         title="Location Latitude",
-        description="The latitude of the location, defaulting to Grand Canyon, AZ"
+        description="The latitude of the location, defaulting to Null Island"
     )
     longitude: float = Field(
-        -112.1401,
+        0,
         title="Location Longitude",
-        description="The longitude of the location, defaulting to Grand Canyon, AZ"
+        description="The longitude of the location, defaulting to Null Island"
     )
     julian_day: float = Field(
         0,

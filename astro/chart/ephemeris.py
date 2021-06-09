@@ -1,5 +1,4 @@
 from datetime import datetime
-from math import floor
 from typing import Tuple
 
 import swisseph as swe
@@ -20,6 +19,24 @@ def get_julian_day(timestamp: datetime) -> float:
     hours = timestamp.hour + (timestamp.minute / 60)
 
     return swe.julday(timestamp.year, timestamp.month, timestamp.day, hours)
+
+
+def get_point_properties(jul_day: float, swe_id: int) -> Tuple[float, float, float]:
+    """
+    Calculates the degrees from aries, declination, and speed of a point at a given time.
+
+    :param jul_day: The time to find the point at.
+    :param swe_id: The swiss ephemeris ID of the point.
+
+    :return:
+    [0] The degrees, out of 360, of this point relative to 0 degrees aries.
+    [1] The declination of this point above or below the ecliptic.
+    [2] The degrees and the minutes of the points speed.
+    """
+
+    return get_degrees_from_aries(jul_day, swe_id), \
+           get_declination(jul_day, swe_id), \
+           get_speed(jul_day, swe_id)
 
 
 def get_degrees_from_aries(jul_day: float, swe_id: int) -> float:
@@ -51,14 +68,14 @@ def get_declination(jul_day: float, swe_id: int) -> float:
     )[0][1]
 
 
-def get_speed(jul_day: float, swe_id: int) -> Tuple[int, int]:
+def get_speed(jul_day: float, swe_id: int) -> float:
     """
     Calculates the speed of a point at a given time.
 
     :param jul_day: The time to find the point at.
     :param swe_id: The swiss ephemeris ID of the point.
 
-    :return The degrees and the minutes of the points speed:
+    :return: The degrees and the minutes of the points speed
     """
 
     return swe.calc_ut(jul_day, swe_id,  swe.FLG_SPEED)[0][3]

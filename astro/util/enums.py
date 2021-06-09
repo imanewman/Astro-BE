@@ -113,6 +113,8 @@ class AspectType(str, Enum):
     parallel = "Parallel"
     contraparallel = "Contraparallel"
 
+    aversion = "Aversion"
+
 
 class SectPlacement(str, Enum):
     """
@@ -123,3 +125,18 @@ class SectPlacement(str, Enum):
     benefic_contrary_sect = "Benefic Contrary To Sect"
     malefic_by_sect = "Malefic By Sect"
     malefic_contrary_sect = "Malefic Contrary To Sect"
+
+
+class PhaseType(str, Enum):
+    """
+    The phase between two points, dividing the 360 degree arc into eighths
+    """
+    new = "New"
+    crescent = "Crescent"
+    first_quarter = "First Quarter"
+    gibbous = "Gibbous"
+    full = "Full"
+    disseminating = "Disseminating"
+    last_quarter = "Last Quarter"
+    balsamic = "Balsamic"
+

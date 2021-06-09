@@ -2,8 +2,10 @@ from typing import Tuple, Dict
 
 from astro.util import ZodiacSign, Point, point_traits, zodiac_sign_order
 from astro.schema import DateTimeLocation, PointInTime
-from .ephemeris import get_julian_day, get_degrees_from_aries, get_declination, get_asc_mc, get_speed
+from .ephemeris import get_julian_day, get_declination, get_asc_mc, get_speed, \
+    get_point_properties
 
+import swisseph as swe
 
 def create_all_points(datetime: DateTimeLocation, stationary_pct_of_avg_speed: float = 0.3) -> Dict[Point, PointInTime]:
     """
@@ -16,7 +18,7 @@ def create_all_points(datetime: DateTimeLocation, stationary_pct_of_avg_speed: f
     """
 
     # Set the julian day for the time
-    datetime.julian_day = get_julian_day(datetime.date)
+    datetime.julian_day = get_julian_day(datetime.utc_date)
 
     # Add the ascendant and midheaven.
     asc, mc = create_asc_mc(datetime)
@@ -54,10 +56,12 @@ def create_asc_mc(datetime: DateTimeLocation) -> Tuple[PointInTime, PointInTime]
         PointInTime(
             name=Point.ascendant,
             degrees_from_aries=round(ascendant, 2),
+            declination=round(get_declination(datetime.julian_day, swe.ASC), 2),
         ),
         PointInTime(
             name=Point.midheaven,
             degrees_from_aries=round(midheaven, 2),
+            declination=round(get_declination(datetime.julian_day, swe.MC), 2),
         )
     )
 
@@ -93,9 +97,7 @@ def create_point(datetime: DateTimeLocation, point: Point) -> PointInTime:
     """
 
     traits = point_traits.points[point]
-    degrees_from_aries = get_degrees_from_aries(datetime.julian_day, traits.swe_id)
-    declination = get_declination(datetime.julian_day, traits.swe_id)
-    speed = get_speed(datetime.julian_day, traits.swe_id)
+    degrees_from_aries, declination, speed = get_point_properties(datetime.julian_day, traits.swe_id)
 
     point_in_time = PointInTime(
         name=traits.name,

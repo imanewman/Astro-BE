@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from pydantic import Field
 
 from .base import BaseSchema
-from ..util import AspectType, Point
+from ..util import AspectType, Point, PhaseType
 
 
 class AspectTraits(BaseSchema):
@@ -121,6 +121,23 @@ class AspectOrbs(BaseSchema):
         description="The orb of conjunction for a planet to be cazimi the sun"
     )
 
+    def aspect_to_orb(self) -> Dict[AspectType, float]:
+        return {
+            AspectType.conjunction: self.conjunction,
+            AspectType.opposition: self.opposition,
+            AspectType.square: self.square,
+            AspectType.trine: self.trine,
+            AspectType.sextile: self.sextile,
+            AspectType.quintile: self.quintile,
+            AspectType.septile: self.septile,
+            AspectType.octile: self.octile,
+            AspectType.novile: self.novile,
+            AspectType.semi_sextile: self.semi_sextile,
+            AspectType.quincunx: self.quincunx,
+            AspectType.sesquiquadrate: self.sesquiquadrate,
+            AspectType.bi_quintile: self.bi_quintile,
+        }
+
 
 class AspectTraitsCollection(BaseSchema):
     """
@@ -139,16 +156,10 @@ class AspectTraitsCollection(BaseSchema):
     )
 
 
-class AspectInTime(BaseSchema):
+class PointRelationship(BaseSchema):
     """
-    Represents information about an aspect calculated within a chart.
+    Represents information about the relationship between two points.
     """
-
-    type: AspectType = Field(
-        ...,
-        title="Aspect Type",
-        description="The type of aspect"
-    )
     from_point: Point = Field(
         ...,
         title="From Point",
@@ -159,30 +170,43 @@ class AspectInTime(BaseSchema):
         title="To Point",
         description="The point this aspect is to"
     )
-    orb: Optional[float] = Field(
+    sign_aspect: Optional[AspectType] = Field(
         None,
-        title="Aspect Orb",
-        description="The orb of this aspect"
+        title="Sign Based Aspect",
+        description="The type of aspect by sign between the points"
     )
-
-
-class CalculatedAspects(BaseSchema):
-    """
-    A collection of aspects calculated within a chart.
-    """
-
-    by_degree: List[AspectInTime] = Field(
-        [],
-        title="Aspects By Degree",
-        description="All aspects calculated by degree"
+    degrees_between: Optional[float] = Field(
+        None,
+        title="Ecliptic Degrees Between",
+        description="The degrees between the two points relative to their longitude along the ecliptic"
     )
-    by_sign: List[AspectInTime] = Field(
-        [],
-        title="Aspects By Sign",
-        description="All traditional aspects calculated by sign"
+    degree_aspect: Optional[AspectType] = Field(
+        None,
+        title="Degree Based Aspect",
+        description="The type of aspect by degree between the two points, if one exists"
     )
-    by_declination: List[AspectInTime] = Field(
-        [],
-        title="Aspects By Declination",
-        description="All aspects calculated by declination"
+    degree_aspect_orb: Optional[float] = Field(
+        None,
+        title="Degree Aspect Orb",
+        description="The orb the degree based aspect, if it exists"
+    )
+    phase: Optional[PhaseType] = Field(
+        None,
+        title="Phase",
+        description="The phase of separation between these two points"
+    )
+    declination_between: Optional[float] = Field(
+        None,
+        title="Declination Degrees Between",
+        description="The degrees between the two points relative to their declination from the equator"
+    )
+    declination_aspect: Optional[AspectType] = Field(
+        None,
+        title="Declination Based Aspect",
+        description="The type of aspect by declination between the two points, if one exists"
+    )
+    declination_aspect_orb: Optional[float] = Field(
+        None,
+        title="Declination Aspect Orb",
+        description="The orb the declination based aspect, if it exists"
     )

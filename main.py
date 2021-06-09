@@ -64,8 +64,6 @@ async def calc_chart(settings: ChartSettings) -> Chart:
     :return: Calculated points and aspects.
     """
 
-    print(settings)
-
     return create_chart(settings)
 
 
