@@ -1,7 +1,7 @@
 from astro.chart.relationships import calculate_declination_aspects, calculate_sign_aspects, calculate_degree_aspects, \
     calculate_relationships, calculate_aspect_phase
 from astro.schema import PointRelationship
-from astro.util import AspectType, PhaseType
+from astro.util import AspectType, PhaseType, Point
 from test.utils import create_test_points
 
 
@@ -259,6 +259,130 @@ def test_calculate_degree_based_aspects__bi_quintile():
 
     assert relationship.degree_aspect == AspectType.bi_quintile
     assert relationship.degree_aspect_orb == 1
+
+
+def test_calculate_phase__inferior_new():
+    """
+    Tests that new phase aspects between the Sun and inferior planets, which
+    are unable to make a complete zodiacal cycle relative to the sun,
+    are calculated correctly.
+    """
+
+    sun, venus, mercury = create_test_points(
+        {"degrees_from_aries": 20, "name": Point.sun},
+        {"degrees_from_aries": 10, "name": Point.venus, "speed": -0.1},
+        {"degrees_from_aries": 10, "name": Point.mercury, "speed": -0.1},
+    )
+    relationship_venus = PointRelationship(from_point=sun.name, to_point=venus.name)
+    relationship_mercury = PointRelationship(from_point=sun.name, to_point=mercury.name)
+
+    calculate_aspect_phase(relationship_venus, sun, venus)
+    calculate_aspect_phase(relationship_mercury, sun, mercury)
+
+    assert relationship_venus.phase is PhaseType.new
+    assert relationship_mercury.phase is PhaseType.new
+
+
+def test_calculate_phase__inferior_first_quarter():
+    """
+    Tests that first quarter phase aspects between the Sun and inferior planets, which
+    are unable to make a complete zodiacal cycle relative to the sun,
+    are calculated correctly.
+    """
+
+    sun, venus, mercury = create_test_points(
+        {"degrees_from_aries": 20, "name": Point.sun},
+        {"degrees_from_aries": 10, "name": Point.venus, "speed": 0.1},
+        {"degrees_from_aries": 10, "name": Point.mercury, "speed": 0.1},
+    )
+    relationship_venus = PointRelationship(from_point=sun.name, to_point=venus.name)
+    relationship_mercury = PointRelationship(from_point=sun.name, to_point=mercury.name)
+
+    calculate_aspect_phase(relationship_venus, sun, venus)
+    calculate_aspect_phase(relationship_mercury, sun, mercury)
+
+    assert relationship_venus.phase is PhaseType.first_quarter
+    assert relationship_mercury.phase is PhaseType.first_quarter
+
+
+def test_calculate_phase__inferior_full():
+    """
+    Tests that full phase aspects between the Sun and inferior planets, which
+    are unable to make a complete zodiacal cycle relative to the sun,
+    are calculated correctly.
+    """
+
+    sun, venus, mercury = create_test_points(
+        {"degrees_from_aries": 0, "name": Point.sun},
+        {"degrees_from_aries": 10, "name": Point.venus, "speed": 0.1},
+        {"degrees_from_aries": 10, "name": Point.mercury, "speed": 0.1},
+    )
+    relationship_venus = PointRelationship(from_point=sun.name, to_point=venus.name)
+    relationship_mercury = PointRelationship(from_point=sun.name, to_point=mercury.name)
+
+    calculate_aspect_phase(relationship_venus, sun, venus)
+    calculate_aspect_phase(relationship_mercury, sun, mercury)
+
+    assert relationship_venus.phase is PhaseType.full
+    assert relationship_mercury.phase is PhaseType.full
+
+
+def test_calculate_phase__inferior_last_quarter():
+    """
+    Tests that last quarter phase aspects between the Sun and inferior planets, which
+    are unable to make a complete zodiacal cycle relative to the sun,
+    are calculated correctly.
+    """
+
+    sun, venus, mercury = create_test_points(
+        {"degrees_from_aries": 0, "name": Point.sun},
+        {"degrees_from_aries": 10, "name": Point.venus, "speed": -0.1},
+        {"degrees_from_aries": 10, "name": Point.mercury, "speed": -0.1},
+    )
+    relationship_venus = PointRelationship(from_point=sun.name, to_point=venus.name)
+    relationship_mercury = PointRelationship(from_point=sun.name, to_point=mercury.name)
+
+    calculate_aspect_phase(relationship_venus, sun, venus)
+    calculate_aspect_phase(relationship_mercury, sun, mercury)
+
+    assert relationship_venus.phase is PhaseType.last_quarter
+    assert relationship_mercury.phase is PhaseType.last_quarter
+
+
+def test_calculate_phase__no_speed():
+    """
+    Tests that points without a known speed dont have their phase calculated.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 0},
+        {"degrees_from_aries": 10, "name": Point.north_mode},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.phase_base_point is None
+    assert relationship.degrees_between == 10
+    assert relationship.phase is None
+
+
+def test_calculate_phase__no_straits():
+    """
+    Tests that points without any traits dont have their phase calculated.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 0},
+        {"degrees_from_aries": 10, "name": Point.ascendant},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.phase_base_point is None
+    assert relationship.degrees_between == 10
+    assert relationship.phase is None
 
 
 def test_calculate_phase__slower():

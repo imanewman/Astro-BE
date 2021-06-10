@@ -120,12 +120,14 @@ def calculate_aspect_phase(
     # Set a placeholder degrees between in case one of the points doesn't have a speed
     relationship.degrees_between = calculate_degrees_between(from_point, to_point)
 
+    # avoid calculations for planets without traits
     if from_point.name not in point_traits.points or to_point.name not in point_traits.points:
         return
 
     from_speed = point_traits.points[from_point.name].speed_avg
     to_speed = point_traits.points[to_point.name].speed_avg
 
+    # avoid calculations for planets without speeds
     if not from_speed or not to_speed:
         return
 
@@ -134,6 +136,12 @@ def calculate_aspect_phase(
 
     relationship.phase_base_point = slower.name
     relationship.degrees_between = calculate_degrees_between(slower, faster)
+
+    # avoid calculations for inferior planets to the sun, which cannot make a complete cycle
+    point_names = [from_point.name, to_point.name]
+    if Point.sun in point_names and (Point.venus in point_names or Point.mercury in point_names):
+        calculate_inferior_aspect_phase(relationship, faster)
+        return
 
     # set the respective phase of the planets
     if relationship.degrees_between < 45:
@@ -152,6 +160,31 @@ def calculate_aspect_phase(
         relationship.phase = PhaseType.last_quarter
     elif 315 <= relationship.degrees_between:
         relationship.phase = PhaseType.balsamic
+
+
+def calculate_inferior_aspect_phase(
+        relationship: PointRelationship,
+        faster: PointInTime,
+):
+    """
+    Calculates the aspect phase between the Sun and Mercury or Venus,
+    as neither make a complete zodiacal cycle relative to the Sun.
+
+    :param relationship: The relationship between points to store calculations in.
+    :param faster: The faster point in the relationship, either Mercury or Venus.
+    """
+    if relationship.degrees_between > 180:
+        if faster.speed < 0:
+            # The cycle begins with the retrograde conjunction with the Sun
+            relationship.phase = PhaseType.new
+        else:
+            relationship.phase = PhaseType.first_quarter
+    else:
+        if faster.speed < 0:
+            # The cycle ends with the retrograde conjunction with the Sun
+            relationship.phase = PhaseType.last_quarter
+        else:
+            relationship.phase = PhaseType.full
 
 
 def calculate_degrees_between(slower: PointInTime, faster: PointInTime) -> float:
