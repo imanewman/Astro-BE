@@ -116,40 +116,45 @@ def calculate_aspect_phase(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     """
-    if from_point.name in point_traits.points and to_point.name in point_traits.points:
-        from_speed = point_traits.points[from_point.name].speed_avg
-        to_speed = point_traits.points[to_point.name].speed_avg
+    if from_point.name not in point_traits.points or to_point.name not in point_traits.points:
+        return
 
-        # find which body has the slower speed, which is used as the fulcrum
-        slower, faster = (from_point, to_point) if from_speed < to_speed else (to_point, from_point)
+    from_speed = point_traits.points[from_point.name].speed_avg
+    to_speed = point_traits.points[to_point.name].speed_avg
 
-        relationship.phase_base_point = slower.name
+    if not from_speed or not to_speed:
+        return
 
-        # calculate the degrees of phase from the slower to the faster planet
-        if slower.degrees_from_aries > faster.degrees_from_aries:
-            relationship.degrees_between = \
-                round(360 + faster.degrees_from_aries - slower.degrees_from_aries, 2)
-        else:
-            relationship.degrees_between = \
-                round(faster.degrees_from_aries - slower.degrees_from_aries, 2)
+    # find which body has the slower speed, which is used as the fulcrum
+    slower, faster = (from_point, to_point) if from_speed < to_speed else (to_point, from_point)
 
-        # set the respective phase of the planets
-        if relationship.degrees_between < 45:
-            relationship.phase = PhaseType.new
-        elif 45 <= relationship.degrees_between < 90:
-            relationship.phase = PhaseType.crescent
-        elif 90 <= relationship.degrees_between < 135:
-            relationship.phase = PhaseType.first_quarter
-        elif 135 <= relationship.degrees_between < 180:
-            relationship.phase = PhaseType.gibbous
-        elif 180 <= relationship.degrees_between < 225:
-            relationship.phase = PhaseType.full
-        elif 225 <= relationship.degrees_between < 270:
-            relationship.phase = PhaseType.disseminating
-        elif 270 <= relationship.degrees_between < 315:
-            relationship.phase = PhaseType.last_quarter
-        elif 315 <= relationship.degrees_between:
-            relationship.phase = PhaseType.balsamic
+    relationship.phase_base_point = slower.name
+
+    # calculate the degrees of phase from the slower to the faster planet
+    if slower.degrees_from_aries > faster.degrees_from_aries:
+        relationship.degrees_between = \
+            round(360 + faster.degrees_from_aries - slower.degrees_from_aries, 2)
+    else:
+        relationship.degrees_between = \
+            round(faster.degrees_from_aries - slower.degrees_from_aries, 2)
+
+    # set the respective phase of the planets
+    if relationship.degrees_between < 45:
+        relationship.phase = PhaseType.new
+    elif 45 <= relationship.degrees_between < 90:
+        relationship.phase = PhaseType.crescent
+    elif 90 <= relationship.degrees_between < 135:
+        relationship.phase = PhaseType.first_quarter
+    elif 135 <= relationship.degrees_between < 180:
+        relationship.phase = PhaseType.gibbous
+    elif 180 <= relationship.degrees_between < 225:
+        relationship.phase = PhaseType.full
+    elif 225 <= relationship.degrees_between < 270:
+        relationship.phase = PhaseType.disseminating
+    elif 270 <= relationship.degrees_between < 315:
+        relationship.phase = PhaseType.last_quarter
+    elif 315 <= relationship.degrees_between:
+        relationship.phase = PhaseType.balsamic
 
 
 def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -> Tuple[float, float]:
