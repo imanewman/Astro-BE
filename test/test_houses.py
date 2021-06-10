@@ -1,5 +1,6 @@
-from astro import create_all_points, calculate_houses
-from astro.chart import calculate_whole_sign_houses, calculate_house_of_point, calculate_traditional_house_rulers
+from astro.chart.point import create_points_with_attributes
+from astro.chart import calculate_whole_sign_houses, calculate_house_of_point, calculate_traditional_house_rulers, \
+    calculate_houses
 from astro.util import tim_natal, ZodiacSign, Point
 
 
@@ -8,7 +9,7 @@ def test_calculate_houses():
     Tests that all the information about house placements is added.
     """
 
-    points = create_all_points(tim_natal)
+    points = create_points_with_attributes(tim_natal)
     house_placements = calculate_houses(points)
 
     assert house_placements[0].number is 1
@@ -24,7 +25,7 @@ def test_calculate_whole_sign_houses():
     Tests that the houses are properly calculated from the ascendant.
     """
 
-    asc = create_all_points(tim_natal)[Point.ascendant]
+    asc = create_points_with_attributes(tim_natal)[Point.ascendant]
     house_placements, houses = calculate_whole_sign_houses(asc)
 
     assert houses[0] == ZodiacSign.sagittarius
@@ -41,7 +42,7 @@ def test_calculate_house_of_point():
     Tests that the houses a planet falls in are properly calculated.
     """
 
-    points = create_all_points(tim_natal)
+    points = create_points_with_attributes(tim_natal)
     asc = points[Point.ascendant]
     mercury = points[Point.mercury]
     house_placements = calculate_whole_sign_houses(asc)[0]
@@ -57,7 +58,7 @@ def test_calculate_traditional_house_rulers():
     Tests that the houses each planet rules are properly calculated.
     """
 
-    points = create_all_points(tim_natal)
+    points = create_points_with_attributes(tim_natal)
     asc = points[Point.ascendant]
     mercury = points[Point.mercury]
     jupiter = points[Point.jupiter]

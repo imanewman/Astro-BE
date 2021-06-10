@@ -2,11 +2,9 @@ import swisseph as swe
 
 from astro.schema.point import PointTraitsCollection
 from astro.schema.sign import ZodiacSignCollection
+from astro.schema.aspect import AspectTraitsCollection
 from .enums import *
 from .functions import convert_to_degrees
-from ..chart import get_julian_day
-from ..schema import DateTimeLocation
-from ..schema.aspect import AspectTraitsCollection
 
 """
 Exports the traditional order of zodiac signs.
@@ -511,7 +509,7 @@ point_traits = PointTraitsCollection(**{
         # },
 
         Point.north_mode: {
-            "swe_id": swe.MEAN_NODE,
+            "swe_id": swe.TRUE_NODE,
             "name": Point.north_mode,
             "category": PointCategory.point,
         },
@@ -577,15 +575,3 @@ aspectTraits = AspectTraitsCollection(**{
         },
     }
 })
-
-
-"""
-The date time of Tim's birth.
-"""
-tim_natal = DateTimeLocation(
-    utc_date="1997-10-11T15:09:00.000Z",
-    latitude=40.78343,
-    longitude=-73.96625,
-)
-
-tim_natal.julian_day = get_julian_day(tim_natal.utc_date)

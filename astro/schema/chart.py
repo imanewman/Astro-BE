@@ -5,7 +5,7 @@ from pydantic import Field
 from astro.util import ZodiacSign, Point
 from .aspect import PointRelationship
 from .house import HousePlacement
-from .base import BaseSchema, DateTimeLocation
+from .base import BaseSchema, EventSchema
 from .point import PointInTime
 
 
@@ -46,7 +46,7 @@ class Chart(BaseSchema):
     Defines the results returned after running a calculation.
     """
 
-    start: DateTimeLocation = Field(
+    start: EventSchema = Field(
         ...,
         title="Start Time and Location",
         description="The base date, time, and location of calculations"

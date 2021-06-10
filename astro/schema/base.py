@@ -24,9 +24,9 @@ class BaseSchema(BaseModel):
         use_enum_values = True
 
 
-class DateTimeLocation(BaseSchema):
+class EventSchema(BaseSchema):
     """
-    Defines a time and a day at a geographic location.
+    Defines a date and time at a geographic location.
     """
 
     local_date: datetime = Field(

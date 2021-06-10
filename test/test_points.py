@@ -1,8 +1,10 @@
 import pytest
 
-from astro import create_all_points
-from astro.chart import create_point, calculate_sign, calculate_degrees_in_sign, calculate_minutes_in_degree, \
-    calculate_speed_properties, create_asc_mc, calculate_point_attributes, get_julian_day, create_south_node
+from astro import create_points_with_attributes
+from astro.chart import calculate_point_attributes
+from astro.chart.point.point_factory import create_swe_point, create_asc_mc, create_south_node
+from astro.chart.point.point_attributes import calculate_sign, calculate_degrees_in_sign, \
+    calculate_minutes_in_degree, calculate_speed_properties
 from astro.schema import PointInTime
 from astro.util import tim_natal, Point, ZodiacSign
 
@@ -12,7 +14,7 @@ def test_create_all_points():
     Tests that all points are calculated, by checking the high level of the signs of each.
     """
 
-    points = create_all_points(tim_natal)
+    points = create_points_with_attributes(tim_natal)
 
     assert points[Point.ascendant].sign is ZodiacSign.sagittarius
     assert points[Point.midheaven].sign is ZodiacSign.virgo
@@ -78,7 +80,7 @@ def test_create_point():
     Tests that a points location and speed is correctly calculated.
     """
 
-    point_in_time = create_point(tim_natal, Point.saturn)
+    point_in_time = create_swe_point(tim_natal, Point.saturn)
 
     assert point_in_time.degrees_from_aries == pytest.approx(16.79)
     assert point_in_time.declination == pytest.approx(4.05)

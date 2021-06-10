@@ -1,7 +1,7 @@
 from pydantic import Field
 
 from .aspect import AspectOrbs
-from .base import BaseSchema, DateTimeLocation
+from .base import BaseSchema, EventSchema
 
 
 class ChartSettings(BaseSchema):
@@ -15,8 +15,8 @@ class ChartSettings(BaseSchema):
       https://crystalbastrology.com/meaning-of-cazimi-in-astrology/
     """
 
-    start: DateTimeLocation = Field(
-        DateTimeLocation(),
+    start: EventSchema = Field(
+        EventSchema(),
         title="Start Time and Location",
         description="The base date, time, and location of calculations"
     )

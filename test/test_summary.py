@@ -1,5 +1,6 @@
-from astro import create_all_points, create_summary
+from astro import create_summary
 from astro.chart import calculate_is_day_time
+from astro.chart.point import create_points_with_attributes
 from astro.util import tim_natal, ZodiacSign, Point
 
 
@@ -8,7 +9,7 @@ def test_create_summary():
     Tests that the summary planets are properly calculated.
     """
 
-    points = create_all_points(tim_natal)
+    points = create_points_with_attributes(tim_natal)
     summary = create_summary(points)
 
     assert summary.sun == ZodiacSign.libra
