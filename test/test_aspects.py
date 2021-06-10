@@ -1,4 +1,7 @@
-from astro.util import AspectType
+from astro.chart.relationships import calculate_declination_aspects, calculate_sign_aspects, calculate_degree_aspects, \
+    calculate_relationships, calculate_aspect_phase
+from astro.schema import PointRelationship
+from astro.util import AspectType, PhaseType
 from test.utils import create_test_points
 
 
@@ -12,14 +15,12 @@ def test_calculate_aspects():
         {"degrees_from_aries": 5, "declination": -11, "house": 1},
     )
 
-    aspects = calculate_aspects(points, points, True)
+    aspects = calculate_relationships(points, points, True)
 
-    assert len(aspects.by_degree) is 1
-    assert aspects.by_degree[0].type == AspectType.conjunction
-    assert len(aspects.by_sign) is 1
-    assert aspects.by_sign[0].type == AspectType.conjunction
-    assert len(aspects.by_sign) is 1
-    assert aspects.by_declination[0].type == AspectType.contraparallel
+    assert len(aspects) is 1
+    assert aspects[0].degree_aspect == AspectType.conjunction
+    assert aspects[0].sign_aspect == AspectType.conjunction
+    assert aspects[0].declination_aspect == AspectType.contraparallel
 
 
 def test_calculate_degree_based_aspects__none():
@@ -27,10 +28,16 @@ def test_calculate_degree_based_aspects__none():
     Tests calculating planets without any degree based aspects.
     """
 
-    from_point, to_point = create_test_points({"degrees_from_aries": 0}, {"degrees_from_aries": 20})
-    aspects = calculate_degree_based_aspects([from_point], [to_point])
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 0},
+        {"degrees_from_aries": 20},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 0
+    calculate_degree_aspects(relationship, from_point, to_point)
+
+    assert relationship.degree_aspect is None
+    assert relationship.degree_aspect_orb is None
 
 
 def test_calculate_degree_based_aspects__conjunction():
@@ -38,19 +45,16 @@ def test_calculate_degree_based_aspects__conjunction():
     Tests calculating planets with degree based conjunctions.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 5},
-        {"degrees_from_aries": 355}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.conjunction
-    assert aspects[0].orb == -5
-    assert aspects[1].type == AspectType.conjunction
-    assert aspects[1].orb == 5
+    assert relationship.degree_aspect == AspectType.conjunction
+    assert relationship.degree_aspect_orb == -5
 
 
 def test_calculate_degree_based_aspects__opposition():
@@ -58,19 +62,16 @@ def test_calculate_degree_based_aspects__opposition():
     Tests calculating planets with degree based opposition.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 185},
-        {"degrees_from_aries": 175}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.opposition
-    assert aspects[0].orb == -5
-    assert aspects[1].type == AspectType.opposition
-    assert aspects[1].orb == 5
+    assert relationship.degree_aspect == AspectType.opposition
+    assert relationship.degree_aspect_orb == -5
 
 
 def test_calculate_degree_based_aspects__square():
@@ -78,19 +79,16 @@ def test_calculate_degree_based_aspects__square():
     Tests calculating planets with degree based square.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 95},
-        {"degrees_from_aries": 265}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.square
-    assert aspects[0].orb == -5
-    assert aspects[1].type == AspectType.square
-    assert aspects[1].orb == 5
+    assert relationship.degree_aspect == AspectType.square
+    assert relationship.degree_aspect_orb == -5
 
 
 def test_calculate_degree_based_aspects__trine():
@@ -98,19 +96,16 @@ def test_calculate_degree_based_aspects__trine():
     Tests calculating planets with degree based trine.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 125},
-        {"degrees_from_aries": 235}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.trine
-    assert aspects[0].orb == -5
-    assert aspects[1].type == AspectType.trine
-    assert aspects[1].orb == 5
+    assert relationship.degree_aspect == AspectType.trine
+    assert relationship.degree_aspect_orb == -5
 
 
 def test_calculate_degree_based_aspects__sextile():
@@ -118,19 +113,16 @@ def test_calculate_degree_based_aspects__sextile():
     Tests calculating planets with degree based sextile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 65},
-        {"degrees_from_aries": 295}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.sextile
-    assert aspects[0].orb == -5
-    assert aspects[1].type == AspectType.sextile
-    assert aspects[1].orb == 5
+    assert relationship.degree_aspect == AspectType.sextile
+    assert relationship.degree_aspect_orb == -5
 
 
 def test_calculate_degree_based_aspects__quintile():
@@ -138,19 +130,16 @@ def test_calculate_degree_based_aspects__quintile():
     Tests calculating planets with degree based quintile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 73},
-        {"degrees_from_aries": 287}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.quintile
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.quintile
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.quintile
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__septile():
@@ -158,19 +147,16 @@ def test_calculate_degree_based_aspects__septile():
     Tests calculating planets with degree based septile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 52},
-        {"degrees_from_aries": 308}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.septile
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.septile
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.septile
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__octile():
@@ -178,19 +164,16 @@ def test_calculate_degree_based_aspects__octile():
     Tests calculating planets with degree based octile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 46},
-        {"degrees_from_aries": 314}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.octile
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.octile
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.octile
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__novile():
@@ -198,19 +181,16 @@ def test_calculate_degree_based_aspects__novile():
     Tests calculating planets with degree based octile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 41},
-        {"degrees_from_aries": 319}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.novile
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.novile
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.novile
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__semi_sextile():
@@ -218,19 +198,16 @@ def test_calculate_degree_based_aspects__semi_sextile():
     Tests calculating planets with degree based semi-sextile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 31},
-        {"degrees_from_aries": 329}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.semi_sextile
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.semi_sextile
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.semi_sextile
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__quincunx():
@@ -238,19 +215,16 @@ def test_calculate_degree_based_aspects__quincunx():
     Tests calculating planets with degree based quincunx.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 151},
-        {"degrees_from_aries": 209}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.quincunx
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.quincunx
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.quincunx
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__sesquiquadrate():
@@ -258,19 +232,16 @@ def test_calculate_degree_based_aspects__sesquiquadrate():
     Tests calculating planets with degree based sesquiquadrate.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 136},
-        {"degrees_from_aries": 224}
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.sesquiquadrate
-    assert aspects[0].orb == -1
-    assert aspects[1].type == AspectType.sesquiquadrate
-    assert aspects[1].orb == 1
+    assert relationship.degree_aspect == AspectType.sesquiquadrate
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__bi_quintile():
@@ -278,29 +249,185 @@ def test_calculate_degree_based_aspects__bi_quintile():
     Tests calculating planets with degree based bi-quintile.
     """
 
-    points = create_test_points(
+    from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
         {"degrees_from_aries": 143},
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_degree_based_aspects(points[0:1], points[1:])
+    calculate_degree_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.bi_quintile
-    assert aspects[0].orb == 1
+    assert relationship.degree_aspect == AspectType.bi_quintile
+    assert relationship.degree_aspect_orb == 1
 
 
-def test_calculate_sign_based_aspects__natal():
+def test_calculate_phase__slower():
     """
-    Tests calculating planets with an aspect by sign in natal chart.
-    Asserts that there arent duplicate aspects between a point and itself
+    Tests that the slower planet (Mercury) is used as the base for the phase.
     """
 
-    natal_points = create_test_points({"house": 1}, {"house": 7})
-    aspects = calculate_sign_based_aspects(natal_points, natal_points, True)
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 0},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.opposition
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.phase_base_point == to_point.name
+
+def test_calculate_phase__new():
+    """
+    Tests calculating planets with a new phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 0},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 0
+    assert relationship.phase == PhaseType.new
+
+
+def test_calculate_phase__crescent():
+    """
+    Tests calculating planets with a crescent phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 45},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 45
+    assert relationship.phase == PhaseType.crescent
+
+
+def test_calculate_phase__reversed():
+    """
+    Tests calculating planets with a crescent phase between them,
+    but with reversed degrees of separation.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 15},
+        {"degrees_from_aries": 330},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 45
+    assert relationship.phase == PhaseType.crescent
+
+
+def test_calculate_phase__first_quarter():
+    """
+    Tests calculating planets with a first quarter phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 90},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 90
+    assert relationship.phase == PhaseType.first_quarter
+
+
+def test_calculate_phase__gibbous():
+    """
+    Tests calculating planets with a gibbous phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 135},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 135
+    assert relationship.phase == PhaseType.gibbous
+
+
+def test_calculate_phase__full():
+    """
+    Tests calculating planets with a full phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 180},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 180
+    assert relationship.phase == PhaseType.full
+
+
+def test_calculate_phase__disseminating():
+    """
+    Tests calculating planets with a disseminating phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 225},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 225
+    assert relationship.phase == PhaseType.disseminating
+
+
+def test_calculate_phase__last_quarter():
+    """
+    Tests calculating planets with a last quarter phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 270},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 270
+    assert relationship.phase == PhaseType.last_quarter
+
+
+def test_calculate_phase__balsamic():
+    """
+    Tests calculating planets with a balsamic phase between them.
+    """
+
+    from_point, to_point = create_test_points(
+        {"degrees_from_aries": 315},
+        {"degrees_from_aries": 0},
+    )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_aspect_phase(relationship, from_point, to_point)
+
+    assert relationship.degrees_between == 315
+    assert relationship.phase == PhaseType.balsamic
 
 
 def test_calculate_sign_based_aspects__conjunction():
@@ -309,22 +436,24 @@ def test_calculate_sign_based_aspects__conjunction():
     """
 
     from_point, to_point = create_test_points({"house": 1}, {"house": 1})
-    aspects = calculate_sign_based_aspects([from_point], [to_point])
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.conjunction
+    calculate_sign_aspects(relationship, from_point, to_point)
+
+    assert relationship.sign_aspect == AspectType.conjunction
 
 
 def test_calculate_sign_based_aspects__opposition():
     """
-        Tests calculating planets with a opposition by sign.
-        """
+    Tests calculating planets with a opposition by sign.
+    """
 
     from_point, to_point = create_test_points({"house": 1}, {"house": 7})
-    aspects = calculate_sign_based_aspects([from_point], [to_point])
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.opposition
+    calculate_sign_aspects(relationship, from_point, to_point)
+
+    assert relationship.sign_aspect == AspectType.opposition
 
 
 def test_calculate_sign_based_aspects__trine():
@@ -332,12 +461,12 @@ def test_calculate_sign_based_aspects__trine():
     Tests calculating planets with a trine by sign.
     """
 
-    points = create_test_points({"house": 1}, {"house": 5}, {"house": 9})
-    aspects = calculate_sign_based_aspects(points[0:1], points[1:])
+    from_point, to_point = create_test_points({"house": 1}, {"house": 5})
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.trine
-    assert aspects[1].type == AspectType.trine
+    calculate_sign_aspects(relationship, from_point, to_point)
+
+    assert relationship.sign_aspect == AspectType.trine
 
 
 def test_calculate_sign_based_aspects__square():
@@ -345,12 +474,12 @@ def test_calculate_sign_based_aspects__square():
     Tests calculating planets with a square by sign.
     """
 
-    points = create_test_points({"house": 1}, {"house": 4}, {"house": 10})
-    aspects = calculate_sign_based_aspects(points[0:1], points[1:])
+    from_point, to_point = create_test_points({"house": 1}, {"house": 4})
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.square
-    assert aspects[1].type == AspectType.square
+    calculate_sign_aspects(relationship, from_point, to_point)
+
+    assert relationship.sign_aspect == AspectType.square
 
 
 def test_calculate_sign_based_aspects__sextile():
@@ -358,25 +487,25 @@ def test_calculate_sign_based_aspects__sextile():
     Tests calculating planets with a sextile by sign.
     """
 
-    points = create_test_points({"house": 1}, {"house": 3}, {"house": 11})
-    aspects = calculate_sign_based_aspects(points[0:1], points[1:])
+    from_point, to_point = create_test_points({"house": 1}, {"house": 3})
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.sextile
-    assert aspects[1].type == AspectType.sextile
+    calculate_sign_aspects(relationship, from_point, to_point)
+
+    assert relationship.sign_aspect == AspectType.sextile
 
 
 def test_calculate_sign_based_aspects__aversion():
     """
-    Tests calculating planets with a sextile by sign.
+    Tests calculating planets in aversion by sign.
     """
 
-    points = create_test_points({"house": 1}, {"house": 2}, {"house": 12})
-    aspects = calculate_sign_based_aspects(points[0:1], points[1:])
+    from_point, to_point = create_test_points({"house": 1}, {"house": 2})
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    assert len(aspects) is 2
-    assert aspects[0].type == AspectType.aversion
-    assert aspects[1].type == AspectType.aversion
+    calculate_sign_aspects(relationship, from_point, to_point)
+
+    assert relationship.sign_aspect == AspectType.aversion
 
 
 def test_calculate_declination_aspects__none():
@@ -388,27 +517,13 @@ def test_calculate_declination_aspects__none():
         {"declination": 20},
         {"declination": 0},
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_declination_aspects([from_point], [to_point])
+    calculate_declination_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 0
-
-
-def test_calculate_declination_aspects__natal():
-    """
-    Tests calculating planets with an aspect by declination in natal chart.
-    Asserts that there arent duplicate aspects between a point and itself.
-    """
-
-    points = create_test_points(
-        {"declination": 0},
-        {"declination": 0},
-    )
-
-    aspects = calculate_declination_aspects(points, points, True)
-
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.parallel
+    assert relationship.declination_between == 20
+    assert relationship.declination_aspect is None
+    assert relationship.declination_aspect_orb is None
 
 
 def test_calculate_declination_aspects__parallel():
@@ -420,12 +535,13 @@ def test_calculate_declination_aspects__parallel():
         {"declination": 20},
         {"declination": 19.5},
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_declination_aspects([from_point], [to_point])
+    calculate_declination_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.parallel
-    assert aspects[0].orb == 0.5
+    assert relationship.declination_between == 0.5
+    assert relationship.declination_aspect == AspectType.parallel
+    assert relationship.declination_aspect_orb == 0.5
 
 
 def test_calculate_declination_aspects__contraparallel():
@@ -437,12 +553,13 @@ def test_calculate_declination_aspects__contraparallel():
         {"declination": 20},
         {"declination": -19.5},
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_declination_aspects([from_point], [to_point])
+    calculate_declination_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.contraparallel
-    assert aspects[0].orb == 0.5
+    assert relationship.declination_between == 39.5
+    assert relationship.declination_aspect == AspectType.contraparallel
+    assert relationship.declination_aspect_orb == 0.5
 
 
 def test_calculate_declination_aspects__threshold():
@@ -454,11 +571,12 @@ def test_calculate_declination_aspects__threshold():
         {"declination": 20},
         {"declination": 19},
     )
+    relationship = PointRelationship(from_point=from_point.name, to_point=to_point.name)
 
-    aspects = calculate_declination_aspects([from_point], [to_point])
+    calculate_declination_aspects(relationship, from_point, to_point)
 
-    assert len(aspects) is 1
-    assert aspects[0].type == AspectType.parallel
-    assert aspects[0].orb == 1
+    assert relationship.declination_between == 1
+    assert relationship.declination_aspect == AspectType.parallel
+    assert relationship.declination_aspect_orb == 1
 
 

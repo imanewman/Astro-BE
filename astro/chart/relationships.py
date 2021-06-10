@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from astro.schema import AspectOrbs, PointInTime, PointRelationship
-from astro.util import Point, aspectTraits, AspectType
+from astro.util import Point, aspectTraits, AspectType, PhaseType, point_traits
 
 
 def calculate_relationships(
@@ -36,6 +36,7 @@ def calculate_relationships(
 
             calculate_sign_aspects(relationship, from_point, to_point)
             calculate_degree_aspects(relationship, from_point, to_point, orbs)
+            calculate_aspect_phase(relationship, from_point, to_point)
             calculate_declination_aspects(relationship, from_point, to_point, orbs)
 
             aspects.append(relationship)
@@ -84,23 +85,71 @@ def calculate_degree_aspects(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     :param orbs: The orbs to use for calculations.
-    :return:
     """
 
     # The relative degrees between two points
-    relationship.degrees_between = \
+    absolute_degrees_between = \
         round(abs(from_point.degrees_from_aries - to_point.degrees_from_aries), 2)
     aspect_to_orb = orbs.aspect_to_orb()
 
     for aspect_type, aspect in aspectTraits.aspects.items():
         # for each type of aspect, calculate whether the degrees of separation between points
         # is within the orb of the degrees for this aspect.
-        for orb in calculate_aspect_orbs(aspect.degrees, relationship.degrees_between):
+        for orb in calculate_aspect_orbs(aspect.degrees, absolute_degrees_between):
             if abs(orb) <= aspect_to_orb[aspect_type]:
                 relationship.degree_aspect = aspect_type
                 relationship.degree_aspect_orb = orb
 
                 break
+
+
+def calculate_aspect_phase(
+        relationship: PointRelationship,
+        from_point: PointInTime,
+        to_point: PointInTime,
+):
+    """
+    Calculates the current separation in degrees, and the phase of that separation from
+    the slower to the faster moving body, mapping the degrees out of 360 to 8 equal phases.
+
+    :param relationship: The relationship between points to store calculations in.
+    :param from_point: The starting point in the relationship.
+    :param to_point: The ending point in the relationship.
+    """
+    if from_point.name in point_traits.points and to_point.name in point_traits.points:
+        from_speed = point_traits.points[from_point.name].speed_avg
+        to_speed = point_traits.points[to_point.name].speed_avg
+
+        # find which body has the slower speed, which is used as the fulcrum
+        slower, faster = (from_point, to_point) if from_speed < to_speed else (to_point, from_point)
+
+        relationship.phase_base_point = slower.name
+
+        # calculate the degrees of phase from the slower to the faster planet
+        if slower.degrees_from_aries > faster.degrees_from_aries:
+            relationship.degrees_between = \
+                round(360 + faster.degrees_from_aries - slower.degrees_from_aries, 2)
+        else:
+            relationship.degrees_between = \
+                round(faster.degrees_from_aries - slower.degrees_from_aries, 2)
+
+        # set the respective phase of the planets
+        if relationship.degrees_between < 45:
+            relationship.phase = PhaseType.new
+        elif 45 <= relationship.degrees_between < 90:
+            relationship.phase = PhaseType.crescent
+        elif 90 <= relationship.degrees_between < 135:
+            relationship.phase = PhaseType.first_quarter
+        elif 135 <= relationship.degrees_between < 180:
+            relationship.phase = PhaseType.gibbous
+        elif 180 <= relationship.degrees_between < 225:
+            relationship.phase = PhaseType.full
+        elif 225 <= relationship.degrees_between < 270:
+            relationship.phase = PhaseType.disseminating
+        elif 270 <= relationship.degrees_between < 315:
+            relationship.phase = PhaseType.last_quarter
+        elif 315 <= relationship.degrees_between:
+            relationship.phase = PhaseType.balsamic
 
 
 def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -> Tuple[float, float]:
@@ -132,7 +181,6 @@ def calculate_declination_aspects(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     :param orbs: The orbs to use for calculations.
-    :return:
     """
 
     if from_point.declination is not None \
@@ -140,6 +188,8 @@ def calculate_declination_aspects(
             and not (from_point.name == Point.north_mode and to_point.name == Point.south_node):
         parallel_orb = round(abs(from_point.declination - to_point.declination), 2)
         contraparallel_orb = round(abs(from_point.declination + to_point.declination), 2)
+
+        relationship.declination_between = parallel_orb
 
         if parallel_orb <= orbs.parallel:
             relationship.declination_aspect = AspectType.parallel

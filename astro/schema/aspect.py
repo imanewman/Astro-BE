@@ -178,7 +178,8 @@ class PointRelationship(BaseSchema):
     degrees_between: Optional[float] = Field(
         None,
         title="Ecliptic Degrees Between",
-        description="The degrees between the two points relative to their longitude along the ecliptic"
+        description="The degrees between the two points relative to their "
+                    "longitude along the ecliptic, out of 0 to 360"
     )
     degree_aspect: Optional[AspectType] = Field(
         None,
@@ -194,6 +195,11 @@ class PointRelationship(BaseSchema):
         None,
         title="Phase",
         description="The phase of separation between these two points"
+    )
+    phase_base_point: Optional[Point] = Field(
+        None,
+        title="Phase Base Point",
+        description="The point being used as the base for the phase between points"
     )
     declination_between: Optional[float] = Field(
         None,
