@@ -4,9 +4,9 @@ from pydantic import Field
 
 from astro.util import ZodiacSign, Point
 from .aspect import PointRelationship
-from .house import HousePlacement
+from .house import HouseSchema
 from .base import BaseSchema, EventSchema
-from .point import PointInTime
+from .point import PointSchema
 
 
 class ChartSummary(BaseSchema):
@@ -56,12 +56,12 @@ class Chart(BaseSchema):
         title="Chart Summary",
         description="Summarizes the most important information in a chart"
     )
-    start_points: Dict[Point, PointInTime] = Field(
+    start_points: Dict[Point, PointSchema] = Field(
         [],
         title="Planets and Points",
         description="A map of the base planets and points calculated"
     )
-    houses: List[HousePlacement] = Field(
+    houses: List[HouseSchema] = Field(
         [],
         title="Houses",
         description="Each house, its sign, and the points within it"

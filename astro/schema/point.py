@@ -181,7 +181,7 @@ class PointRulers(BaseSchema):
     )
 
 
-class PointInTime(BaseSchema):
+class PointSchema(BaseSchema):
     """
     Defines any planetary body's position relative to Earth.
     """

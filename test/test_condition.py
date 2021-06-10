@@ -1,5 +1,9 @@
-from astro.chart.condition import calculate_divisions, calculate_triplicity, calculate_sun_conjunctions, \
-    calculate_sect_placement, calculate_primary_dignities, calculate_condition
+from astro import calculate_condition
+from astro.chart.condition.divisions import calculate_divisions
+from astro.chart.condition.triplicity import calculate_triplicity
+from astro.chart.condition.sun_conjunctions import calculate_sun_conjunctions
+from astro.chart.condition.sect_placement import calculate_sect_placement
+from astro.chart.condition.primary_dignities import calculate_primary_dignities
 from astro.util import Point, SectPlacement, ZodiacSign
 from test.utils import create_test_points
 

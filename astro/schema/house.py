@@ -6,7 +6,7 @@ from .base import BaseSchema
 from ..util import ZodiacSign, Point
 
 
-class HousePlacement(BaseSchema):
+class HouseSchema(BaseSchema):
     """
     Defines the input parameters for running a calculation.
     """

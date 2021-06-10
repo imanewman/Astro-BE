@@ -6,9 +6,6 @@ from astro.schema.aspect import AspectTraitsCollection
 from .enums import *
 from .functions import convert_to_degrees
 
-"""
-Exports the traditional order of zodiac signs.
-"""
 zodiac_sign_order = [
     ZodiacSign.aries,
     ZodiacSign.taurus,
@@ -23,13 +20,10 @@ zodiac_sign_order = [
     ZodiacSign.aquarius,
     ZodiacSign.pisces
 ]
-
 """
-Associates each zodiac sign with relevant information.
-
-- Reference for essential dignities: 
-    https://theastrologypodcast.com/wp-content/uploads/2018/05/essential-dignities-table-large.jpg
+Exports the traditional order of zodiac signs.
 """
+
 zodiac_sign_traits = ZodiacSignCollection(**{
     "signs": {
         ZodiacSign.aries: {
@@ -310,17 +304,13 @@ zodiac_sign_traits = ZodiacSignCollection(**{
         },
     }
 })
-
 """
-Associates each point with relevant information.
+Associates each zodiac sign with relevant information.
 
-- Planetary joys: https://theastrologydictionary.com/j/joys/
-- Essential dignities: https://www.astro.com/astrowiki/en/Domicile, 
-  https://astrostyle.com/the-essential-dignities-of-planets-exalted-detriment-domicile-and-fall/, 
-  https://www.into-it.com/blog/outerplanetdignities
-  - outer planets are missing debated dignities
-- Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
+- Reference for essential dignities: 
+    https://theastrologypodcast.com/wp-content/uploads/2018/05/essential-dignities-table-large.jpg
 """
+
 point_traits = PointTraitsCollection(**{
     "points": {
         Point.moon: {
@@ -515,10 +505,17 @@ point_traits = PointTraitsCollection(**{
         },
     }
 })
+"""
+Associates each point with relevant information.
 
+- Planetary joys: https://theastrologydictionary.com/j/joys/
+- Essential dignities: https://www.astro.com/astrowiki/en/Domicile, 
+  https://astrostyle.com/the-essential-dignities-of-planets-exalted-detriment-domicile-and-fall/, 
+  https://www.into-it.com/blog/outerplanetdignities
+  - outer planets are missing debated dignities
+- Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 """
-Associates each aspect with the degrees associated with it.
-"""
+
 aspectTraits = AspectTraitsCollection(**{
     "aspects": {
         AspectType.conjunction: {
@@ -575,3 +572,6 @@ aspectTraits = AspectTraitsCollection(**{
         },
     }
 })
+"""
+Associates each aspect with the degrees associated with it.
+"""

@@ -1,13 +1,16 @@
 from typing import Dict
 
 from astro.util import Point, zodiac_sign_traits
-from astro.schema import ChartSummary, PointInTime
+from astro.schema import ChartSummary, PointSchema
 
 
-def create_summary(points: Dict[Point, PointInTime]) -> ChartSummary:
+def create_summary(points: Dict[Point, PointSchema]) -> ChartSummary:
     """
-    Creates a summary of the big 3 signs in a given chart,
-    as well as whether the chart is during the day.
+    Creates a summary of the calculated points.
+
+    - Finds the sign of the sun, moon, and ascendant.
+    - Finds the planet that rules the ascendant.
+    - Determines whether the chart is during the day.
 
     :param points: The current collection of calculated points.
 
@@ -17,9 +20,7 @@ def create_summary(points: Dict[Point, PointInTime]) -> ChartSummary:
     sun, moon, asc = points[Point.sun], points[Point.moon], points[Point.ascendant]
 
     return ChartSummary(
-        sun=sun.sign,
-        moon=moon.sign,
-        asc=asc.sign,
+        sun=sun.sign, moon=moon.sign, asc=asc.sign,
         asc_ruler=zodiac_sign_traits.signs[asc.sign].rulership,
         is_day_time=calculate_is_day_time(sun.degrees_from_aries, asc.degrees_from_aries)
     )

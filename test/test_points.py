@@ -5,7 +5,7 @@ from astro.chart import calculate_point_attributes
 from astro.chart.point.point_factory import create_swe_point, create_asc_mc, create_south_node
 from astro.chart.point.point_attributes import calculate_sign, calculate_degrees_in_sign, \
     calculate_minutes_in_degree, calculate_speed_properties
-from astro.schema import PointInTime
+from astro.schema import PointSchema
 from astro.util import tim_natal, Point, ZodiacSign
 
 
@@ -54,7 +54,7 @@ def test_create_south_node():
     Tests that the south node is properly calculated from the north node.
     """
 
-    north_node = PointInTime(
+    north_node = PointSchema(
         name=Point.north_mode,
         speed=-0.05,
         degrees_from_aries=168.03,
@@ -92,7 +92,7 @@ def test_calculate_point_attributes():
     Tests that a sign is correctly calculated from the degrees from aries.
     """
 
-    point = PointInTime(
+    point = PointSchema(
         name=Point.mercury,
         speed=1.73444,
         degrees_from_aries=196.69
@@ -137,7 +137,7 @@ def test_calculate_speed_properties__direct():
     Tests that a planet moving direct has the proper attributes.
     """
 
-    point = PointInTime(
+    point = PointSchema(
         name=Point.mercury,
         speed=1.5,
         degrees_from_aries=1
@@ -154,7 +154,7 @@ def test_calculate_speed_properties__stationary_direct():
     Tests that a planet moving stationary direct has the proper attributes.
     """
 
-    point = PointInTime(
+    point = PointSchema(
         name=Point.mercury,
         speed=0.1,
         degrees_from_aries=1
@@ -171,7 +171,7 @@ def test_calculate_speed_properties__retrograde():
     Tests that a planet moving retrograde has the proper attributes.
     """
 
-    point = PointInTime(
+    point = PointSchema(
         name=Point.mercury,
         speed=-1.5,
         degrees_from_aries=1
@@ -188,7 +188,7 @@ def test_calculate_speed_properties__stationary_retrograde():
     Tests that a planet moving stationary retrograde has the proper attributes.
     """
 
-    point = PointInTime(
+    point = PointSchema(
         name=Point.mercury,
         speed=-0.1,
         degrees_from_aries=1

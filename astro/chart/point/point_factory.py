@@ -1,11 +1,11 @@
 from typing import Tuple, Dict
 
 from .ephemeris import get_asc_mc, get_point_properties
-from astro.schema import EventSchema, PointInTime
+from astro.schema import EventSchema, PointSchema
 from astro.util import Point, point_traits
 
 
-def create_points(event: EventSchema) -> Dict[Point, PointInTime]:
+def create_points(event: EventSchema) -> Dict[Point, PointSchema]:
     """
     Creates a list of all calculated points.
 
@@ -34,7 +34,7 @@ def create_points(event: EventSchema) -> Dict[Point, PointInTime]:
     return points
 
 
-def create_asc_mc(event: EventSchema) -> Tuple[PointInTime, PointInTime]:
+def create_asc_mc(event: EventSchema) -> Tuple[PointSchema, PointSchema]:
     """
     Creates points for the ascendant and midheaven at the given time and location.
 
@@ -52,18 +52,18 @@ def create_asc_mc(event: EventSchema) -> Tuple[PointInTime, PointInTime]:
     ascendant, midheaven = get_asc_mc(event.julian_day, event.latitude, event.longitude)
 
     return (
-        PointInTime(
+        PointSchema(
             name=Point.ascendant,
             degrees_from_aries=round(ascendant, 2),
         ),
-        PointInTime(
+        PointSchema(
             name=Point.midheaven,
             degrees_from_aries=round(midheaven, 2),
         )
     )
 
 
-def create_swe_point(event: EventSchema, point: Point) -> PointInTime:
+def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
     """
     Creates a point object for a point name at the given time and location.
 
@@ -83,7 +83,7 @@ def create_swe_point(event: EventSchema, point: Point) -> PointInTime:
     traits = point_traits.points[point]
     degrees_from_aries, declination, speed = get_point_properties(event.julian_day, traits.swe_id)
 
-    point_in_time = PointInTime(
+    point_in_time = PointSchema(
         name=traits.name,
         degrees_from_aries=round(degrees_from_aries, 2),
         declination=round(declination, 2),
@@ -93,7 +93,7 @@ def create_swe_point(event: EventSchema, point: Point) -> PointInTime:
     return point_in_time
 
 
-def create_south_node(north_node: PointInTime) -> PointInTime:
+def create_south_node(north_node: PointSchema) -> PointSchema:
     """
     Creates the south node by reflecting the degrees from aries and declination of the north node.
 
@@ -105,7 +105,7 @@ def create_south_node(north_node: PointInTime) -> PointInTime:
     south_node_degrees_from_aries = round((north_node.degrees_from_aries + 180) % 360, 2)
     declination = north_node.declination and -north_node.declination
 
-    return PointInTime(
+    return PointSchema(
         name=Point.south_node,
         degrees_from_aries=south_node_degrees_from_aries,
         declination=declination,

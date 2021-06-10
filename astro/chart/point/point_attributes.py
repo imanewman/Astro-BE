@@ -1,14 +1,12 @@
-from astro.schema import PointInTime
+from astro.schema import PointSchema
 from astro.util import ZodiacSign, zodiac_sign_order, point_traits
 
 
-def calculate_point_attributes(point: PointInTime, stationary_pct_of_avg_speed: float = 0.3):
+def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: float = 0.3):
     """
     Calculates all derived attributes for a point.
 
-    Notes
-    -----
-    - Sets the properties `sign`, `degrees_in_sign`, `minutes_in_degree`, `is_stationary`
+    - Sets the properties `sign`, `degrees_in_sign`, `minutes_in_degree`, `is_stationary`,
       and `is_retrograde` within the point object.
 
     :param point: The point to calculate attributes for.
@@ -64,18 +62,15 @@ def calculate_minutes_in_degree(degrees_from_aries: float) -> int:
     return int(fraction_of_degree * degrees_per_minute)
 
 
-def calculate_speed_properties(point: PointInTime, stationary_pct_of_avg_speed: float = 0.3):
+def calculate_speed_properties(point: PointSchema, stationary_pct_of_avg_speed: float = 0.3):
     """
     Calculates whether a point is retrograde or stationing based on its speed.
 
-    Notes
-    -----
     - Only calculates speed properties when the point in time has a speed and the point has a known
       average speed.
+
     - Sets the properties `is_stationary` and `is_retrograde` within the point object.
 
-    Calculations
-    ------------
     - Uses the speed averages and the 30% of average speed for stationing found here:
       https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 

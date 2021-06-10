@@ -1,12 +1,12 @@
 from typing import List, Tuple
 
-from astro.schema import AspectOrbs, PointInTime, PointRelationship
+from astro.schema import AspectOrbs, PointSchema, PointRelationship
 from astro.util import Point, aspectTraits, AspectType, PhaseType, point_traits
 
 
 def calculate_relationships(
-        from_points: List[PointInTime],
-        to_points: List[PointInTime],
+        from_points: List[PointSchema],
+        to_points: List[PointSchema],
         is_natal: bool = False,
         orbs: AspectOrbs = AspectOrbs(),
 ) -> List[PointRelationship]:
@@ -46,8 +46,8 @@ def calculate_relationships(
 
 def calculate_sign_aspects(
         relationship: PointRelationship,
-        from_point: PointInTime,
-        to_point: PointInTime
+        from_point: PointSchema,
+        to_point: PointSchema
 ):
     """
     Calculates the sign based aspect between points.
@@ -74,8 +74,8 @@ def calculate_sign_aspects(
 
 def calculate_degree_aspects(
         relationship: PointRelationship,
-        from_point: PointInTime,
-        to_point: PointInTime,
+        from_point: PointSchema,
+        to_point: PointSchema,
         orbs: AspectOrbs = AspectOrbs(),
 ):
     """
@@ -105,8 +105,8 @@ def calculate_degree_aspects(
 
 def calculate_aspect_phase(
         relationship: PointRelationship,
-        from_point: PointInTime,
-        to_point: PointInTime,
+        from_point: PointSchema,
+        to_point: PointSchema,
 ):
     """
     Calculates the current separation in degrees, and the phase of that separation from
@@ -164,7 +164,7 @@ def calculate_aspect_phase(
 
 def calculate_inferior_aspect_phase(
         relationship: PointRelationship,
-        faster: PointInTime,
+        faster: PointSchema,
 ):
     """
     Calculates the aspect phase between the Sun and Mercury or Venus,
@@ -187,7 +187,7 @@ def calculate_inferior_aspect_phase(
             relationship.phase = PhaseType.full
 
 
-def calculate_degrees_between(slower: PointInTime, faster: PointInTime) -> float:
+def calculate_degrees_between(slower: PointSchema, faster: PointSchema) -> float:
     """
     calculate the degrees of phase from the slower to the faster planet.
 
@@ -219,8 +219,8 @@ def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -
 
 def calculate_declination_aspects(
         relationship: PointRelationship,
-        from_point: PointInTime,
-        to_point: PointInTime,
+        from_point: PointSchema,
+        to_point: PointSchema,
         orbs: AspectOrbs = AspectOrbs(),
 ):
     """

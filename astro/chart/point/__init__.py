@@ -1,7 +1,7 @@
 from typing import Dict
 
 from astro.util import Point
-from astro.schema import EventSchema, PointInTime
+from astro.schema import EventSchema, PointSchema
 from astro.chart.point.ephemeris import get_julian_day
 from .point_attributes import calculate_point_attributes
 from .point_factory import create_points
@@ -10,7 +10,7 @@ from .point_factory import create_points
 def create_points_with_attributes(
         event: EventSchema,
         stationary_pct_of_avg_speed: float = 0.3
-) -> Dict[Point, PointInTime]:
+) -> Dict[Point, PointSchema]:
     """
     Creates a mapping from all point names to that point's attributes at the given time and location.
 
