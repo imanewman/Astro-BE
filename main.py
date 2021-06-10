@@ -67,10 +67,28 @@ async def calc_chart(settings: ChartSettings) -> Chart:
     return create_chart(settings)
 
 
+@app.get("/local")
+async def calc_local() -> Chart:
+    """
+    Calculates the current chart in the current location
+
+    :return: Calculated points and aspects.
+    """
+
+    return await calc_chart(
+        ChartSettings(**{
+            "start": {
+                "latitude": 35.2828,
+                "longitude": -120.6596
+            }
+        })
+    )
+
+
 @app.get("/tim")
 async def calc_tim() -> Chart:
     """
-    Calculates the default settings for the current time.
+    Calculates the natal chart of tim.
 
     :return: Calculated points and aspects.
     """
