@@ -116,6 +116,10 @@ def calculate_aspect_phase(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     """
+
+    # Set a placeholder degrees between in case one of the points doesn't have a speed
+    relationship.degrees_between = calculate_degrees_between(from_point, to_point)
+
     if from_point.name not in point_traits.points or to_point.name not in point_traits.points:
         return
 
@@ -129,14 +133,7 @@ def calculate_aspect_phase(
     slower, faster = (from_point, to_point) if from_speed < to_speed else (to_point, from_point)
 
     relationship.phase_base_point = slower.name
-
-    # calculate the degrees of phase from the slower to the faster planet
-    if slower.degrees_from_aries > faster.degrees_from_aries:
-        relationship.degrees_between = \
-            round(360 + faster.degrees_from_aries - slower.degrees_from_aries, 2)
-    else:
-        relationship.degrees_between = \
-            round(faster.degrees_from_aries - slower.degrees_from_aries, 2)
+    relationship.degrees_between = calculate_degrees_between(slower, faster)
 
     # set the respective phase of the planets
     if relationship.degrees_between < 45:
@@ -155,6 +152,20 @@ def calculate_aspect_phase(
         relationship.phase = PhaseType.last_quarter
     elif 315 <= relationship.degrees_between:
         relationship.phase = PhaseType.balsamic
+
+
+def calculate_degrees_between(slower: PointInTime, faster: PointInTime) -> float:
+    """
+    calculate the degrees of phase from the slower to the faster planet.
+
+    :param slower: The point to calculate degrees from.
+    :param faster: The point to calculate degrees to.
+    :return: The degrees out of 360 from the slower to the faster planet.
+    """
+    if slower.degrees_from_aries > faster.degrees_from_aries:
+        return round(360 + faster.degrees_from_aries - slower.degrees_from_aries, 2)
+    else:
+        return round(faster.degrees_from_aries - slower.degrees_from_aries, 2)
 
 
 def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -> Tuple[float, float]:
