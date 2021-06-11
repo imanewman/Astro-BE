@@ -1,10 +1,10 @@
 from typing import Dict
 
 from astro.util import Point, zodiac_sign_traits
-from astro.schema import ChartSummary, PointSchema
+from astro.schema import SummarySchema, PointSchema
 
 
-def create_summary(points: Dict[Point, PointSchema]) -> ChartSummary:
+def create_summary(points: Dict[Point, PointSchema]) -> SummarySchema:
     """
     Creates a summary of the calculated points.
 
@@ -17,9 +17,13 @@ def create_summary(points: Dict[Point, PointSchema]) -> ChartSummary:
     :return: The calculated chart summary.
     """
 
+    # Return an empty summary if the big 3 points are not all calculated
+    if Point.sun not in points or Point.moon not in points or Point.ascendant not in points:
+        return SummarySchema()
+
     sun, moon, asc = points[Point.sun], points[Point.moon], points[Point.ascendant]
 
-    return ChartSummary(
+    return SummarySchema(
         sun=sun.sign, moon=moon.sign, asc=asc.sign,
         asc_ruler=zodiac_sign_traits.signs[asc.sign].rulership,
         is_day_time=calculate_is_day_time(sun.degrees_from_aries, asc.degrees_from_aries)

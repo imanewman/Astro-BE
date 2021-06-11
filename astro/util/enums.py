@@ -5,6 +5,7 @@ class Polarity(str, Enum):
     """
     Enumerates all of the polarities.
     """
+
     yang = "Yang"
     yin = "Yin"
 
@@ -13,6 +14,7 @@ class Modality(str, Enum):
     """
     Enumerates all of the modalities.
     """
+
     cardinal = "Cardinal"
     fixed = "Fixed"
     mutable = "Mutable"
@@ -22,6 +24,7 @@ class Element(str, Enum):
     """
     Enumerates all of the elements.
     """
+
     fire = "Fire"
     air = "Air"
     water = "Water"
@@ -51,6 +54,7 @@ class Point(str, Enum):
     """
     Enumerates all of the available points and planetary bodies.
     """
+
     ascendant = "Ascendant"
     midheaven = "Midheaven"
 
@@ -95,6 +99,7 @@ class AspectType(str, Enum):
     """
     Enumerates the different types of aspects between points.
     """
+
     conjunction = "Conjunction"
     opposition = "Opposition"
     square = "Square"
@@ -120,6 +125,7 @@ class SectPlacement(str, Enum):
     """
     Enumerates the possible sect based statuses of a planet.
     """
+
     sect_light = "Sect Light"
     benefic_by_sect = "Benefic By Sect"
     benefic_contrary_sect = "Benefic Contrary To Sect"
@@ -131,6 +137,7 @@ class PhaseType(str, Enum):
     """
     The phase between two points, dividing the 360 degree arc into eighths
     """
+
     new = "New"
     crescent = "Crescent"
     first_quarter = "First Quarter"

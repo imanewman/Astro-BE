@@ -1,6 +1,6 @@
 from typing import Dict
 
-from astro.schema import PointSchema, AspectOrbs
+from astro.schema import PointSchema, AspectOrbsSchema
 from astro.util import Point
 from .divisions import calculate_divisions
 from .primary_dignities import calculate_primary_dignities
@@ -12,7 +12,7 @@ from .triplicity import calculate_triplicity
 def calculate_condition(
         points: Dict[Point, PointSchema],
         is_day_time: bool,
-        orbs: AspectOrbs = AspectOrbs()
+        orbs: AspectOrbsSchema = AspectOrbsSchema()
 ):
     """
     Calculates the conditions of bonification and maltreatment of relevant planets within the given points.
@@ -29,4 +29,6 @@ def calculate_condition(
         calculate_sect_placement(point, is_day_time)
         calculate_triplicity(point, is_day_time)
         calculate_divisions(point)
-        calculate_sun_conjunctions(point, points[Point.sun], orbs)
+
+        if Point.sun in points:
+            calculate_sun_conjunctions(point, points[Point.sun], orbs)

@@ -1,11 +1,9 @@
-from astro.chart.condition import calculate_condition
-from astro.chart.point import create_points_with_attributes
-from astro.chart.relationships import calculate_relationships
-from astro.schema import Chart, ChartSettings
-from astro.chart import create_summary, calculate_houses
+from astro.schema import ChartSchema, SettingsSchema
+from astro.chart import create_summary, calculate_houses, calculate_relationships, \
+    calculate_condition, create_points_with_attributes
 
 
-def create_chart(settings: ChartSettings) -> Chart:
+def create_chart(settings: SettingsSchema) -> ChartSchema:
     """
     Calculates the default settings for the given time.
 
@@ -14,7 +12,7 @@ def create_chart(settings: ChartSettings) -> Chart:
     :return: Calculated points and aspects.
     """
 
-    start_points = create_points_with_attributes(settings.start, settings.stationary_pct_of_avg_speed)
+    start_points = create_points_with_attributes(settings.start, settings)
     natal_points = [point for point in start_points.values()]
     houses = calculate_houses(start_points)
     summary = create_summary(start_points)
@@ -22,7 +20,7 @@ def create_chart(settings: ChartSettings) -> Chart:
 
     calculate_condition(start_points, summary.is_day_time)
 
-    results = Chart(
+    results = ChartSchema(
         start=settings.start,
         start_points=start_points,
         houses=houses,

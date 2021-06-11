@@ -1,8 +1,8 @@
-from astro.chart.relationships import calculate_aspect_orbs
-from astro.schema import PointSchema, AspectOrbs
+from astro.chart.relationship.degree_aspect import calculate_aspect_orbs
+from astro.schema import PointSchema, AspectOrbsSchema
 
 
-def calculate_sun_conjunctions(point: PointSchema, sun: PointSchema, orbs: AspectOrbs = AspectOrbs()):
+def calculate_sun_conjunctions(point: PointSchema, sun: PointSchema, orbs: AspectOrbsSchema = AspectOrbsSchema()):
     """
     Calculates whether the point is under the beams, combust, or cazimi the sun.
 

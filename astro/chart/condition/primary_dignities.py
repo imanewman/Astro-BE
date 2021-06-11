@@ -6,10 +6,10 @@ def calculate_primary_dignities(point: PointSchema):
     """
     Calculates the dignities of a planet based on its sign and house.
 
-    - May set a points condition to `in_joy` when in its own house.
+    - Sets a point's condition to `in_joy` when in its own house.
     - Planetary joys can be found at: https://theastrologydictionary.com/j/joys/
 
-    - May set a point's condition to `in_domicile`, `in_exaltation`,
+    - Sets a point's condition to `in_domicile`, `in_exaltation`,
      `in_detriment`, or `fall`, when in the respective sign.
     - Essential dignities are based on this chart, with disputed
       outer planet conditions omitted: https://www.astro.com/astrowiki/en/Domicile

@@ -1,7 +1,8 @@
 from astro.chart.point import create_points_with_attributes
 from astro.chart import calculate_whole_sign_houses, calculate_house_of_point, calculate_traditional_house_rulers, \
     calculate_houses
-from astro.util import tim_natal, ZodiacSign, Point
+from astro.util import ZodiacSign, Point
+from astro.util.tim import tim_natal
 
 
 def test_calculate_houses():

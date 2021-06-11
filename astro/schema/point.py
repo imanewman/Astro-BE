@@ -1,88 +1,12 @@
-from typing import Optional, List, Dict
+from typing import Optional, List
 
 from pydantic import Field
 
-from astro.util.enums import PointCategory, ZodiacSign, Point, SectPlacement
+from astro.util.enums import ZodiacSign, Point, SectPlacement
 from .base import BaseSchema
 
 
-class PointTraits(BaseSchema):
-    """
-    Information about a specific planet or point.
-    """
-
-    swe_id: int = Field(
-        ...,
-        title="Swiss Ephemeris ID",
-        description="The fixed number associated with this point in the swiss ephemeris",
-    )
-    name: str = Field(
-        ...,
-        title="Name",
-        description="The name of this planet or point",
-    )
-    category: Optional[PointCategory] = Field(
-        None,
-        title="Point Category",
-        description="The category of point this is",
-    )
-    joy: Optional[int] = Field(
-        None,
-        title="Planetary Joy House",
-        description="The house that this planet is at its joy in",
-        ge=1,
-        le=12
-    )
-    domicile: List[ZodiacSign] = Field(
-        [],
-        title="Domicile",
-        description="The signs this planet is at home in"
-    )
-    exaltation: List[ZodiacSign] = Field(
-        [],
-        title="Exalted",
-        description="The signs this planet is exalted in"
-    )
-    detriment: List[ZodiacSign] = Field(
-        [],
-        title="Detriment",
-        description="The signs this planet is in detriment in"
-    )
-    fall: List[ZodiacSign] = Field(
-        [],
-        title="Fall",
-        description="The signs this planet is in fall in"
-    )
-    speed_avg: Optional[float] = Field(
-        None,
-        title="Average Speed",
-        description="The average speed of this point, in degrees"
-    )
-    speed_high: Optional[float] = Field(
-        None,
-        title="Highest Speed",
-        description="The highest speed of this point, in degrees"
-    )
-    speed_low: Optional[float] = Field(
-        None,
-        title="Lowest Speed",
-        description="The lowest speed of this point, in degrees"
-    )
-
-
-class PointTraitsCollection(BaseSchema):
-    """
-    A collection of all points available to use.
-    """
-
-    points: Dict[Point, PointTraits] = Field(
-        ...,
-        title="Planets and Points",
-        description="A collection of all points available to use",
-    )
-
-
-class PointCondition(BaseSchema):
+class PointConditionSchema(BaseSchema):
     """
     Defines the bonification and maltreatment of a planet.
     For points that arent planets, all values are false.
@@ -154,7 +78,7 @@ class PointCondition(BaseSchema):
     )
 
 
-class PointRulers(BaseSchema):
+class PointRulersSchema(BaseSchema):
     """
     Defines the traditional rulers of the segment of the chart this point falls in.
     """
@@ -249,13 +173,13 @@ class PointSchema(BaseSchema):
         description="Whether this point is retrograde"
     )
 
-    rulers: PointRulers = Field(
-        PointRulers(),
+    rulers: PointRulersSchema = Field(
+        PointRulersSchema(),
         title="Point Rulers",
         description="The rulers of the segment of the chart this point falls in"
     )
-    condition: PointCondition = Field(
-        PointCondition(),
+    condition: PointConditionSchema = Field(
+        PointConditionSchema(),
         title="Condition",
         description="The state of bonification and maltreatment if this is a planet"
     )

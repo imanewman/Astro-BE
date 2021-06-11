@@ -1,7 +1,8 @@
 from astro import create_summary
 from astro.chart import calculate_is_day_time
 from astro.chart.point import create_points_with_attributes
-from astro.util import tim_natal, ZodiacSign, Point
+from astro.util import ZodiacSign, Point
+from astro.util.tim import tim_natal
 
 
 def test_create_summary():

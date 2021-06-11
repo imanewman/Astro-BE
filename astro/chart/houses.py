@@ -89,7 +89,9 @@ def calculate_traditional_house_rulers(
     """
 
     for sign, traits in zodiac_sign_traits.signs.items():
-        ruler = points[traits.rulership]
         house_ruled = house_signs.index(sign) + 1
 
-        ruler.ruled_houses.append(house_ruled)
+        if traits.rulership in points:
+            ruler = points[traits.rulership]
+
+            ruler.ruled_houses.append(house_ruled)

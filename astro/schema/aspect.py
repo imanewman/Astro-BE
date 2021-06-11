@@ -3,26 +3,10 @@ from typing import Dict, Optional
 from pydantic import Field
 
 from .base import BaseSchema
-from ..util import AspectType, Point, PhaseType
+from astro.util import AspectType, Point, PhaseType
 
 
-class AspectTraits(BaseSchema):
-    """
-    Defines the traits of different types of aspects.
-    """
-    name: str = Field(
-        ...,
-        title="Aspect Name",
-        description="The name of this aspect"
-    )
-    degrees: int = Field(
-        None,
-        title="Aspect Degrees",
-        description="The degrees of this aspect"
-    )
-
-
-class AspectOrbs(BaseSchema):
+class AspectOrbsSchema(BaseSchema):
     """
     Defines the orbs used for degree based aspects.
     """
@@ -139,24 +123,7 @@ class AspectOrbs(BaseSchema):
         }
 
 
-class AspectTraitsCollection(BaseSchema):
-    """
-    A collection of all points available to use.
-    """
-
-    aspects: Dict[AspectType, AspectTraits] = Field(
-        ...,
-        title="Aspects",
-        description="A collection of all aspects by degree",
-    )
-    default_orbs: AspectOrbs = Field(
-        AspectOrbs(),
-        title="Default Aspect Orbs",
-        description="The default orbs used for each aspect"
-    )
-
-
-class PointRelationship(BaseSchema):
+class RelationshipSchema(BaseSchema):
     """
     Represents information about the relationship between two points.
     """

@@ -1,10 +1,28 @@
 import swisseph as swe
 
-from astro.schema.point import PointTraitsCollection
+from ..schema.traits import PointTraitsCollection, AspectTraitsCollection
 from astro.schema.sign import ZodiacSignCollection
-from astro.schema.aspect import AspectTraitsCollection
 from .enums import *
 from .functions import convert_to_degrees
+
+default_enabled_points = [
+    Point.ascendant,
+    Point.midheaven,
+    Point.moon,
+    Point.mercury,
+    Point.venus,
+    Point.sun,
+    Point.mars,
+    Point.jupiter,
+    Point.saturn,
+    Point.uranus,
+    Point.neptune,
+    Point.pluto,
+    Point.north_mode
+]
+"""
+Defines the list of points enabled for calculations by default.
+"""
 
 zodiac_sign_order = [
     ZodiacSign.aries,

@@ -1,10 +1,9 @@
-import datetime
-
 from fastapi import FastAPI
 
-from astro.schema import ZodiacSignCollection, PointTraitsCollection, Chart, ChartSettings
-from astro.schema.aspect import AspectTraitsCollection
-from astro.util import zodiac_sign_traits, point_traits, aspectTraits, tim_natal
+from astro.schema import ZodiacSignCollection, ChartSchema, SettingsSchema, \
+    PointTraitsCollection, AspectTraitsCollection
+from astro.util import zodiac_sign_traits, point_traits, aspectTraits
+from astro.util.tim import tim_natal
 from astro import create_chart
 
 app = FastAPI()
@@ -44,18 +43,18 @@ async def get_aspects() -> AspectTraitsCollection:
 
 
 @app.get("/")
-async def calc_now() -> Chart:
+async def calc_now() -> ChartSchema:
     """
     Calculates the chart for the current time.
 
     :return: Calculated points and aspects.
     """
 
-    return await calc_chart(ChartSettings())
+    return await calc_chart(SettingsSchema())
 
 
 @app.post("/chart")
-async def calc_chart(settings: ChartSettings) -> Chart:
+async def calc_chart(settings: SettingsSchema) -> ChartSchema:
     """
     Calculates the chart for a given time.
 
@@ -68,15 +67,15 @@ async def calc_chart(settings: ChartSettings) -> Chart:
 
 
 @app.get("/local")
-async def calc_local() -> Chart:
+async def calc_local() -> ChartSchema:
     """
-    Calculates the current chart in the current location
+    Calculates the current chart in the current location.
 
     :return: Calculated points and aspects.
     """
 
     return await calc_chart(
-        ChartSettings(**{
+        SettingsSchema(**{
             "start": {
                 "latitude": 35.2828,
                 "longitude": -120.6596
@@ -86,11 +85,11 @@ async def calc_local() -> Chart:
 
 
 @app.get("/tim")
-async def calc_tim() -> Chart:
+async def calc_tim() -> ChartSchema:
     """
     Calculates the natal chart of tim.
 
     :return: Calculated points and aspects.
     """
 
-    return await calc_chart(ChartSettings(start=tim_natal))
+    return await calc_chart(SettingsSchema(start=tim_natal))

@@ -1,19 +1,21 @@
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 
 from .ephemeris import get_asc_mc, get_point_properties
 from astro.schema import EventSchema, PointSchema
-from astro.util import Point, point_traits
+from astro.util import Point, point_traits, default_enabled_points
 
 
-def create_points(event: EventSchema) -> Dict[Point, PointSchema]:
+def create_points(
+        event: EventSchema,
+        enabled_points: List[Point] = default_enabled_points
+) -> Dict[Point, PointSchema]:
     """
     Creates a list of all calculated points.
 
-    Assumptions
-    ----------
     - Assumes the julian day has been calculated and set on the event.
 
     :param event: The current time and location.
+    :param enabled_points: The points that should be created.
 
     :return: The calculated points.
     """
@@ -22,14 +24,17 @@ def create_points(event: EventSchema) -> Dict[Point, PointSchema]:
 
     # Add the ascendant and midheaven.
     for point_in_time in create_asc_mc(event):
-        points[point_in_time.name] = point_in_time
+        if point_in_time.name in enabled_points:
+            points[point_in_time.name] = point_in_time
 
     # Add each of the points with swiss ephemeris data.
     for point in point_traits.points:
-        points[point] = create_swe_point(event, point)
+        if point in enabled_points:
+            points[point] = create_swe_point(event, point)
 
     # Add the south node by reflecting the north node.
-    points[Point.south_node] = create_south_node(points[Point.north_mode])
+    if Point.north_mode in enabled_points:
+        points[Point.south_node] = create_south_node(points[Point.north_mode])
 
     return points
 
@@ -38,8 +43,6 @@ def create_asc_mc(event: EventSchema) -> Tuple[PointSchema, PointSchema]:
     """
     Creates points for the ascendant and midheaven at the given time and location.
 
-    Assumptions
-    ----------
     - Assumes the julian day has been calculated and set on the event.
 
     :param event: The current date, time, and location.
@@ -67,8 +70,6 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
     """
     Creates a point object for a point name at the given time and location.
 
-    Assumptions
-    ----------
     - Assumes the julian day has been calculated and set on the event.
 
     :param event: The current time and location.

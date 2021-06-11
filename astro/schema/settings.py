@@ -1,10 +1,13 @@
+from typing import List
+
 from pydantic import Field
 
-from .aspect import AspectOrbs
+from astro.util import Point, default_enabled_points
+from .aspect import AspectOrbsSchema
 from .base import BaseSchema, EventSchema
 
 
-class ChartSettings(BaseSchema):
+class SettingsSchema(BaseSchema):
     """
     Defines the input parameters for running a calculation.
 
@@ -20,8 +23,8 @@ class ChartSettings(BaseSchema):
         title="Start Time and Location",
         description="The base date, time, and location of calculations"
     )
-    orbs: AspectOrbs = Field(
-        AspectOrbs(),
+    orbs: AspectOrbsSchema = Field(
+        AspectOrbsSchema(),
         title="Aspect Orbs",
         description="The orbs to use for aspect calculations"
     )
@@ -29,4 +32,9 @@ class ChartSettings(BaseSchema):
         0.30,
         title="Stationary Speed Factor",
         description="The percent of the average speed of a planet that it must be under to be considered stationary"
+    )
+    enabled_points: List[Point] = Field(
+        default_enabled_points,
+        title="Enabled Points",
+        description="Defines what points should be enabled for calculations"
     )
