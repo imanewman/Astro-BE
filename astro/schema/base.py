@@ -1,7 +1,10 @@
 from datetime import datetime
+from typing import List
 
 from humps import camelize
 from pydantic import BaseModel, Field
+
+from astro.util.enums import EventType
 
 
 class BaseSchema(BaseModel):
@@ -29,6 +32,21 @@ class EventSchema(BaseSchema):
     Defines a date and time at a geographic location.
     """
 
+    name: str = Field(
+        "Event",
+        title="Event Name",
+        description="The name of the person or event represented"
+    )
+    timezone: str = Field(
+        "Unknown",
+        title="Timezone",
+        description="The name of the timezone this event is in"
+    )
+    utc_offset: str = Field(
+        "UTC-0.00",
+        title="UTC Offset",
+        description="The UTC offset time based on this event's timezone"
+    )
     local_date: datetime = Field(
         default_factory=lambda: datetime.utcnow(),
         title="Date",
@@ -38,6 +56,11 @@ class EventSchema(BaseSchema):
         default_factory=lambda: datetime.utcnow(),
         title="Date",
         description="The UTC time for the location used for all calculations, defaulting to now"
+    )
+    location: str = Field(
+        "Unknown Location",
+        title="Location",
+        description="The name of the location of the event"
     )
     latitude: float = Field(
         0,
@@ -53,4 +76,14 @@ class EventSchema(BaseSchema):
         0,
         title="Julian Day",
         description="The standardized julian day for this date"
+    )
+    type: EventType = Field(
+        EventType.event,
+        title="Event Type",
+        description="The general type of event this represents"
+    )
+    tags: List[str] = Field(
+        [],
+        title="Tags",
+        description="Any tags this event is grouped by"
     )

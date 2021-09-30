@@ -1,9 +1,9 @@
-from astro.schema import ChartSchema, SettingsSchema
+from astro.schema import ChartSchema, SettingsSchema, ChartCollectionSchema, RelationshipCollectionSchema
 from astro.chart import create_summary, calculate_houses, calculate_relationships, \
     calculate_condition, create_points_with_attributes
 
 
-def create_chart(settings: SettingsSchema) -> ChartSchema:
+def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
     """
     Calculates the default settings for the given time.
 
@@ -11,21 +11,54 @@ def create_chart(settings: SettingsSchema) -> ChartSchema:
 
     :return: Calculated points and aspects.
     """
+    chart_count = len(settings.events)
+    all_point_arrays = []
+    all_charts = []
+    all_relationships = []
 
-    start_points = create_points_with_attributes(settings.start, settings)
-    natal_points = [point for point in start_points.values()]
-    houses = calculate_houses(start_points)
-    summary = create_summary(start_points)
-    relationships = calculate_relationships(natal_points, natal_points, True, settings.orbs)
+    # Store each event's calculated points, conditions, and aspects.
+    for event_index in range(chart_count):
+        event = settings.events[event_index]
+        points = create_points_with_attributes(event, settings)
+        points_array = [point for point in points.values()]
+        relationships = calculate_relationships(points_array, points_array, True, settings.orbs)
 
-    calculate_condition(start_points, summary.is_day_time)
+        houses = calculate_houses(points)
+        summary = create_summary(points)
 
-    results = ChartSchema(
-        start=settings.start,
-        start_points=start_points,
-        houses=houses,
-        summary=summary,
-        relationships=relationships
+        calculate_condition(points, summary.is_day_time)
+
+        all_point_arrays.append(points_array)
+
+        all_charts.append(ChartSchema(
+            event=event.event,
+            points=points,
+            houses=houses,
+            summary=summary,
+        ))
+
+        all_relationships.append(RelationshipCollectionSchema(
+            from_chart_index=event_index,
+            relationships=relationships
+        ))
+
+    # Store the aspects between all sets of distinct charts.
+    for from_index in range(chart_count - 1):
+        for to_index in range(from_index + 1, chart_count):
+            relationships = calculate_relationships(
+                all_point_arrays[from_index],
+                all_point_arrays[to_index],
+                False,
+                settings.orbs
+            )
+
+            all_relationships.append(RelationshipCollectionSchema(
+                from_chart_index=from_index,
+                to_chart_index=to_index,
+                relationships=relationships
+            ))
+
+    return ChartCollectionSchema(
+        charts=all_charts,
+        relationships=all_relationships
     )
-
-    return results

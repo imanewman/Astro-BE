@@ -36,7 +36,7 @@ def test_create_asc_mc():
     Tests that the ascendant and midheaven are correctly calculated.
     """
 
-    asc, mc = create_asc_mc(tim_natal)
+    asc, mc = create_asc_mc(tim_natal.event)
 
     calculate_point_attributes(asc)
     calculate_point_attributes(mc)
@@ -79,7 +79,7 @@ def test_create_point():
     Tests that a points location and speed is correctly calculated.
     """
 
-    point_in_time = create_swe_point(tim_natal, Point.saturn)
+    point_in_time = create_swe_point(tim_natal.event, Point.saturn)
 
     assert point_in_time.degrees_from_aries == pytest.approx(16.79)
     assert point_in_time.declination == pytest.approx(4.05)

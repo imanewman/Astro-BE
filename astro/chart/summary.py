@@ -1,6 +1,7 @@
 from typing import Dict
 
-from astro.util import Point, zodiac_sign_traits
+from astro.util import Point
+from astro.collection.zodiac_sign_traits import zodiac_sign_traits
 from astro.schema import SummarySchema, PointSchema
 
 

@@ -1,6 +1,17 @@
 from enum import Enum
 
 
+class EventType(str, Enum):
+    """
+    Enumerates all of the event types.
+    """
+
+    natal = "Natal"
+    event = "Event"
+    horary = "Horary"
+    election = "Election"
+
+
 class Polarity(str, Enum):
     """
     Enumerates all of the polarities.

@@ -3,7 +3,7 @@ from typing import Optional, Dict, List
 from pydantic import Field
 
 from astro.util import ZodiacSign, Point
-from .aspect import RelationshipSchema
+from .aspect import RelationshipSchema, RelationshipCollectionSchema
 from .house import HouseSchema
 from .base import BaseSchema, EventSchema
 from .point import PointSchema
@@ -43,20 +43,20 @@ class SummarySchema(BaseSchema):
 
 class ChartSchema(BaseSchema):
     """
-    Defines the results returned after running a calculation.
+    Defines a calculated chart's positions and condition.
     """
 
-    start: EventSchema = Field(
+    event: EventSchema = Field(
         ...,
-        title="Start Time and Location",
-        description="The base date, time, and location of calculations"
+        title="Event Time and Location",
+        description="The date, time, and location of calculations"
     )
     summary: Optional[SummarySchema] = Field(
         None,
         title="Chart Summary",
         description="Summarizes the most important information in a chart"
     )
-    start_points: Dict[Point, PointSchema] = Field(
+    points: Dict[Point, PointSchema] = Field(
         [],
         title="Planets and Points",
         description="A map of the base planets and points calculated"
@@ -66,8 +66,20 @@ class ChartSchema(BaseSchema):
         title="Houses",
         description="Each house, its sign, and the points within it"
     )
-    relationships: List[RelationshipSchema] = Field(
+
+
+class ChartCollectionSchema(BaseSchema):
+    """
+    Defines a collection of multiple calculated charts, and the aspects between them.
+    """
+    charts: List[ChartSchema] = Field(
         [],
-        title="Point Relationships",
-        description="A list of relationships between every set of points in the chart"
+        title="Charts",
+        description="A list of calculated chart points for given events"
     )
+    relationships: List[RelationshipCollectionSchema] = Field(
+        [],
+        title="Relationships",
+        description="A list of sets of relationships within and between each chart"
+    )
+

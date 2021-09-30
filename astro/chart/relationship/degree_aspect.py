@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from astro.schema import RelationshipSchema, PointSchema, AspectOrbsSchema
-from astro.util import aspectTraits
+from astro.collection import aspectTraits
 
 
 def calculate_degree_aspect(

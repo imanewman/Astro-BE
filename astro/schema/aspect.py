@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from pydantic import Field
 
@@ -182,4 +182,23 @@ class RelationshipSchema(BaseSchema):
         None,
         title="Declination Aspect Orb",
         description="The orb the declination based aspect, if it exists"
+    )
+
+
+class RelationshipCollectionSchema(BaseSchema):
+    from_chart_index: int = Field(
+        0,
+        title="From Chart Index",
+        description="The index of the chart that these aspects are calculated going from"
+    )
+    to_chart_index: Optional[int] = Field(
+        None,
+        title="To Chart Index",
+        description="The index of the chart that these aspects are calculated going to. "
+                    "The value is null if aspects are within a single chart"
+    )
+    relationships: List[RelationshipSchema] = Field(
+        [],
+        title="Relationships",
+        description="A list of relationships between every set of points in the first to the second chart"
     )

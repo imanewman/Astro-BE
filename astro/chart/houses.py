@@ -1,7 +1,8 @@
 from typing import Dict, List, Tuple
 
 from astro.schema import PointSchema, HouseSchema
-from astro.util import zodiac_sign_order, Point, zodiac_sign_traits, ZodiacSign
+from astro.util import zodiac_sign_order, Point, ZodiacSign
+from astro.collection.zodiac_sign_traits import zodiac_sign_traits
 
 
 def calculate_houses(points: Dict[Point, PointSchema]) -> List[HouseSchema]:

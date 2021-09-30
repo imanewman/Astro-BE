@@ -2,7 +2,8 @@ from typing import Tuple, Dict, List
 
 from .ephemeris import get_asc_mc, get_point_properties
 from astro.schema import EventSchema, PointSchema
-from astro.util import Point, point_traits, default_enabled_points
+from astro.util import Point, default_enabled_points
+from ...collection.point_traits import point_traits
 
 
 def create_points(

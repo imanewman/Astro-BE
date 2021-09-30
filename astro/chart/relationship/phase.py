@@ -1,7 +1,8 @@
 from typing import Optional, Tuple
 
 from astro.schema import RelationshipSchema, PointSchema
-from astro.util import point_traits, Point, PhaseType
+from astro.util import Point, PhaseType
+from astro.collection.point_traits import point_traits
 
 
 def calculate_aspect_phase(

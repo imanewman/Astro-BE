@@ -1,5 +1,5 @@
 from astro.schema import PointSchema
-from astro.util import point_traits
+from astro.collection.point_traits import point_traits
 
 
 def calculate_primary_dignities(point: PointSchema):

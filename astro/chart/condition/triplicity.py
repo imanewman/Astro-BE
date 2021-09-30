@@ -1,5 +1,5 @@
 from astro.schema import PointSchema
-from astro.util import zodiac_sign_traits
+from astro.collection.zodiac_sign_traits import zodiac_sign_traits
 
 
 def calculate_triplicity(point: PointSchema, is_day_time: bool):

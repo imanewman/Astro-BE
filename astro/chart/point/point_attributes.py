@@ -1,5 +1,6 @@
 from astro.schema import PointSchema
-from astro.util import ZodiacSign, zodiac_sign_order, point_traits
+from astro.util import ZodiacSign, zodiac_sign_order
+from astro.collection.point_traits import point_traits
 
 
 def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: float = 0.3):

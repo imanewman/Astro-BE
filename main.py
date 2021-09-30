@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, ChartSchema, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection
-from astro.util import zodiac_sign_traits, point_traits, aspectTraits
-from astro.util.tim import tim_natal
-from astro import create_chart
+    PointTraitsCollection, AspectTraitsCollection, EventSchema, EventSettingsSchema
+from astro.collection import aspectTraits
+from astro.collection.point_traits import point_traits
+from astro.collection.zodiac_sign_traits import zodiac_sign_traits
+from astro.util.tim import tim_natal, local_event
+from astro import create_chart, ChartCollectionSchema
 
 app = FastAPI()
 
@@ -42,19 +44,8 @@ async def get_aspects() -> AspectTraitsCollection:
     return aspectTraits
 
 
-@app.get("/")
-async def calc_now() -> ChartSchema:
-    """
-    Calculates the chart for the current time.
-
-    :return: Calculated points and aspects.
-    """
-
-    return await calc_chart(SettingsSchema())
-
-
 @app.post("/chart")
-async def calc_chart(settings: SettingsSchema) -> ChartSchema:
+async def calc_chart(settings: SettingsSchema) -> ChartCollectionSchema:
     """
     Calculates the chart for a given time.
 
@@ -66,30 +57,51 @@ async def calc_chart(settings: SettingsSchema) -> ChartSchema:
     return create_chart(settings)
 
 
+@app.get("/")
+async def calc_now() -> ChartCollectionSchema:
+    """
+    Calculates the chart for the current time.
+
+    :return: Calculated points and aspects.
+    """
+
+    return await calc_chart(SettingsSchema(
+        events=[EventSettingsSchema()]
+    ))
+
+
 @app.get("/local")
-async def calc_local() -> ChartSchema:
+async def calc_local() -> ChartCollectionSchema:
     """
     Calculates the current chart in the current location.
 
     :return: Calculated points and aspects.
     """
 
-    return await calc_chart(
-        SettingsSchema(**{
-            "start": {
-                "latitude": 35.2828,
-                "longitude": -120.6596
-            }
-        })
-    )
+    return await calc_chart(SettingsSchema(
+        events=[local_event]
+    ))
 
 
 @app.get("/tim")
-async def calc_tim() -> ChartSchema:
+async def calc_tim() -> ChartCollectionSchema:
     """
     Calculates the natal chart of tim.
 
     :return: Calculated points and aspects.
     """
+    return await calc_chart(SettingsSchema(
+        events=[tim_natal]
+    ))
 
-    return await calc_chart(SettingsSchema(start=tim_natal))
+
+@app.get("/tim/transits")
+async def calc_tim_transits() -> ChartCollectionSchema:
+    """
+    Calculates the natal chart of tim with current transits.
+
+    :return: Calculated points and aspects.
+    """
+    return await calc_chart(SettingsSchema(
+        events=[tim_natal, local_event]
+    ))
