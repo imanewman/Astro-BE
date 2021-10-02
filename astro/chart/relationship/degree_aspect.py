@@ -27,9 +27,9 @@ def calculate_degree_aspect(
 
     # Make sure to use the minimal relative degrees between the points.
     if absolute_degrees_between > 180:
-        relationship.degrees_between = -(360 - absolute_degrees_between)
+        relationship.arc_between = 360 - absolute_degrees_between
     else:
-        relationship.degrees_between = absolute_degrees_between
+        relationship.arc_between = absolute_degrees_between
 
     aspect_to_orb = orbs.aspect_to_orb()
 

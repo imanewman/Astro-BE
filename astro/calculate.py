@@ -21,14 +21,21 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         event = settings.events[event_index]
         points = create_points_with_attributes(event, settings)
         points_array = [point for point in points.values()]
-        relationships = calculate_relationships(points_array, points_array, True, settings.orbs)
+        points_and_event_type = (points_array, event.event.type)
+
+        relationships = calculate_relationships(
+            points_and_event_type,
+            points_and_event_type,
+            True,
+            settings.orbs
+        )
 
         houses = calculate_houses(points)
         summary = create_summary(points)
 
         calculate_condition(points, summary.is_day_time)
 
-        all_point_arrays.append(points_array)
+        all_point_arrays.append(points_and_event_type)
 
         all_charts.append(ChartSchema(
             event=event.event,

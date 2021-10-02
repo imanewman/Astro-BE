@@ -3,7 +3,7 @@ from typing import Dict, Optional, List
 from pydantic import Field
 
 from .base import BaseSchema
-from astro.util import AspectType, Point, PhaseType
+from astro.util import AspectType, Point, PhaseType, AspectMovementType
 
 
 class AspectOrbsSchema(BaseSchema):
@@ -145,8 +145,14 @@ class RelationshipSchema(BaseSchema):
     degrees_between: Optional[float] = Field(
         None,
         title="Ecliptic Degrees Between",
-        description="The degrees between the two points relative to their "
-                    "longitude along the ecliptic, out of 0 to 360"
+        description="The degrees between the two points relative to their longitude along the ecliptic."
+                    "This value will always be the positive arc from the slower to the faster point"
+    )
+    arc_between: Optional[float] = Field(
+        None,
+        title="Ecliptic Arc Between",
+        description="The arc between the two points relative to their longitude along the ecliptic. "
+                    "This value will always be the smaller arc between the two points"
     )
     degree_aspect: Optional[AspectType] = Field(
         None,
@@ -162,6 +168,11 @@ class RelationshipSchema(BaseSchema):
         None,
         title="Degree Aspect Orb",
         description="The orb of the degree based aspect, if one exists"
+    )
+    degree_aspect_movement: Optional[AspectMovementType] = Field(
+        None,
+        title="Degree Aspect Movement",
+        description="Whether the degree aspect is applying or separating"
     )
     phase: Optional[PhaseType] = Field(
         None,
@@ -187,6 +198,11 @@ class RelationshipSchema(BaseSchema):
         None,
         title="Declination Aspect Orb",
         description="The orb the declination based aspect, if it exists"
+    )
+    declination_aspect_movement: Optional[AspectMovementType] = Field(
+        None,
+        title="Declination Aspect Movement",
+        description="Whether the declination aspect is applying or separating"
     )
 
 

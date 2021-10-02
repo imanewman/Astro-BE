@@ -7,9 +7,21 @@ class EventType(str, Enum):
     """
 
     natal = "Natal"
+    transit = "Transit"
     event = "Event"
     horary = "Horary"
     election = "Election"
+
+
+class AspectMovementType(str, Enum):
+    """
+    Enumerates all of the aspect movement types.
+    """
+
+    applying = "Applying"
+    mutually_applying = "Mutually Applying"
+    separating = "Separating"
+    mutually_separating = "Mutually Separating"
 
 
 class Polarity(str, Enum):

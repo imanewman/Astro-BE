@@ -119,7 +119,7 @@ class PointSchema(BaseSchema):
     degrees_from_aries: float = Field(
         ...,
         title="Degrees from 0 Aries",
-        description="The degrees, out of 360, that this point is located at relative to 0 degrees Aries",
+        description="The degrees that this point is located at along the ecliptic",
         ge=0,
         lt=360
     )
@@ -136,7 +136,7 @@ class PointSchema(BaseSchema):
     minutes_in_degree: int = Field(
         0,
         title="Minutes of current degree",
-        description="The minutes (out of 60) within a degree that this point is located at"
+        description="The minutes, out of 60, within a degree that this point is located at"
     )
     declination: Optional[float] = Field(
         None,
@@ -159,18 +159,23 @@ class PointSchema(BaseSchema):
 
     speed: Optional[float] = Field(
         None,
-        title="Degrees Moved Per Day",
-        description="The degrees that this point is moving per day"
+        title="Longitude Degrees Moved Per Day",
+        description="The degrees along the ecliptic that this point is moving per day"
+    )
+    declination_speed: Optional[float] = Field(
+        None,
+        title="Declination Degrees Moved Per Day",
+        description="The degrees from the equatorial that this point is moving per day"
     )
     is_stationary: Optional[bool] = Field(
         None,
         title="Is Stationary",
-        description="Whether this point is stationary"
+        description="Whether this point is stationary on the ecliptic"
     )
     is_retrograde: Optional[bool] = Field(
         None,
         title="Is Retrograde",
-        description="Whether this point is retrograde"
+        description="Whether this point is retrograde on the ecliptic"
     )
 
     rulers: PointRulersSchema = Field(
