@@ -81,6 +81,6 @@ def test_create_point():
 
     point_in_time = create_swe_point(tim_natal.event, Point.saturn)
 
-    assert point_in_time.degrees_from_aries == pytest.approx(16.79)
-    assert point_in_time.declination == pytest.approx(4.05)
-    assert point_in_time.speed == pytest.approx(-0.079, abs=1e-3)
+    assert round(point_in_time.degrees_from_aries, 2) == 16.79
+    assert round(point_in_time.declination, 2) == pytest.approx(4.05)
+    assert round(point_in_time.speed, 3) == -0.079

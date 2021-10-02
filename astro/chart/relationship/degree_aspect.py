@@ -22,18 +22,25 @@ def calculate_degree_aspect(
     :param orbs: The orbs to use for calculations.
     """
 
-    # The relative degrees between two points
-    absolute_degrees_between = \
-        round(abs(from_point.degrees_from_aries - to_point.degrees_from_aries), 2)
+    # The relative degrees between two points.
+    absolute_degrees_between = abs(from_point.degrees_from_aries - to_point.degrees_from_aries)
+
+    # Make sure to use the minimal relative degrees between the points.
+    if absolute_degrees_between > 180:
+        relationship.degrees_between = -(360 - absolute_degrees_between)
+    else:
+        relationship.degrees_between = absolute_degrees_between
+
     aspect_to_orb = orbs.aspect_to_orb()
 
     for aspect_type, aspect in aspectTraits.aspects.items():
-        # for each type of aspect, calculate whether the degrees of separation between points
+        # For each type of aspect, calculate whether the degrees of separation between points
         # is within the orb of the degrees for this aspect.
         for orb in calculate_aspect_orbs(aspect.degrees, absolute_degrees_between):
             if abs(orb) <= aspect_to_orb[aspect_type]:
                 relationship.degree_aspect = aspect_type
                 relationship.degree_aspect_orb = orb
+                relationship.degree_aspect_angle = aspect.degrees
 
                 break
 
@@ -50,6 +57,6 @@ def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -
     """
 
     return (
-        round(aspect_degrees - degrees_of_separation, 2),
-        round(360 - aspect_degrees - degrees_of_separation, 2)
+        aspect_degrees - degrees_of_separation,
+        360 - aspect_degrees - degrees_of_separation
     )

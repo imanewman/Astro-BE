@@ -24,8 +24,8 @@ def calculate_declination_aspect(
     if from_point.declination is not None \
             and to_point.declination is not None \
             and not (from_point.name == Point.north_mode and to_point.name == Point.south_node):
-        parallel_orb = round(abs(from_point.declination - to_point.declination), 2)
-        contraparallel_orb = round(abs(from_point.declination + to_point.declination), 2)
+        parallel_orb = abs(from_point.declination - to_point.declination)
+        contraparallel_orb = abs(from_point.declination + to_point.declination)
 
         relationship.declination_between = parallel_orb
 

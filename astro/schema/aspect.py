@@ -153,10 +153,15 @@ class RelationshipSchema(BaseSchema):
         title="Degree Based Aspect",
         description="The type of aspect by degree between the two points, if one exists"
     )
+    degree_aspect_angle: Optional[float] = Field(
+        None,
+        title="Degree Aspect Angle",
+        description="The angle degrees of the degree based aspect, if one exists"
+    )
     degree_aspect_orb: Optional[float] = Field(
         None,
         title="Degree Aspect Orb",
-        description="The orb the degree based aspect, if it exists"
+        description="The orb of the degree based aspect, if one exists"
     )
     phase: Optional[PhaseType] = Field(
         None,

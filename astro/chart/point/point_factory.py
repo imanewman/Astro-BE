@@ -58,11 +58,11 @@ def create_asc_mc(event: EventSchema) -> Tuple[PointSchema, PointSchema]:
     return (
         PointSchema(
             name=Point.ascendant,
-            degrees_from_aries=round(ascendant, 2),
+            degrees_from_aries=ascendant,
         ),
         PointSchema(
             name=Point.midheaven,
-            degrees_from_aries=round(midheaven, 2),
+            degrees_from_aries=midheaven,
         )
     )
 
@@ -87,9 +87,9 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
 
     point_in_time = PointSchema(
         name=traits.name,
-        degrees_from_aries=round(degrees_from_aries, 2),
-        declination=round(declination, 2),
-        speed=round(speed, 4),
+        degrees_from_aries=degrees_from_aries,
+        declination=declination,
+        speed=speed,
     )
 
     return point_in_time
@@ -104,7 +104,7 @@ def create_south_node(north_node: PointSchema) -> PointSchema:
     :return: The current location of the south node.
     """
 
-    south_node_degrees_from_aries = round((north_node.degrees_from_aries + 180) % 360, 2)
+    south_node_degrees_from_aries = (north_node.degrees_from_aries + 180) % 360
     declination = north_node.declination and -north_node.declination
 
     return PointSchema(

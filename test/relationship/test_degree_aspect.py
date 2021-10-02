@@ -13,7 +13,7 @@ def create_separated_points(degrees_of_separation: int) -> RelationshipSchema:
 
     from_point, to_point = create_test_points(
         {"degrees_from_aries": 0},
-        {"degrees_from_aries": degrees_of_separation},
+        {"degrees_from_aries": degrees_of_separation % 360},
     )
     relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
 
@@ -29,8 +29,19 @@ def test_calculate_degree_based_aspects__none():
 
     relationship = create_separated_points(20)
 
+    assert relationship.degrees_between == 20
     assert relationship.degree_aspect is None
+    assert relationship.degree_aspect_angle is None
     assert relationship.degree_aspect_orb is None
+
+
+def test_calculate_degree_based_aspects__degrees_polarity():
+    """
+    Tests that the polarity of degrees between points is always correct.
+    """
+
+    assert create_separated_points(20).degrees_between == 20
+    assert create_separated_points(-20).degrees_between == -20
 
 
 def test_calculate_degree_based_aspects__conjunction():
@@ -40,8 +51,19 @@ def test_calculate_degree_based_aspects__conjunction():
 
     relationship = create_separated_points(5)
 
+    assert relationship.degrees_between == 5
     assert relationship.degree_aspect == AspectType.conjunction
+    assert relationship.degree_aspect_angle == 0
     assert relationship.degree_aspect_orb == -5
+
+
+def test_calculate_degree_based_aspects__conjunction_polarity():
+    """
+    Tests that the polarity of aspect orb between points is always correct.
+    """
+
+    assert create_separated_points(5).degree_aspect_orb == -5
+    assert create_separated_points(-5).degree_aspect_orb == 5
 
 
 def test_calculate_degree_based_aspects__opposition():
@@ -52,6 +74,7 @@ def test_calculate_degree_based_aspects__opposition():
     relationship = create_separated_points(185)
 
     assert relationship.degree_aspect == AspectType.opposition
+    assert relationship.degree_aspect_angle == 180
     assert relationship.degree_aspect_orb == -5
 
 

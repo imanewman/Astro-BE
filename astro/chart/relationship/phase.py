@@ -58,7 +58,7 @@ def calculate_degrees_between(slower: PointSchema, faster: PointSchema) -> float
     :return: The degrees out of 360 from the slower to the faster planet.
     """
 
-    return round(faster.degrees_from_aries - slower.degrees_from_aries, 2) % 360
+    return (faster.degrees_from_aries - slower.degrees_from_aries) % 360
 
 
 def calculate_faster_point(
