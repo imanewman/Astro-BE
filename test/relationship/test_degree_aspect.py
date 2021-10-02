@@ -54,16 +54,17 @@ def test_calculate_degree_based_aspects__conjunction():
     assert relationship.arc_between == 5
     assert relationship.degree_aspect == AspectType.conjunction
     assert relationship.degree_aspect_angle == 0
-    assert relationship.degree_aspect_orb == -5
+    assert relationship.degree_aspect_orb == 5
 
 
-def test_calculate_degree_based_aspects__conjunction_polarity():
+def test_calculate_degree_based_aspects__exists_polarity():
     """
-    Tests that the polarity of aspect orb between points is always correct.
+    Tests that the polarity of aspect orb between points is always correct,
+    based on the faster point (Moon) moving toward the slower one (Mercury).
     """
 
-    assert create_separated_points(5).degree_aspect_orb == -5
-    assert create_separated_points(-5).degree_aspect_orb == 5
+    assert create_separated_points(5).degree_aspect_orb == 5
+    assert create_separated_points(-5).degree_aspect_orb == -5
 
 
 def test_calculate_degree_based_aspects__opposition():
@@ -74,8 +75,7 @@ def test_calculate_degree_based_aspects__opposition():
     relationship = create_separated_points(185)
 
     assert relationship.degree_aspect == AspectType.opposition
-    assert relationship.degree_aspect_angle == 180
-    assert relationship.degree_aspect_orb == -5
+    assert relationship.degree_aspect_orb == 5
 
 
 def test_calculate_degree_based_aspects__square():
@@ -86,7 +86,7 @@ def test_calculate_degree_based_aspects__square():
     relationship = create_separated_points(95)
 
     assert relationship.degree_aspect == AspectType.square
-    assert relationship.degree_aspect_orb == -5
+    assert relationship.degree_aspect_orb == 5
 
 
 def test_calculate_degree_based_aspects__trine():
@@ -97,7 +97,7 @@ def test_calculate_degree_based_aspects__trine():
     relationship = create_separated_points(125)
 
     assert relationship.degree_aspect == AspectType.trine
-    assert relationship.degree_aspect_orb == -5
+    assert relationship.degree_aspect_orb == 5
 
 
 def test_calculate_degree_based_aspects__sextile():
@@ -108,7 +108,7 @@ def test_calculate_degree_based_aspects__sextile():
     relationship = create_separated_points(65)
 
     assert relationship.degree_aspect == AspectType.sextile
-    assert relationship.degree_aspect_orb == -5
+    assert relationship.degree_aspect_orb == 5
 
 
 def test_calculate_degree_based_aspects__quintile():
@@ -119,7 +119,7 @@ def test_calculate_degree_based_aspects__quintile():
     relationship = create_separated_points(73)
 
     assert relationship.degree_aspect == AspectType.quintile
-    assert relationship.degree_aspect_orb == -1
+    assert relationship.degree_aspect_orb == 1
 
 
 def test_calculate_degree_based_aspects__septile():
@@ -130,7 +130,7 @@ def test_calculate_degree_based_aspects__septile():
     relationship = create_separated_points(52)
 
     assert relationship.degree_aspect == AspectType.septile
-    assert relationship.degree_aspect_orb == -1
+    assert relationship.degree_aspect_orb == 1
 
 
 def test_calculate_degree_based_aspects__octile():
@@ -141,7 +141,7 @@ def test_calculate_degree_based_aspects__octile():
     relationship = create_separated_points(46)
 
     assert relationship.degree_aspect == AspectType.octile
-    assert relationship.degree_aspect_orb == -1
+    assert relationship.degree_aspect_orb == 1
 
 
 def test_calculate_degree_based_aspects__novile():
@@ -152,7 +152,7 @@ def test_calculate_degree_based_aspects__novile():
     relationship = create_separated_points(39)
 
     assert relationship.degree_aspect == AspectType.novile
-    assert relationship.degree_aspect_orb == 1
+    assert relationship.degree_aspect_orb == -1
 
 
 def test_calculate_degree_based_aspects__semi_sextile():
@@ -163,7 +163,7 @@ def test_calculate_degree_based_aspects__semi_sextile():
     relationship = create_separated_points(31)
 
     assert relationship.degree_aspect == AspectType.semi_sextile
-    assert relationship.degree_aspect_orb == -1
+    assert relationship.degree_aspect_orb == 1
 
 
 def test_calculate_degree_based_aspects__quincunx():
@@ -174,7 +174,7 @@ def test_calculate_degree_based_aspects__quincunx():
     relationship = create_separated_points(151)
 
     assert relationship.degree_aspect == AspectType.quincunx
-    assert relationship.degree_aspect_orb == -1
+    assert relationship.degree_aspect_orb == 1
 
 
 def test_calculate_degree_based_aspects__sesquiquadrate():
@@ -185,7 +185,7 @@ def test_calculate_degree_based_aspects__sesquiquadrate():
     relationship = create_separated_points(136)
 
     assert relationship.degree_aspect == AspectType.sesquiquadrate
-    assert relationship.degree_aspect_orb == -1
+    assert relationship.degree_aspect_orb == 1
 
 
 def test_calculate_degree_based_aspects__bi_quintile():
@@ -196,4 +196,4 @@ def test_calculate_degree_based_aspects__bi_quintile():
     relationship = create_separated_points(143)
 
     assert relationship.degree_aspect == AspectType.bi_quintile
-    assert relationship.degree_aspect_orb == 1
+    assert relationship.degree_aspect_orb == -1
