@@ -12,6 +12,9 @@ def calculate_degree_types(
     """
     Calculates whether degree or declination aspects are applying or separating.
 
+    - Sets the `relationship`'s attributes `degree_aspect_movement` and `declination_aspect_movement`
+      to the direction of movement between the two points.
+
     :param relationship: The relationship between points to store calculations in.
     :param from_item: The starting point in the relationship, and the type of chart it is from.
     :param to_item: The ending point in the relationship, and the type of chart it is from.
@@ -41,6 +44,8 @@ def calculate_degree_types_from_speed(
     :param relationship: The relationship between points to store calculations in.
     :param from_item: The starting speed in the relationship, and the type of chart it is from.
     :param to_item: The ending speed in the relationship, and the type of chart it is from.
+
+    :return: The direction of movement between the two speeds.
     """
     orb = relationship.degree_aspect_orb
     from_speed, from_event_type = from_item

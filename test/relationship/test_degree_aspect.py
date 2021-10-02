@@ -1,4 +1,4 @@
-from astro.chart.relationship.degree_aspect import calculate_degree_aspect
+from astro.chart import calculate_degree_aspect
 from astro.schema import RelationshipSchema
 from astro.util import AspectType
 from test.utils import create_test_points
@@ -9,6 +9,8 @@ def create_separated_points(degrees_of_separation: int) -> RelationshipSchema:
     Creates a relationship with a degree aspect by the given degrees of separation.
 
     :param degrees_of_separation: The degrees of separation between points.
+
+    :return: The created relationship.
     """
 
     from_point, to_point = create_test_points(
