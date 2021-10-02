@@ -22,10 +22,13 @@ def calculate_degree_aspect(
     :param orbs: The orbs to use for calculations.
     """
 
-    # The relative degrees between two points.
-    absolute_degrees_between = abs(from_point.degrees_from_aries - to_point.degrees_from_aries)
+    # Find the relative degrees from the faster to the slower point.
+    if from_point.speed and to_point.speed and from_point.speed < to_point.speed:
+        absolute_degrees_between = (to_point.degrees_from_aries - from_point.degrees_from_aries) % 360
+    else:
+        absolute_degrees_between = (from_point.degrees_from_aries - to_point.degrees_from_aries) % 360
 
-    # Make sure to use the minimal relative degrees between the points.
+    # Set the smaller arc of relative degrees between the points.
     if absolute_degrees_between > 180:
         relationship.arc_between = 360 - absolute_degrees_between
     else:
@@ -47,7 +50,7 @@ def calculate_degree_aspect(
 
 def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -> Tuple[float, float]:
     """
-    Calculates the orbs between an aspect of the given amount of degrees and the actual degrees of separation
+    Calculates the orbs between an aspect of the given amount of degrees and actual degrees of separation
     between points.
 
     :param aspect_degrees: The degrees corresponding to an exact aspect, such as 180 for an opposition.
