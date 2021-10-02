@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
 from astro.schema import RelationshipSchema, PointSchema
-from astro.util import EventType, AspectMovementType
+from astro.util import EventType, AspectMovementType, AspectType
 
 
 def calculate_degree_types(
@@ -21,37 +21,45 @@ def calculate_degree_types(
     """
 
     relationship.degree_aspect_movement = calculate_degree_types_from_speed(
-        relationship,
         (from_item[0].speed, from_item[1]),
         (to_item[0].speed, to_item[1]),
+        relationship.degree_aspect_orb
     )
 
     relationship.declination_aspect_movement = calculate_degree_types_from_speed(
-        relationship,
         (from_item[0].declination_speed, from_item[1]),
         (to_item[0].declination_speed, to_item[1]),
+        relationship.declination_aspect_orb,
+        relationship.declination_aspect
     )
 
 
 def calculate_degree_types_from_speed(
-        relationship: RelationshipSchema,
         from_item: Tuple[float, EventType],
         to_item: Tuple[float, EventType],
+        orb: float,
+        declination_aspect: Optional[AspectType] = None
 ) -> Optional[AspectMovementType]:
     """
     Calculates whether aspects are applying or separating.
 
-    :param relationship: The relationship between points to store calculations in.
     :param from_item: The starting speed in the relationship, and the type of chart it is from.
     :param to_item: The ending speed in the relationship, and the type of chart it is from.
+    :param orb: The orb between the two points.
+    :param declination_aspect: The type of declination aspect, if one exists.
 
     :return: The direction of movement between the two speeds.
     """
-    orb = relationship.degree_aspect_orb
     from_speed, from_event_type = from_item
     to_speed, to_event_type = to_item
 
     if orb is not None and from_speed is not None and to_speed is not None:
+        # TODO: handle contraparallels properly
+        # if declination_aspect == AspectType.contraparallel:
+        #     # For contraparallel aspects, reflect the speed.
+        #     to_speed = abs(to_speed)
+        #     from_speed = abs(to_speed)
+
         moving_in_same_direction = (from_speed > 0) == (to_speed > 0)
 
         # If aspects are between a transit chart and a base chart,

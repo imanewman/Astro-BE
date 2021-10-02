@@ -47,6 +47,17 @@ def test_calculate_declination_aspects__parallel():
     assert relationship.declination_aspect_orb == 0.5
 
 
+def test_calculate_declination_aspects__parallel_reversed():
+    """
+    Tests calculating planets with a parallel aspect by declination.
+    """
+
+    relationship = create_separated_points(19.5, 20)
+
+    assert relationship.declination_between == 0.5
+    assert relationship.declination_aspect_orb == 0.5
+
+
 def test_calculate_declination_aspects__contraparallel():
     """
     Tests calculating planets with a contraparallel a aspect by declination.
@@ -56,6 +67,17 @@ def test_calculate_declination_aspects__contraparallel():
 
     assert relationship.declination_between == 39.5
     assert relationship.declination_aspect == AspectType.contraparallel
+    assert relationship.declination_aspect_orb == 0.5
+
+
+def test_calculate_declination_aspects__contraparallel_reversed():
+    """
+    Tests calculating planets with a contraparallel a aspect by declination.
+    """
+
+    relationship = create_separated_points(-19.5, 20)
+
+    assert relationship.declination_between == 39.5
     assert relationship.declination_aspect_orb == 0.5
 
 
