@@ -57,11 +57,8 @@ def calculate_arc_between(
     :return: The relative degrees from the faster to the slower point.
     """
 
-    # Find the relative degrees from the faster to the slower point.
-    if from_point.speed and to_point.speed and from_point.speed < to_point.speed:
-        arc_between = (to_point.degrees_from_aries - from_point.degrees_from_aries) % 360
-    else:
-        arc_between = (from_point.degrees_from_aries - to_point.degrees_from_aries) % 360
+    # Find the relative degrees from the first to the second point.
+    arc_between = (from_point.degrees_from_aries - to_point.degrees_from_aries) % 360
 
     # Set the smaller arc of relative degrees between the points.
     if arc_between > 180:
@@ -78,12 +75,12 @@ def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -
     between points.
 
     :param aspect_degrees: The degrees corresponding to an exact aspect, such as 180 for an opposition.
-    :param degrees_of_separation: The degrees of separation between the planets.
+    :param degrees_of_separation: The absolute degrees of separation between the planets.
 
     :return: The two orbs of separation for this aspect.
     """
 
     return (
+        360 - aspect_degrees - degrees_of_separation,
         aspect_degrees - degrees_of_separation,
-        360 - aspect_degrees - degrees_of_separation
     )

@@ -1,5 +1,5 @@
 from astro.schema import RelationshipSchema, PointSchema, AspectOrbsSchema
-from astro.util import Point, AspectType
+from astro.util import Point, AspectType, point_axis_list
 
 
 def calculate_declination_aspect(
@@ -21,18 +21,21 @@ def calculate_declination_aspect(
     :param orbs: The orbs to use for calculations.
     """
 
-    if from_point.declination is not None \
-            and to_point.declination is not None \
-            and not (from_point.name == Point.north_mode and to_point.name == Point.south_node):
-        parallel_orb = abs(from_point.declination - to_point.declination)
-        contraparallel_orb = abs(from_point.declination + to_point.declination)
+    if from_point.declination is None \
+            or to_point.declination is None \
+            or [from_point.name, to_point.name] in point_axis_list \
+            or [to_point.name, from_point.name] in point_axis_list:
+        return
 
-        relationship.declination_between = parallel_orb
+    parallel_orb = from_point.declination - to_point.declination
+    contraparallel_orb = from_point.declination + to_point.declination
 
-        if parallel_orb <= orbs.parallel:
-            relationship.declination_aspect = AspectType.parallel
-            relationship.declination_aspect_orb = parallel_orb
+    relationship.declination_between = parallel_orb
 
-        elif contraparallel_orb <= orbs.contraparallel:
-            relationship.declination_aspect = AspectType.contraparallel
-            relationship.declination_aspect_orb = contraparallel_orb
+    if abs(parallel_orb) <= orbs.parallel:
+        relationship.declination_aspect = AspectType.parallel
+        relationship.declination_aspect_orb = parallel_orb
+
+    elif abs(contraparallel_orb) <= orbs.contraparallel:
+        relationship.declination_aspect = AspectType.contraparallel
+        relationship.declination_aspect_orb = contraparallel_orb

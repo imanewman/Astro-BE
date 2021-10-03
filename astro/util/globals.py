@@ -36,3 +36,10 @@ zodiac_sign_order = [
 """
 Exports the traditional order of zodiac signs.
 """
+
+point_axis_list = [
+    [Point.north_mode, Point.south_node]
+]
+"""
+Defines a list of all points that always form an axis.
+"""

@@ -62,7 +62,7 @@ def test_calculate_degree_based_aspects__conjunction():
 def test_calculate_degree_based_aspects__exists_polarity():
     """
     Tests that the polarity of aspect orb between points is always correct,
-    based on the faster point (Moon) moving toward the slower one (Mercury).
+    from the first to the second point.
     """
 
     assert create_separated_points(5).degree_aspect_orb == 5
