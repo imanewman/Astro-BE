@@ -2,7 +2,7 @@ import pytest
 
 from astro import create_points_with_attributes
 from astro.chart import calculate_point_attributes
-from astro.chart.point.point_factory import create_swe_point, create_asc_mc, create_south_node
+from astro.chart.point.point_factory import create_swe_point, create_south_node, create_angles
 from astro.schema import PointSchema
 from astro.util import Point, ZodiacSign
 from astro.util.tim import tim_natal
@@ -31,21 +31,27 @@ def test_create_all_points():
     assert points[Point.south_node].sign is ZodiacSign.pisces
 
 
-def test_create_asc_mc():
+def test_create_angles():
     """
     Tests that the ascendant and midheaven are correctly calculated.
     """
 
-    asc, mc = create_asc_mc(tim_natal.event)
+    asc, mc, desc, ic, vertex = create_angles(tim_natal.event)
 
-    calculate_point_attributes(asc)
-    calculate_point_attributes(mc)
+    assert int(asc.degrees_from_aries) == 245
+    assert int(asc.declination) == -21
 
-    assert asc.sign is ZodiacSign.sagittarius
-    assert asc.degrees_in_sign is 5
+    assert int(mc.degrees_from_aries) == 172
+    assert int(mc.declination) == 2
 
-    assert mc.sign is ZodiacSign.virgo
-    assert mc.degrees_in_sign is 22
+    assert int(desc.degrees_from_aries) == 65
+    assert int(desc.declination) == 21
+
+    assert int(ic.degrees_from_aries) == 352
+    assert int(ic.declination) == -2
+
+    assert int(vertex.degrees_from_aries) == 109
+    assert int(vertex.declination) == 21
 
 
 def test_create_south_node():

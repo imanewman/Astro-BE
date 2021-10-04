@@ -16,7 +16,7 @@ def create_test_points(*point_args: Dict, do_init_point: bool = False) -> List[P
     :return: A list of created points in time.
     """
 
-    names = [name.value for name in Point][2:]
+    names = [name.value for name in Point]
     points = []
 
     for args, point_name in zip(point_args, names):

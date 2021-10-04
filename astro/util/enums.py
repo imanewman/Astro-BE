@@ -78,9 +78,6 @@ class Point(str, Enum):
     Enumerates all of the available points and planetary bodies.
     """
 
-    ascendant = "Ascendant"
-    midheaven = "Midheaven"
-
     moon = "Moon"
     mercury = "Mercury"
     venus = "Venus"
@@ -103,6 +100,12 @@ class Point(str, Enum):
     charklo = "Charklo"
     eros = "Eros"
     eris = "Eris"
+
+    ascendant = "Ascendant"
+    midheaven = "Midheaven"
+    descendant = "Descendant"
+    inner_heaven = "Inner Heaven"
+    vertex = "Vertex"
 
     north_mode = "North Node"
     south_node = "South Node"

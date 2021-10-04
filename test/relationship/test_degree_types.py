@@ -1,6 +1,6 @@
 from typing import Tuple, Optional
 
-from astro.chart import calculate_degree_types, calculate_degree_aspect
+from astro.chart import calculate_degree_types, calculate_degree_aspect, calculate_declination_aspect
 from astro.chart.relationship.degree_types import calculate_degree_types_direction
 from astro.schema import RelationshipSchema
 from astro.util import EventType, AspectMovementType
@@ -13,11 +13,11 @@ def create_longitude_separated_points(
         to_item: Tuple[Optional[float], EventType],
 ) -> RelationshipSchema:
     """
-    Creates a relationship and calculates whether aspects are applying or separating.
+    Creates a relationship and calculates whether longitude aspects are applying or separating.
 
     :param degrees_of_separation: The degrees of separation between points.
-    :param from_item: The starting longitude speed, declination speed, and the type of chart it is from.
-    :param to_item: The ending longitude speed, declination speed, and the type of chart it is from.
+    :param from_item: The starting longitude speed and the type of chart it is from.
+    :param to_item: The ending longitude speed and the type of chart it is from.
 
     :return: The created relationship.
     """
@@ -40,6 +40,42 @@ def create_longitude_separated_points(
         relationship,
         (from_point, from_item[1]),
         (to_point, to_item[1])
+    )
+
+    return relationship
+
+
+def create_declination_separated_points(
+        from_item: Tuple[Optional[float], Optional[float], EventType],
+        to_item: Tuple[Optional[float], Optional[float], EventType],
+) -> RelationshipSchema:
+    """
+    Creates a relationship and calculates whether declination aspects are applying or separating.
+
+    :param from_item: The starting declination, declination speed, and the type of chart it is from.
+    :param to_item: The ending declination, declination speed, and the type of chart it is from.
+
+    :return: The created relationship.
+    """
+
+    from_point, to_point = create_test_points(
+        {
+            "declination": from_item[0],
+            "declination_speed": from_item[1],
+        },
+        {
+            "declination": to_item[0],
+            "declination_speed": to_item[1],
+        },
+    )
+    relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
+
+    calculate_declination_aspect(relationship, from_point, to_point)
+
+    calculate_degree_types(
+        relationship,
+        (from_point, from_item[2]),
+        (to_point, to_item[2])
     )
 
     return relationship
@@ -275,3 +311,159 @@ def test_calculate_degree_types_longitude__separating_transit():
     )
 
     assert relationship.degree_aspect_movement == AspectMovementType.separating
+
+
+def test_calculate_degree_types_declination__applying_positive():
+    """
+    Tests calculating degree types with a positive applying orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (1, 2, EventType.event),
+        (2, 1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.applying
+
+
+def test_calculate_degree_types_declination__applying_negative():
+    """
+    Tests calculating degree types with a negative applying orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (2, -2, EventType.event),
+        (1, -1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.applying
+
+
+def test_calculate_degree_types_declination__applying_contraparallel():
+    """
+    Tests calculating degree types with a contraparallel applying orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (2, 1, EventType.event),
+        (-1, -2, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.applying
+
+
+def test_calculate_degree_types_declination__mutually_applying_positive():
+    """
+    Tests calculating degree types with a positive mutually applying orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (1, 2, EventType.event),
+        (2, -1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.mutually_applying
+
+
+def test_calculate_degree_types_declination__mutually_applying_negative():
+    """
+    Tests calculating degree types with a negative mutually applying orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (2, -2, EventType.event),
+        (1, 1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.mutually_applying
+
+
+def test_calculate_degree_types_declination__mutually_applying_contraparallel():
+    """
+    Tests calculating degree types with a contraparallel mutually applying orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (2, -2, EventType.event),
+        (-1, -1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.mutually_applying
+
+
+def test_calculate_degree_types_declination__separating_positive():
+    """
+    Tests calculating degree types with a positive separating orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (1, 1, EventType.event),
+        (2, 2, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.separating
+
+
+def test_calculate_degree_types_declination__separating_negative():
+    """
+    Tests calculating degree types with a negative separating orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (2, 2, EventType.event),
+        (1, 1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.separating
+
+
+def test_calculate_degree_types_declination__separating_contraparallel():
+    """
+    Tests calculating degree types with a contraparallel separating orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (-2, -2, EventType.event),
+        (1, 1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.separating
+
+
+def test_calculate_degree_types_declination__mutually_separating_positive():
+    """
+    Tests calculating degree types with a positive mutually separating orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (1, -1, EventType.event),
+        (2, 2, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.mutually_separating
+
+
+def test_calculate_degree_types_declination__mutually_separating_negative():
+    """
+    Tests calculating degree types with a negative mutually separating orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (2, 2, EventType.event),
+        (1, -1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.mutually_separating
+
+
+def test_calculate_degree_types_declination__mutually_separating_contraparallel():
+    """
+    Tests calculating degree types with a contraparallel mutually separating orb.
+    """
+
+    relationship = create_declination_separated_points(
+        (-2, -2, EventType.event),
+        (1, -1, EventType.event),
+    )
+
+    assert relationship.declination_aspect_movement == AspectMovementType.mutually_separating

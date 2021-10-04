@@ -25,23 +25,23 @@ def calculate_aspect_phase(
     :param to_point: The ending point in the relationship.
     """
 
-    # Set a placeholder degrees between in case one of the points doesn't have a speed
+    # Set a placeholder degrees between in case one of the points doesn't have a speed.
     relationship.degrees_between = calculate_degrees_between(from_point, to_point)
 
-    # Find which body has the slower speed, which is used as the fulcrum
+    # Find which body has the slower speed, which is used as the fulcrum.
     slower, faster = calculate_faster_point(from_point, to_point)
 
-    # Avoid calculations for planets without speeds
+    # Avoid calculations for planets without speeds.
     if not slower or not faster:
         return
 
-    # Set the slower point as the base for calculations of phase
+    # Set the slower point as the base for calculations of phase.
     relationship.phase_base_point = slower.name
     relationship.degrees_between = calculate_degrees_between(slower, faster)
 
     point_names = [from_point.name, to_point.name]
 
-    # Avoid calculations for inferior planets to the sun, which cannot make a complete cycle
+    # Avoid calculations for inferior planets to the sun, which cannot make a complete cycle.
     if Point.sun in point_names and (Point.venus in point_names or Point.mercury in point_names):
         calculate_inferior_aspect_phase(relationship, faster)
     else:

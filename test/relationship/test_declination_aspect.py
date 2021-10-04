@@ -33,7 +33,7 @@ def test_calculate_declination_aspects__none():
 
     relationship = create_separated_points(20, 0)
 
-    assert relationship.declination_between == 20
+    assert relationship.declination_between == -20
     assert relationship.declination_aspect is None
     assert relationship.declination_aspect_orb is None
 
@@ -63,9 +63,9 @@ def test_calculate_declination_aspects__parallel():
 
     relationship = create_separated_points(20, 19)
 
-    assert relationship.declination_between == 1
+    assert relationship.declination_between == -1
     assert relationship.declination_aspect == AspectType.parallel
-    assert relationship.declination_aspect_orb == 1
+    assert relationship.declination_aspect_orb == -1
 
 
 def test_calculate_declination_aspects__parallel_reversed():
@@ -75,8 +75,8 @@ def test_calculate_declination_aspects__parallel_reversed():
 
     relationship = create_separated_points(19, 20)
 
-    assert relationship.declination_between == -1
-    assert relationship.declination_aspect_orb == -1
+    assert relationship.declination_between == 1
+    assert relationship.declination_aspect_orb == 1
 
 
 def test_calculate_declination_aspects__contraparallel():
@@ -86,7 +86,7 @@ def test_calculate_declination_aspects__contraparallel():
 
     relationship = create_separated_points(20, -19)
 
-    assert relationship.declination_between == 39
+    assert relationship.declination_between == -39
     assert relationship.declination_aspect == AspectType.contraparallel
     assert relationship.declination_aspect_orb == 1
 
@@ -98,5 +98,5 @@ def test_calculate_declination_aspects__contraparallel_reversed():
 
     relationship = create_separated_points(-20, 19)
 
-    assert relationship.declination_between == -39
+    assert relationship.declination_between == 39
     assert relationship.declination_aspect_orb == -1

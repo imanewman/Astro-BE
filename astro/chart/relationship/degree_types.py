@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 
 from astro.schema import RelationshipSchema, PointSchema
-from astro.util import EventType, AspectMovementType
+from astro.util import EventType, AspectMovementType, AspectType
 
 
 def calculate_degree_types(
@@ -20,22 +20,28 @@ def calculate_degree_types(
     :param to_item: The ending point in the relationship, and the type of chart it is from.
     """
 
-    relationship.degree_aspect_movement = calculate_degree_types_longitude(
+    relationship.degree_aspect_movement = calculate_degree_types_from_speed(
         (from_item[0].speed, from_item[1]),
         (to_item[0].speed, to_item[1]),
         relationship.degree_aspect_orb
     )
 
-    # TODO
-    # relationship.declination_aspect_movement = calculate_degree_types_from_speed(
-    #     (from_item[0].declination_speed, from_item[1]),
-    #     (to_item[0].declination_speed, to_item[1]),
-    #     relationship.declination_aspect_orb,
-    #     relationship.declination_aspect
-    # )
+    to_speed = to_item[0].declination_speed
+    aspect_orb = relationship.declination_aspect_orb
+
+    if relationship.declination_aspect == AspectType.contraparallel \
+            and to_speed is not None and aspect_orb is not None:
+        to_speed *= -1
+        aspect_orb *= -1
+
+    relationship.declination_aspect_movement = calculate_degree_types_from_speed(
+        (from_item[0].declination_speed, from_item[1]),
+        (to_speed, to_item[1]),
+        aspect_orb
+    )
 
 
-def calculate_degree_types_longitude(
+def calculate_degree_types_from_speed(
         from_item: Tuple[Optional[float], EventType],
         to_item: Tuple[Optional[float], EventType],
         orb: float
@@ -54,14 +60,15 @@ def calculate_degree_types_longitude(
         return
 
     from_speed, to_speed, is_same_direction = calculate_degree_types_direction(from_item, to_item)
+    from_is_faster = from_speed >= to_speed
 
-    if (orb >= 0 and from_speed >= to_speed) or (orb < 0 and from_speed < to_speed):
+    if orb >= 0 if from_is_faster else orb < 0:
         # If the orb is positive and first object is faster,
         # or the orb is negative and the second object is faster,
         # the aspect is applying.
         return AspectMovementType.applying if is_same_direction \
             else AspectMovementType.mutually_applying
-    if (orb >= 0 and from_speed < to_speed) or (orb < 0 and from_speed >= to_speed):
+    if orb >= 0 if not from_is_faster else orb < 0:
         # If the orb is positive and second object is faster,
         # or the orb is negative and the first object is faster,
         # the aspect is separating.

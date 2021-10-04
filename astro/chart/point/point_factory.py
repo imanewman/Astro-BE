@@ -1,6 +1,6 @@
 from typing import Tuple, Dict, List
 
-from .ephemeris import get_asc_mc, get_point_properties
+from .ephemeris import get_point_properties, get_angles
 from astro.schema import EventSchema, PointSchema
 from astro.util import Point, default_enabled_points
 from ...collection.point_traits import point_traits
@@ -23,8 +23,8 @@ def create_points(
 
     points = {}
 
-    # Add the ascendant and midheaven.
-    for point_in_time in create_asc_mc(event):
+    # Add the points for the angles.
+    for point_in_time in create_angles(event):
         if point_in_time.name in enabled_points:
             points[point_in_time.name] = point_in_time
 
@@ -40,29 +40,49 @@ def create_points(
     return points
 
 
-def create_asc_mc(event: EventSchema) -> Tuple[PointSchema, PointSchema]:
+def create_angles(event: EventSchema) -> Tuple[PointSchema, PointSchema, PointSchema, PointSchema, PointSchema]:
     """
-    Creates points for the ascendant and midheaven at the given time and location.
+    Creates points for the Ascendant, MC, Descendant, IC, and Vertex at the given time and location.
 
     - Assumes the julian day has been calculated and set on the event.
 
     :param event: The current date, time, and location.
 
     :return:
-        [0] The ascendant point for the given event.
-        [1] The midheaven point for the given event.
+        [0] The Ascendant point for the given event.
+        [1] The Midheaven point for the given event.
+        [2] The Descendant point for the given event.
+        [3] The IC point for the given event.
+        [4] The Vertex point for the given event.
     """
 
-    ascendant, midheaven = get_asc_mc(event.julian_day, event.latitude, event.longitude)
+    asc, mc, desc, ic, vertex = get_angles(event.julian_day, event.latitude, event.longitude)
 
     return (
         PointSchema(
             name=Point.ascendant,
-            degrees_from_aries=ascendant,
+            degrees_from_aries=asc[0],
+            declination=asc[1],
         ),
         PointSchema(
             name=Point.midheaven,
-            degrees_from_aries=midheaven,
+            degrees_from_aries=mc[0],
+            declination=mc[1],
+        ),
+        PointSchema(
+            name=Point.descendant,
+            degrees_from_aries=desc[0],
+            declination=desc[1],
+        ),
+        PointSchema(
+            name=Point.inner_heaven,
+            degrees_from_aries=ic[0],
+            declination=ic[1],
+        ),
+        PointSchema(
+            name=Point.vertex,
+            degrees_from_aries=vertex[0],
+            declination=vertex[1],
         )
     )
 
@@ -83,13 +103,14 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
         raise Exception(f"No point traits exist for: {point}")
 
     traits = point_traits.points[point]
-    degrees_from_aries, declination, speed = get_point_properties(event.julian_day, traits.swe_id)
+    longitude, longitude_speed, declination, declination_speed= get_point_properties(event.julian_day, traits.swe_id)
 
     point_in_time = PointSchema(
         name=traits.name,
-        degrees_from_aries=degrees_from_aries,
+        degrees_from_aries=longitude,
+        speed=longitude_speed,
         declination=declination,
-        speed=speed,
+        declination_speed=declination_speed,
     )
 
     return point_in_time

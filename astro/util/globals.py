@@ -3,6 +3,9 @@ from .enums import *
 default_enabled_points = [
     Point.ascendant,
     Point.midheaven,
+    Point.descendant,
+    Point.inner_heaven,
+    Point.vertex,
     Point.moon,
     Point.mercury,
     Point.venus,
@@ -13,7 +16,7 @@ default_enabled_points = [
     Point.uranus,
     Point.neptune,
     Point.pluto,
-    Point.north_mode
+    Point.north_mode,
 ]
 """
 Defines the list of points enabled for calculations by default.
@@ -38,7 +41,9 @@ Exports the traditional order of zodiac signs.
 """
 
 point_axis_list = [
-    [Point.north_mode, Point.south_node]
+    [Point.north_mode, Point.south_node],
+    [Point.ascendant, Point.descendant],
+    [Point.midheaven, Point.inner_heaven],
 ]
 """
 Defines a list of all points that always form an axis.

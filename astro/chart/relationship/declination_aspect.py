@@ -27,7 +27,7 @@ def calculate_declination_aspect(
             or [to_point.name, from_point.name] in point_axis_list:
         return
 
-    parallel_orb = from_point.declination - to_point.declination
+    parallel_orb = to_point.declination - from_point.declination
     contraparallel_orb = from_point.declination + to_point.declination
 
     relationship.declination_between = parallel_orb

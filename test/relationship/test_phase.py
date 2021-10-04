@@ -22,7 +22,7 @@ def create_phase_points(
     """
 
     from_point, to_point = create_test_points(
-        {"degrees_from_aries": degrees_of_moon},
+        {"degrees_from_aries": degrees_of_moon, "name": Point.moon},
         {"degrees_from_aries": degrees_of_mercury, "name": point_name},
     )
     relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
