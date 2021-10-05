@@ -30,9 +30,9 @@ def get_point_properties(jul_day: float, swe_id: int) -> Tuple[float, float, flo
 
     :returns:
         [0] The longitude of this point in degrees.
-        [1] The longitude speed per day of this point in degrees.
+        [1] The longitude velocity per day of this point in degrees.
         [2] The declination of this point in degrees.
-        [3] The declination speed per day of this point in degrees.
+        [3] The declination velocity per day of this point in degrees.
     """
 
     longitude, longitude_velocity = get_longitude_and_velocity(jul_day, swe_id)

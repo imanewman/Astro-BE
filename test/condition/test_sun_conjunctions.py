@@ -14,8 +14,8 @@ def create_sun_conjunction(degrees_between: float) -> PointSchema:
     """
 
     moon, sun = create_test_points(
-        {"degrees_from_aries": 0},
-        {"degrees_from_aries": degrees_between, "name": Point.sun},
+        {"longitude": 0},
+        {"longitude": degrees_between, "name": Point.sun},
         do_init_point=True
     )
 

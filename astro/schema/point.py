@@ -113,78 +113,80 @@ class PointSchema(BaseSchema):
     name: Point = Field(
         ...,
         title="Planet or Point",
-        description="The name of the planet or point"
+        description="The name of the planet or point."
     )
 
-    degrees_from_aries: float = Field(
+    longitude: float = Field(
         ...,
-        title="Degrees from 0 Aries",
-        description="The degrees that this point is located at along the ecliptic",
+        title="Ecliptic Longitude",
+        description="The degrees of longitude of this point along the ecliptic.",
         ge=0,
         lt=360
     )
+    longitude_velocity: Optional[float] = Field(
+        None,
+        title="Longitude Degrees Moved Per Day",
+        description="The degrees along the ecliptic that this point is moving per day."
+    )
+
+    declination: Optional[float] = Field(
+        None,
+        title="Declination",
+        description="The equatorial declination of the point."
+    )
+    declination_velocity: Optional[float] = Field(
+        None,
+        title="Declination Degrees Moved Per Day",
+        description="The degrees from the equatorial that this point is moving per day."
+    )
+
     sign: ZodiacSign = Field(
         ZodiacSign.aries,
         title="Zodiac Sign",
-        description="The zodiac sign this point is located within"
+        description="The zodiac sign this point is located within."
     )
     degrees_in_sign: int = Field(
         0,
         title="Degrees of current sign",
-        description="The degrees, out of 30, that this point is located at within a sign"
+        description="The degrees, out of 30, that this point is located at within a sign."
     )
     minutes_in_degree: int = Field(
         0,
         title="Minutes of current degree",
-        description="The minutes, out of 60, within a degree that this point is located at"
+        description="The minutes, out of 60, within a degree that this point is located at."
     )
-    declination: Optional[float] = Field(
+
+    is_stationary: Optional[bool] = Field(
         None,
-        title="Declination",
-        description="The latitude of the point"
+        title="Is Stationary",
+        description="Whether this point is stationary on the ecliptic."
+    )
+    is_retrograde: Optional[bool] = Field(
+        None,
+        title="Is Retrograde",
+        description="Whether this point is retrograde on the ecliptic."
     )
 
     house: Optional[int] = Field(
         None,
         title="House",
-        description="The house that this planet is in, relative to the ascendant",
+        description="The house that this planet is in, relative to the ascendant.",
         ge=1,
         le=12
     )
     ruled_houses: List[int] = Field(
         [],
         title="Ruled Houses",
-        description="The houses that this planet rules"
+        description="The houses that this planet rules."
     )
-
-    speed: Optional[float] = Field(
-        None,
-        title="Longitude Degrees Moved Per Day",
-        description="The degrees along the ecliptic that this point is moving per day"
-    )
-    declination_speed: Optional[float] = Field(
-        None,
-        title="Declination Degrees Moved Per Day",
-        description="The degrees from the equatorial that this point is moving per day"
-    )
-    is_stationary: Optional[bool] = Field(
-        None,
-        title="Is Stationary",
-        description="Whether this point is stationary on the ecliptic"
-    )
-    is_retrograde: Optional[bool] = Field(
-        None,
-        title="Is Retrograde",
-        description="Whether this point is retrograde on the ecliptic"
-    )
-
     rulers: PointRulersSchema = Field(
         PointRulersSchema(),
         title="Point Rulers",
-        description="The rulers of the segment of the chart this point falls in"
+        description="The rulers of the segment of the chart this point falls in."
     )
+
     condition: PointConditionSchema = Field(
         PointConditionSchema(),
         title="Condition",
-        description="The state of bonification and maltreatment if this is a planet"
+        description="The state of bonification and maltreatment if this is a planet."
     )

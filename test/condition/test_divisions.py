@@ -8,7 +8,7 @@ def test_calculate_divisions__beginning():
     Tests calculating the divisions of a sign at the initial degree.
     """
 
-    point = create_test_points({"degrees_from_aries": 180}, do_init_point=True)[0]
+    point = create_test_points({"longitude": 180}, do_init_point=True)[0]
 
     calculate_divisions(point)
 
@@ -22,7 +22,7 @@ def test_calculate_divisions__middle():
     Tests calculating the divisions of a sign at the middle degree.
     """
 
-    point = create_test_points({"degrees_from_aries": 195}, do_init_point=True)[0]
+    point = create_test_points({"longitude": 195}, do_init_point=True)[0]
 
     calculate_divisions(point)
 
@@ -36,7 +36,7 @@ def test_calculate_divisions__end():
     Tests calculating the divisions of a sign at the end degree.
     """
 
-    point = create_test_points({"degrees_from_aries": 209}, do_init_point=True)[0]
+    point = create_test_points({"longitude": 209}, do_init_point=True)[0]
 
     calculate_divisions(point)
 
@@ -51,8 +51,8 @@ def test_calculate_divisions__cusp():
     """
 
     bound_point, decan_point = create_test_points(
-        {"degrees_from_aries": 208},
-        {"degrees_from_aries": 200},
+        {"longitude": 208},
+        {"longitude": 200},
         do_init_point=True
     )
 
@@ -69,8 +69,8 @@ def test_calculate_divisions__rulers():
     """
 
     moon, mercury = create_test_points(
-        {"degrees_from_aries": 185},
-        {"degrees_from_aries": 190},
+        {"longitude": 185},
+        {"longitude": 190},
         do_init_point=True
     )
 

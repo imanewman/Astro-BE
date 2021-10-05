@@ -9,8 +9,8 @@ def test_calculate_aspects():
     """
 
     points = create_test_points(
-        {"degrees_from_aries": 0, "declination": 11, "house": 1},
-        {"degrees_from_aries": 5, "declination": -11, "house": 1},
+        {"longitude": 0, "declination": 11, "house": 1},
+        {"longitude": 5, "declination": -11, "house": 1},
     )
 
     points_and_event_type = (points, EventType.event)

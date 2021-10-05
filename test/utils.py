@@ -23,8 +23,8 @@ def create_test_points(*point_args: Dict, do_init_point: bool = False) -> List[P
         if "name" not in args:
             args["name"] = point_name
 
-        if "degrees_from_aries" not in args:
-            args["degrees_from_aries"] = 0
+        if "longitude" not in args:
+            args["longitude"] = 0
 
         point = PointSchema(**args)
 

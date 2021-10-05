@@ -16,7 +16,7 @@ def calculate_sun_conjunctions(point: PointSchema, sun: PointSchema, orbs: Aspec
     """
 
     # The relative degrees between two points
-    separation = abs(point.degrees_from_aries - sun.degrees_from_aries)
+    separation = abs(point.longitude - sun.longitude)
 
     for orb in calculate_aspect_orbs(0, separation):
         if abs(orb) <= orbs.sun_cazimi_orb:

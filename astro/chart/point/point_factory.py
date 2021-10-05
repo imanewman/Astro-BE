@@ -61,32 +61,32 @@ def create_angles(event: EventSchema) -> Tuple[PointSchema, PointSchema, PointSc
     return (
         PointSchema(
             name=Point.ascendant,
-            degrees_from_aries=asc[0],
-            speed=asc[1],
+            longitude=asc[0],
+            longitude_velocity=asc[1],
             declination=asc[2],
         ),
         PointSchema(
             name=Point.midheaven,
-            degrees_from_aries=mc[0],
-            speed=mc[1],
+            longitude=mc[0],
+            longitude_velocity=mc[1],
             declination=mc[2],
         ),
         PointSchema(
             name=Point.descendant,
-            degrees_from_aries=desc[0],
-            speed=desc[1],
+            longitude=desc[0],
+            longitude_velocity=desc[1],
             declination=desc[2],
         ),
         PointSchema(
             name=Point.inner_heaven,
-            degrees_from_aries=ic[0],
-            speed=ic[1],
+            longitude=ic[0],
+            longitude_velocity=ic[1],
             declination=ic[2],
         ),
         PointSchema(
             name=Point.vertex,
-            degrees_from_aries=vertex[0],
-            speed=vertex[1],
+            longitude=vertex[0],
+            longitude_velocity=vertex[1],
             declination=vertex[2],
         )
     )
@@ -113,10 +113,10 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
 
     point_in_time = PointSchema(
         name=traits.name,
-        degrees_from_aries=longitude,
-        speed=longitude_velocity,
+        longitude=longitude,
+        longitude_velocity=longitude_velocity,
         declination=declination,
-        declination_speed=declination_velocity,
+        declination_velocity=declination_velocity,
     )
 
     return point_in_time
@@ -131,12 +131,12 @@ def create_south_node(north_node: PointSchema) -> PointSchema:
     :return: The current location of the south node.
     """
 
-    south_node_degrees_from_aries = (north_node.degrees_from_aries + 180) % 360
+    south_node_longitude = (north_node.longitude + 180) % 360
     declination = north_node.declination and -north_node.declination
 
     return PointSchema(
         name=Point.south_node,
-        degrees_from_aries=south_node_degrees_from_aries,
+        longitude=south_node_longitude,
+        longitude_velocity=north_node.longitude_velocity,
         declination=declination,
-        speed=north_node.speed
     )

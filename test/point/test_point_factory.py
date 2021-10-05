@@ -38,19 +38,19 @@ def test_create_angles():
 
     asc, mc, desc, ic, vertex = create_angles(tim_natal.event)
 
-    assert int(asc.degrees_from_aries) == 245
+    assert int(asc.longitude) == 245
     assert int(asc.declination) == -21
 
-    assert int(mc.degrees_from_aries) == 172
+    assert int(mc.longitude) == 172
     assert int(mc.declination) == 2
 
-    assert int(desc.degrees_from_aries) == 65
+    assert int(desc.longitude) == 65
     assert int(desc.declination) == 21
 
-    assert int(ic.degrees_from_aries) == 352
+    assert int(ic.longitude) == 352
     assert int(ic.declination) == -2
 
-    assert int(vertex.degrees_from_aries) == 109
+    assert int(vertex.longitude) == 109
     assert int(vertex.declination) == 21
 
 
@@ -62,7 +62,7 @@ def test_create_south_node():
     north_node = PointSchema(
         name=Point.north_mode,
         speed=-0.05,
-        degrees_from_aries=168.03,
+        longitude=168.03,
         declination=4.73,
     )
 
@@ -87,6 +87,6 @@ def test_create_point():
 
     point_in_time = create_swe_point(tim_natal.event, Point.saturn)
 
-    assert round(point_in_time.degrees_from_aries, 2) == 16.79
+    assert round(point_in_time.longitude, 2) == 16.79
     assert round(point_in_time.declination, 2) == pytest.approx(4.05)
-    assert round(point_in_time.speed, 3) == -0.079
+    assert round(point_in_time.longitude_velocity, 3) == -0.079

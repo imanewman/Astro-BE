@@ -1,6 +1,6 @@
 from astro.chart import calculate_point_attributes
 from astro.chart.point.point_attributes import calculate_sign, calculate_degrees_in_sign, \
-    calculate_minutes_in_degree, calculate_speed_properties
+    calculate_minutes_in_degree, calculate_velocity_properties
 from astro.schema import PointSchema
 from astro.util import Point, ZodiacSign
 
@@ -12,8 +12,8 @@ def test_calculate_point_attributes():
 
     point = PointSchema(
         name=Point.mercury,
-        speed=1.73444,
-        degrees_from_aries=196.69
+        longitude_velocity=1.73444,
+        longitude=196.69
     )
 
     calculate_point_attributes(point)
@@ -57,11 +57,11 @@ def test_calculate_speed_properties__direct():
 
     point = PointSchema(
         name=Point.mercury,
-        speed=1.5,
-        degrees_from_aries=1
+        longitude_velocity=1.5,
+        longitude=1
     )
 
-    calculate_speed_properties(point)
+    calculate_velocity_properties(point)
 
     assert point.is_stationary is False
     assert point.is_retrograde is False
@@ -74,11 +74,11 @@ def test_calculate_speed_properties__stationary_direct():
 
     point = PointSchema(
         name=Point.mercury,
-        speed=0.1,
-        degrees_from_aries=1
+        longitude_velocity=0.1,
+        longitude=1
     )
 
-    calculate_speed_properties(point)
+    calculate_velocity_properties(point)
 
     assert point.is_stationary is True
     assert point.is_retrograde is False
@@ -91,11 +91,11 @@ def test_calculate_speed_properties__retrograde():
 
     point = PointSchema(
         name=Point.mercury,
-        speed=-1.5,
-        degrees_from_aries=1
+        longitude_velocity=-1.5,
+        longitude=1
     )
 
-    calculate_speed_properties(point)
+    calculate_velocity_properties(point)
 
     assert point.is_stationary is False
     assert point.is_retrograde is True
@@ -108,11 +108,11 @@ def test_calculate_speed_properties__stationary_retrograde():
 
     point = PointSchema(
         name=Point.mercury,
-        speed=-0.1,
-        degrees_from_aries=1
+        longitude_velocity=-0.1,
+        longitude=1
     )
 
-    calculate_speed_properties(point)
+    calculate_velocity_properties(point)
 
     assert point.is_stationary is True
     assert point.is_retrograde is True

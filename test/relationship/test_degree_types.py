@@ -24,12 +24,12 @@ def create_longitude_separated_points(
 
     from_point, to_point = create_test_points(
         {
-            "degrees_from_aries": 0,
-            "speed": from_item[0],
+            "longitude": 0,
+            "longitude_velocity": from_item[0],
         },
         {
-            "degrees_from_aries": degrees_of_separation % 360,
-            "speed": to_item[0],
+            "longitude": degrees_of_separation % 360,
+            "longitude_velocity": to_item[0],
         },
     )
     relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
@@ -61,11 +61,11 @@ def create_declination_separated_points(
     from_point, to_point = create_test_points(
         {
             "declination": from_item[0],
-            "declination_speed": from_item[1],
+            "declination_velocity": from_item[1],
         },
         {
             "declination": to_item[0],
-            "declination_speed": to_item[1],
+            "declination_velocity": to_item[1],
         },
     )
     relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)

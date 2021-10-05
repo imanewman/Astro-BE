@@ -22,8 +22,8 @@ def create_phase_points(
     """
 
     from_point, to_point = create_test_points(
-        {"degrees_from_aries": degrees_of_moon, "name": Point.moon},
-        {"degrees_from_aries": degrees_of_mercury, "name": point_name},
+        {"longitude": degrees_of_moon, "name": Point.moon},
+        {"longitude": degrees_of_mercury, "name": point_name},
     )
     relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
 
@@ -48,9 +48,9 @@ def create_inferior_phase_points(
     """
 
     sun, venus, mercury = create_test_points(
-        {"degrees_from_aries": degrees_of_separation, "name": Point.sun},
-        {"degrees_from_aries": 0, "name": Point.venus, "speed": speed},
-        {"degrees_from_aries": 0, "name": Point.mercury, "speed": speed},
+        {"longitude": degrees_of_separation, "name": Point.sun},
+        {"longitude": 0, "name": Point.venus, "longitude_velocity": speed},
+        {"longitude": 0, "name": Point.mercury, "longitude_velocity": speed},
     )
     relationship_venus = RelationshipSchema(from_point=sun.name, to_point=venus.name)
     relationship_mercury = RelationshipSchema(from_point=sun.name, to_point=mercury.name)

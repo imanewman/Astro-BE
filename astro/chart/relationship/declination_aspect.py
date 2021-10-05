@@ -1,5 +1,5 @@
 from astro.schema import RelationshipSchema, PointSchema, AspectOrbsSchema
-from astro.util import Point, AspectType, point_axis_list
+from astro.util import AspectType, point_axis_list
 
 
 def calculate_declination_aspect(

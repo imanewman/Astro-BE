@@ -14,9 +14,9 @@ def calculate_aspect_phase(
     Calculates the phase between two planets zodiacal positions.
 
     - If one of the given planets doesn't have traits or a speed:
-        - Sets the relationship's `degrees_between` from the first to the second point.
+        - Sets the relationship's `arc_ordered` from the first to the second point.
     - If both planets have a speed:
-        - Sets the relationship's `degrees_between` from the slower to the faster point.
+        - Sets the relationship's `arc_ordered` from the slower to the faster point.
         - Sets the relationship's `phase_base_point` and `phase` attributes.
         - For inferior planets cycles to the sun, separate calculations are done to determine the `phase`.
 
@@ -58,7 +58,7 @@ def calculate_degrees_between(slower: PointSchema, faster: PointSchema) -> float
     :return: The degrees out of 360 from the slower to the faster planet.
     """
 
-    return (faster.degrees_from_aries - slower.degrees_from_aries) % 360
+    return (faster.longitude - slower.longitude) % 360
 
 
 def calculate_faster_point(
@@ -133,13 +133,13 @@ def calculate_inferior_aspect_phase(relationship: RelationshipSchema, faster: Po
     """
 
     if relationship.arc_ordered > 180:
-        if faster.speed < 0:
+        if faster.longitude_velocity < 0:
             # The cycle begins with the retrograde conjunction with the Sun
             relationship.phase = PhaseType.new
         else:
             relationship.phase = PhaseType.first_quarter
     else:
-        if faster.speed < 0:
+        if faster.longitude_velocity < 0:
             # The cycle ends with the retrograde conjunction with the Sun
             relationship.phase = PhaseType.last_quarter
         else:

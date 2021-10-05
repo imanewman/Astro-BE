@@ -8,8 +8,8 @@ def test_calculate_condition():
     Tests calculating the complete condition of a planet.
     """
     moon, sun = create_test_points(
-        {"degrees_from_aries": 40, "house": 3},
-        {"degrees_from_aries": 40, "name": Point.sun},
+        {"longitude": 40, "house": 3},
+        {"longitude": 40, "name": Point.sun},
         do_init_point=True
     )
 

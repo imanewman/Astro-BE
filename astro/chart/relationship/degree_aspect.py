@@ -58,7 +58,7 @@ def calculate_arc_between(
     """
 
     # Find the relative degrees from the first to the second point.
-    arc_between = (from_point.degrees_from_aries - to_point.degrees_from_aries) % 360
+    arc_between = (from_point.longitude - to_point.longitude) % 360
 
     # Set the smaller arc of relative degrees between the points.
     if arc_between > 180:
