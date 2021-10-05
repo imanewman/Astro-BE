@@ -35,22 +35,22 @@ def get_point_properties(jul_day: float, swe_id: int) -> Tuple[float, float, flo
         [3] The declination speed per day of this point in degrees.
     """
 
-    longitude, longitude_speed = get_longitude_and_speed(jul_day, swe_id)
-    declination, declination_speed = get_declination_and_speed(jul_day, swe_id)
+    longitude, longitude_velocity = get_longitude_and_velocity(jul_day, swe_id)
+    declination, declination_velocity = get_declination_and_velocity(jul_day, swe_id)
 
-    return longitude, longitude_speed, declination, declination_speed
+    return longitude, longitude_velocity, declination, declination_velocity
 
 
-def get_longitude_and_speed(jul_day: float, swe_id: int) -> Tuple[float, float]:
+def get_longitude_and_velocity(jul_day: float, swe_id: int) -> Tuple[float, float]:
     """
-    Calculates the ecliptic longitude and longitude speed of a point at a given time.
+    Calculates the ecliptic longitude and longitude velocity of a point at a given time.
 
     :param jul_day: The julian day time to find the point at.
     :param swe_id: The swiss ephemeris ID of the point.
 
     :return:
         [0] The ecliptic longitude of this point in degrees.
-        [1] The ecliptic longitude speed per day of this point in degrees.
+        [1] The ecliptic longitude velocity per day of this point in degrees.
     """
 
     # [0] ecliptic longitude degrees.
@@ -63,16 +63,16 @@ def get_longitude_and_speed(jul_day: float, swe_id: int) -> Tuple[float, float]:
     return ecliptic_calculations[0], ecliptic_calculations[3]
 
 
-def get_declination_and_speed(jul_day: float, swe_id: int) -> Tuple[float, float]:
+def get_declination_and_velocity(jul_day: float, swe_id: int) -> Tuple[float, float]:
     """
-    Calculates the equatorial declination and declination speed of a point at a given time.
+    Calculates the equatorial declination and declination velocity of a point at a given time.
 
     :param jul_day: The julian day time to find the point at.
     :param swe_id: The swiss ephemeris ID of the point.
 
     :return:
         [0] The equatorial declination of this point in degrees.
-        [1] The equatorial declination speed per day of this point in degrees.
+        [1] The equatorial declination velocity per day of this point in degrees.
     """
 
     # [0] equatorial right ascension degrees.
@@ -92,30 +92,41 @@ def get_angles(
         jul_day: float,
         lat: float,
         long: float
-) -> Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float], Tuple[float, float], Tuple[float, float]]:
+) -> Tuple[
+    Tuple[float, float, float],
+    Tuple[float, float, float],
+    Tuple[float, float, float],
+    Tuple[float, float, float],
+    Tuple[float, float, float],
+]:
     """
-    Calculates the longitude and declination of the Ascendant, MC, Descendant, IC, and Vertex.
-
-    - Notes how to calculate declination: `
+    Calculates the longitude, velocity, and declination of the
+    Ascendant, MC, Descendant, IC, and Vertex.
 
     :param jul_day: The time to find the point at.
     :param lat: The degrees of latitude of the event.
     :param long: The degrees of longitude of the event.
 
     :return:
-        [0] The ecliptic longitude and equatorial declination of the Ascendant.
-        [1] The ecliptic longitude and equatorial declination of the Midheaven.
-        [2] The ecliptic longitude and equatorial declination of the Descendant.
-        [3] The ecliptic longitude and equatorial declination of the IC.
-        [4] The ecliptic longitude and equatorial declination of the Vertex.
+        [0] The ecliptic longitude, velocity, and equatorial declination of the Ascendant.
+        [1] The ecliptic longitude, velocity, and equatorial declination of the Midheaven.
+        [2] The ecliptic longitude, velocity, and equatorial declination of the Descendant.
+        [3] The ecliptic longitude, velocity, and equatorial declination of the IC.
+        [4] The ecliptic longitude, velocity, and equatorial declination of the Vertex.
     """
 
-    houses_and_points = swe.houses(jul_day, lat, long, b'A')
-    asc = houses_and_points[1][0]
-    mc = houses_and_points[1][1]
+    # [0] Cusps: tuple of 12 float for cusps.
+    # [1] Asc MC: tuple of 8 float for additional points.
+    # [2] Cusps Speed: tuple of 12 float for cusps speeds.
+    # [3] Asc MC Speed: tuple of 8 float for speeds of additional points.
+    cusps_and_speeds = swe.houses_ex2(jul_day, lat, long, b'A')
+    angles = cusps_and_speeds[1]
+    speeds = cusps_and_speeds[3]
+    asc, asc_velocity = angles[0], speeds[0]
+    mc, mc_velocity = angles[1], speeds[1]
+    vertex, vertex_velocity = angles[3], speeds[3]
     desc = (asc + 180) % 360
     ic = (mc + 180) % 360
-    vertex = houses_and_points[1][3]
 
     # [0] True obliquity of the ecliptic.
     # [1] Mean obliquity of the ecliptic.
@@ -124,16 +135,16 @@ def get_angles(
     obliquity_and_nutation = swe.calc_ut(jul_day, swe.ECL_NUT)[0]
     obliquity = obliquity_and_nutation[0]
 
-    asc_declination = swe.cotrans(asc, 0, 1, -obliquity)[1]
-    mc_declination = swe.cotrans(mc, 0, 1, -obliquity)[1]
-    desc_declination = swe.cotrans(desc, 0, 1, -obliquity)[1]
-    ic_declination = swe.cotrans(ic, 0, 1, -obliquity)[1]
-    vertex_declination = swe.cotrans(vertex, 0, 1, -obliquity)[1]
+    asc_declination = swe.cotrans((asc, 0, 1), -obliquity)[1]
+    mc_declination = swe.cotrans((mc, 0, 1), -obliquity)[1]
+    desc_declination = swe.cotrans((desc, 0, 1), -obliquity)[1]
+    ic_declination = swe.cotrans((ic, 0, 1), -obliquity)[1]
+    vertex_declination = swe.cotrans((vertex, 0, 1), -obliquity)[1]
 
     return (
-        (asc, asc_declination),
-        (mc, mc_declination),
-        (desc, desc_declination),
-        (ic, ic_declination),
-        (vertex, vertex_declination),
+        (asc, asc_velocity, asc_declination),
+        (mc, mc_velocity, mc_declination),
+        (desc, asc_velocity, desc_declination),
+        (ic, mc_velocity, ic_declination),
+        (vertex, vertex_velocity,  vertex_declination),
     )

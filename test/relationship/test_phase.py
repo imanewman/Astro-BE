@@ -121,7 +121,7 @@ def test_calculate_phase__no_speed():
     relationship = create_phase_points(0, 10, Point.north_mode)
 
     assert relationship.phase_base_point is None
-    assert relationship.degrees_between == 10
+    assert relationship.arc_ordered == 10
     assert relationship.phase is None
 
 
@@ -133,7 +133,7 @@ def test_calculate_phase__no_traits():
     relationship = create_phase_points(0, 10, Point.ascendant)
 
     assert relationship.phase_base_point is None
-    assert relationship.degrees_between == 10
+    assert relationship.arc_ordered == 10
     assert relationship.phase is None
 
 
@@ -154,7 +154,7 @@ def test_calculate_phase__new():
 
     relationship = create_phase_points(0)
 
-    assert relationship.degrees_between == 0
+    assert relationship.arc_ordered == 0
     assert relationship.phase == PhaseType.new
 
 
@@ -165,7 +165,7 @@ def test_calculate_phase__crescent():
 
     relationship = create_phase_points(45)
 
-    assert relationship.degrees_between == 45
+    assert relationship.arc_ordered == 45
     assert relationship.phase == PhaseType.crescent
 
 
@@ -177,7 +177,7 @@ def test_calculate_phase__reversed():
 
     relationship = create_phase_points(15, 330)
 
-    assert relationship.degrees_between == 45
+    assert relationship.arc_ordered == 45
     assert relationship.phase == PhaseType.crescent
 
 
@@ -188,7 +188,7 @@ def test_calculate_phase__first_quarter():
 
     relationship = create_phase_points(90)
 
-    assert relationship.degrees_between == 90
+    assert relationship.arc_ordered == 90
     assert relationship.phase == PhaseType.first_quarter
 
 
@@ -199,7 +199,7 @@ def test_calculate_phase__gibbous():
 
     relationship = create_phase_points(135)
 
-    assert relationship.degrees_between == 135
+    assert relationship.arc_ordered == 135
     assert relationship.phase == PhaseType.gibbous
 
 
@@ -210,7 +210,7 @@ def test_calculate_phase__full():
 
     relationship = create_phase_points(180)
 
-    assert relationship.degrees_between == 180
+    assert relationship.arc_ordered == 180
     assert relationship.phase == PhaseType.full
 
 
@@ -221,7 +221,7 @@ def test_calculate_phase__disseminating():
 
     relationship = create_phase_points(225)
 
-    assert relationship.degrees_between == 225
+    assert relationship.arc_ordered == 225
     assert relationship.phase == PhaseType.disseminating
 
 
@@ -232,7 +232,7 @@ def test_calculate_phase__last_quarter():
 
     relationship = create_phase_points(270)
 
-    assert relationship.degrees_between == 270
+    assert relationship.arc_ordered == 270
     assert relationship.phase == PhaseType.last_quarter
 
 
@@ -243,5 +243,5 @@ def test_calculate_phase__balsamic():
 
     relationship = create_phase_points(315)
 
-    assert relationship.degrees_between == 315
+    assert relationship.arc_ordered == 315
     assert relationship.phase == PhaseType.balsamic

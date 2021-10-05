@@ -30,7 +30,7 @@ def calculate_declination_aspect(
     parallel_orb = to_point.declination - from_point.declination
     contraparallel_orb = from_point.declination + to_point.declination
 
-    relationship.declination_between = parallel_orb
+    relationship.declination_arc = parallel_orb
 
     if abs(parallel_orb) <= orbs.parallel:
         relationship.declination_aspect = AspectType.parallel

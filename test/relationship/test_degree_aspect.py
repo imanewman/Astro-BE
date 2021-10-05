@@ -31,7 +31,7 @@ def test_calculate_degree_based_aspects__none():
 
     relationship = create_separated_points(20)
 
-    assert relationship.arc_between == 20
+    assert relationship.arc_minimal == 20
     assert relationship.degree_aspect is None
     assert relationship.degree_aspect_angle is None
     assert relationship.degree_aspect_orb is None
@@ -42,8 +42,8 @@ def test_calculate_degree_based_aspects__degrees_polarity():
     Tests that the polarity of degrees between points is always correct.
     """
 
-    assert create_separated_points(20).arc_between == 20
-    assert create_separated_points(-20).arc_between == 20
+    assert create_separated_points(20).arc_minimal == 20
+    assert create_separated_points(-20).arc_minimal == 20
 
 
 def test_calculate_degree_based_aspects__conjunction():
@@ -53,7 +53,7 @@ def test_calculate_degree_based_aspects__conjunction():
 
     relationship = create_separated_points(5)
 
-    assert relationship.arc_between == 5
+    assert relationship.arc_minimal == 5
     assert relationship.degree_aspect == AspectType.conjunction
     assert relationship.degree_aspect_angle == 0
     assert relationship.degree_aspect_orb == 5

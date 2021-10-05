@@ -27,7 +27,7 @@ py==1.10.0
 pydantic==1.8.1
 pyhumps==3.0.2
 pyparsing==2.4.7
-pyswisseph==2.8.0.post1
+pyswisseph==2.10.2.0.dev1
 pytest==6.2.4
 python-dotenv==0.17.1
 python-multipart==0.0.5

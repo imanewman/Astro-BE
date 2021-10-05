@@ -62,27 +62,32 @@ def create_angles(event: EventSchema) -> Tuple[PointSchema, PointSchema, PointSc
         PointSchema(
             name=Point.ascendant,
             degrees_from_aries=asc[0],
-            declination=asc[1],
+            speed=asc[1],
+            declination=asc[2],
         ),
         PointSchema(
             name=Point.midheaven,
             degrees_from_aries=mc[0],
-            declination=mc[1],
+            speed=mc[1],
+            declination=mc[2],
         ),
         PointSchema(
             name=Point.descendant,
             degrees_from_aries=desc[0],
-            declination=desc[1],
+            speed=desc[1],
+            declination=desc[2],
         ),
         PointSchema(
             name=Point.inner_heaven,
             degrees_from_aries=ic[0],
-            declination=ic[1],
+            speed=ic[1],
+            declination=ic[2],
         ),
         PointSchema(
             name=Point.vertex,
             degrees_from_aries=vertex[0],
-            declination=vertex[1],
+            speed=vertex[1],
+            declination=vertex[2],
         )
     )
 
@@ -103,14 +108,15 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
         raise Exception(f"No point traits exist for: {point}")
 
     traits = point_traits.points[point]
-    longitude, longitude_speed, declination, declination_speed= get_point_properties(event.julian_day, traits.swe_id)
+    longitude, longitude_velocity, declination, declination_velocity = \
+        get_point_properties(event.julian_day, traits.swe_id)
 
     point_in_time = PointSchema(
         name=traits.name,
         degrees_from_aries=longitude,
-        speed=longitude_speed,
+        speed=longitude_velocity,
         declination=declination,
-        declination_speed=declination_speed,
+        declination_speed=declination_velocity,
     )
 
     return point_in_time

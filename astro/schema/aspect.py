@@ -130,79 +130,84 @@ class RelationshipSchema(BaseSchema):
     from_point: Point = Field(
         ...,
         title="From Point",
-        description="The point this aspect is from"
+        description="The point this aspect is from."
     )
     to_point: Point = Field(
         ...,
         title="To Point",
-        description="The point this aspect is to"
+        description="The point this aspect is to."
     )
+
     sign_aspect: Optional[AspectType] = Field(
         None,
         title="Sign Based Aspect",
-        description="The type of aspect by sign between the points"
+        description="The type of aspect by sign between the points."
     )
-    degrees_between: Optional[float] = Field(
+
+    arc_ordered: Optional[float] = Field(
         None,
         title="Ecliptic Degrees Between",
-        description="The degrees between the two points relative to their longitude along the ecliptic."
-                    "This value will always be the positive arc from the slower to the faster point"
+        description="The degrees between the two points relative to their longitude along the ecliptic. "
+                    "This value will always be the arc from the first to the second point."
     )
-    arc_between: Optional[float] = Field(
+    arc_minimal: Optional[float] = Field(
         None,
-        title="Ecliptic Arc Between",
+        title="Ecliptic Degrees Between",
         description="The arc between the two points relative to their longitude along the ecliptic. "
-                    "This value will always be the smaller arc between the two points"
+                    "This value will always be the smaller arc between the two points."
     )
-    degree_aspect: Optional[AspectType] = Field(
-        None,
-        title="Degree Based Aspect",
-        description="The type of aspect by degree between the two points, if one exists"
-    )
-    degree_aspect_angle: Optional[float] = Field(
-        None,
-        title="Degree Aspect Angle",
-        description="The angle degrees of the degree based aspect, if one exists"
-    )
-    degree_aspect_orb: Optional[float] = Field(
-        None,
-        title="Degree Aspect Orb",
-        description="The orb of the degree based aspect, if one exists"
-    )
-    degree_aspect_movement: Optional[AspectMovementType] = Field(
-        None,
-        title="Degree Aspect Movement",
-        description="Whether the degree aspect is applying or separating"
-    )
+
     phase: Optional[PhaseType] = Field(
         None,
         title="Phase",
-        description="The phase of separation between these two points"
+        description="The phase of separation between these two points."
     )
     phase_base_point: Optional[Point] = Field(
         None,
         title="Phase Base Point",
-        description="The point being used as the base for the phase between points"
+        description="The point being used as the base for the phase between points."
     )
-    declination_between: Optional[float] = Field(
+
+    degree_aspect: Optional[AspectType] = Field(
         None,
-        title="Declination Degrees Between",
-        description="The degrees between the two points relative to their declination from the equator"
+        title="Degree Based Aspect",
+        description="The type of aspect by degree between the two points."
+    )
+    degree_aspect_angle: Optional[float] = Field(
+        None,
+        title="Degree Aspect Angle",
+        description="The angle degrees of the degree based aspect."
+    )
+    degree_aspect_orb: Optional[float] = Field(
+        None,
+        title="Degree Aspect Orb",
+        description="The orb of the degree based aspect."
+    )
+    degree_aspect_movement: Optional[AspectMovementType] = Field(
+        None,
+        title="Degree Aspect Movement",
+        description="Whether the degree aspect is applying or separating."
+    )
+
+    declination_arc: Optional[float] = Field(
+        None,
+        title="Declination Degrees Arc",
+        description="The degrees between the two points relative to their declination from the equator."
     )
     declination_aspect: Optional[AspectType] = Field(
         None,
         title="Declination Based Aspect",
-        description="The type of aspect by declination between the two points, if one exists"
+        description="The type of aspect by declination between the two points,."
     )
     declination_aspect_orb: Optional[float] = Field(
         None,
         title="Declination Aspect Orb",
-        description="The orb the declination based aspect, if it exists"
+        description="The orb the declination based aspect."
     )
     declination_aspect_movement: Optional[AspectMovementType] = Field(
         None,
         title="Declination Aspect Movement",
-        description="Whether the declination aspect is applying or separating"
+        description="Whether the declination aspect is applying or separating."
     )
 
 
@@ -210,16 +215,16 @@ class RelationshipCollectionSchema(BaseSchema):
     from_chart_index: int = Field(
         0,
         title="From Chart Index",
-        description="The index of the chart that these aspects are calculated going from"
+        description="The index of the chart that these aspects are calculated going from."
     )
     to_chart_index: Optional[int] = Field(
         None,
         title="To Chart Index",
         description="The index of the chart that these aspects are calculated going to. "
-                    "The value is null if aspects are within a single chart"
+                    "The value is null if aspects are within a single chart."
     )
     relationships: List[RelationshipSchema] = Field(
         [],
         title="Relationships",
-        description="A list of relationships between every set of points in the first to the second chart"
+        description="A list of relationships between every set of points in the first to the second chart."
     )

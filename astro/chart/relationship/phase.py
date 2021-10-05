@@ -26,7 +26,7 @@ def calculate_aspect_phase(
     """
 
     # Set a placeholder degrees between in case one of the points doesn't have a speed.
-    relationship.degrees_between = calculate_degrees_between(from_point, to_point)
+    relationship.arc_ordered = calculate_degrees_between(from_point, to_point)
 
     # Find which body has the slower speed, which is used as the fulcrum.
     slower, faster = calculate_faster_point(from_point, to_point)
@@ -37,7 +37,7 @@ def calculate_aspect_phase(
 
     # Set the slower point as the base for calculations of phase.
     relationship.phase_base_point = slower.name
-    relationship.degrees_between = calculate_degrees_between(slower, faster)
+    relationship.arc_ordered = calculate_degrees_between(slower, faster)
 
     point_names = [from_point.name, to_point.name]
 
@@ -102,21 +102,21 @@ def calculate_superior_aspect_phase(relationship: RelationshipSchema):
     :param relationship: The relationship between points to store calculations in.
     """
 
-    if relationship.degrees_between < 45:
+    if relationship.arc_ordered < 45:
         relationship.phase = PhaseType.new
-    elif 45 <= relationship.degrees_between < 90:
+    elif 45 <= relationship.arc_ordered < 90:
         relationship.phase = PhaseType.crescent
-    elif 90 <= relationship.degrees_between < 135:
+    elif 90 <= relationship.arc_ordered < 135:
         relationship.phase = PhaseType.first_quarter
-    elif 135 <= relationship.degrees_between < 180:
+    elif 135 <= relationship.arc_ordered < 180:
         relationship.phase = PhaseType.gibbous
-    elif 180 <= relationship.degrees_between < 225:
+    elif 180 <= relationship.arc_ordered < 225:
         relationship.phase = PhaseType.full
-    elif 225 <= relationship.degrees_between < 270:
+    elif 225 <= relationship.arc_ordered < 270:
         relationship.phase = PhaseType.disseminating
-    elif 270 <= relationship.degrees_between < 315:
+    elif 270 <= relationship.arc_ordered < 315:
         relationship.phase = PhaseType.last_quarter
-    elif 315 <= relationship.degrees_between:
+    elif 315 <= relationship.arc_ordered:
         relationship.phase = PhaseType.balsamic
 
 
@@ -132,7 +132,7 @@ def calculate_inferior_aspect_phase(relationship: RelationshipSchema, faster: Po
     :param faster: The faster point in the relationship, either Mercury or Venus.
     """
 
-    if relationship.degrees_between > 180:
+    if relationship.arc_ordered > 180:
         if faster.speed < 0:
             # The cycle begins with the retrograde conjunction with the Sun
             relationship.phase = PhaseType.new

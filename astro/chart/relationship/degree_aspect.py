@@ -62,9 +62,9 @@ def calculate_arc_between(
 
     # Set the smaller arc of relative degrees between the points.
     if arc_between > 180:
-        relationship.arc_between = 360 - arc_between
+        relationship.arc_minimal = 360 - arc_between
     else:
-        relationship.arc_between = arc_between
+        relationship.arc_minimal = arc_between
 
     return arc_between
 
