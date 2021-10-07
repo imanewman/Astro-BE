@@ -3,6 +3,7 @@ from typing import Tuple
 
 import swisseph as swe
 
+from astro.util import HouseSystem
 
 swe.set_ephe_path()
 
@@ -148,3 +149,37 @@ def get_angles(
         (ic, mc_velocity, ic_declination),
         (vertex, vertex_velocity,  vertex_declination),
     )
+
+
+def get_house_cusps(
+        jul_day: float,
+        lat: float,
+        long: float,
+        house_system: HouseSystem
+) -> Tuple[float, float, float, float, float, float, float, float, float, float, float, float]:
+    """
+    Calculates the house cusps for the given house system.
+
+    :param jul_day: The time to find the point at.
+    :param lat: The degrees of latitude of the event.
+    :param long: The degrees of longitude of the event.
+    :param house_system: The house system to use.
+
+    :return: The longitude of the 12 house cusps.
+    """
+
+    # A mapping from the internal house system names to their byte representations used by the ephemeris.
+    house_system_to_id = {
+        HouseSystem.whole_sign: b'W',
+        HouseSystem.placidus: b'P',
+        HouseSystem.equal: b'E',
+        HouseSystem.porphyry: b'O',
+        HouseSystem.regiomontanus: b'R',
+        HouseSystem.campanus: b'C',
+    }
+
+    # [0] Cusps: tuple of 12 float for cusps.
+    # [1] Asc MC: tuple of 8 float for additional points.
+    cusps = swe.houses(jul_day, lat, long, house_system_to_id[house_system])
+
+    return cusps[0]

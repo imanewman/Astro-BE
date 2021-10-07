@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import Field
 
-from astro.util import Point, default_enabled_points
+from astro.util import Point, default_enabled_points, HouseSystem
 from .aspect import AspectOrbsSchema
 from .base import BaseSchema, EventSchema
 
@@ -50,6 +50,11 @@ class SettingsSchema(BaseSchema):
         EventSchema(),
         title="Events",
         description="The events to calculate positions and aspects for"
+    )
+    secondary_house_system: HouseSystem = Field(
+        HouseSystem.whole_sign,
+        title="Secondary House System",
+        description="The secondary house system to calculate, besides the default whole sign.",
     )
     orbs: AspectOrbsSchema = Field(
         AspectOrbsSchema(),

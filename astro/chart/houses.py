@@ -1,12 +1,14 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 
-from astro.schema import PointSchema, HouseSchema
+from astro.chart.point.ephemeris import get_house_cusps
+from astro.schema import PointSchema, HouseSchema, EventSchema
 from astro.util import zodiac_sign_order, Point, ZodiacSign, HouseSystem
 from astro.collection.zodiac_sign_traits import zodiac_sign_traits
 
 
 def calculate_houses(
         points: Dict[Point, PointSchema],
+        event: Optional[EventSchema] = None,
         secondary_house_system: HouseSystem = HouseSystem.whole_sign
 ) -> Tuple[List[HouseSchema], List[HouseSchema]]:
     """
@@ -15,6 +17,7 @@ def calculate_houses(
     - Sets the `houses_whole_sign` and `houses_secondary` attributes within `points` items.
 
     :param points: A collection of points at a certain time and location.
+    :param event: The event time and location.
     :param secondary_house_system: The secondary house system to use.
 
     :return:
@@ -32,6 +35,11 @@ def calculate_houses(
         calculate_whole_sign_house_of_point(point, houses_whole_sign)
 
     calculate_traditional_house_rulers(points, house_signs)
+
+    if event is not None and secondary_house_system is not HouseSystem.whole_sign:
+        cusps = get_house_cusps(event.julian_day, event.latitude, event.longitude, secondary_house_system)
+
+        print(cusps)
 
     return houses_whole_sign, houses_whole_sign
 

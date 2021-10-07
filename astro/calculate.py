@@ -12,16 +12,18 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
     :return: Calculated points and aspects.
     """
     chart_count = len(settings.events)
+    secondary_house_system = settings.secondary_house_system
     all_point_arrays = []
     all_charts = []
     all_relationships = []
 
     # Store each event's calculated points, conditions, and aspects.
     for event_index in range(chart_count):
-        event = settings.events[event_index]
-        points = create_points_with_attributes(event, settings)
+        event_settings = settings.events[event_index]
+        event = event_settings.event
+        points = create_points_with_attributes(event_settings, settings)
         points_array = [point for point in points.values()]
-        points_and_event_type = (points_array, event.event.type)
+        points_and_event_type = (points_array, event.type)
 
         relationships = calculate_relationships(
             points_and_event_type,
@@ -30,7 +32,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
             settings.orbs
         )
 
-        houses_whole_sign, houses_secondary = calculate_houses(points)
+        houses_whole_sign, houses_secondary = calculate_houses(points, event, secondary_house_system)
         is_day_time = calculate_is_day_time(points)
 
         calculate_condition(points, is_day_time)
@@ -40,8 +42,9 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         all_point_arrays.append(points_and_event_type)
 
         all_charts.append(ChartSchema(
-            event=event.event,
+            event=event,
             points=points,
+            secondary_house_system=secondary_house_system,
             houses_whole_sign=houses_whole_sign,
             houses_secondary=houses_secondary,
             summary=summary,
