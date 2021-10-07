@@ -1,8 +1,8 @@
 from astro.schema import ZodiacSignCollection
 from astro.util import ZodiacSign, Polarity, Modality, Element, Point
 
-zodiac_sign_traits = ZodiacSignCollection(**{
-    "signs": {
+zodiac_sign_traits = ZodiacSignCollection(
+    signs={
         ZodiacSign.aries: {
             "sign": ZodiacSign.aries,
             "polarity": Polarity.yang,
@@ -280,7 +280,7 @@ zodiac_sign_traits = ZodiacSignCollection(**{
             "fall": None,
         },
     }
-})
+)
 """
 Associates each zodiac sign with relevant information.
 

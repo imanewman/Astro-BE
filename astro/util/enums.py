@@ -24,6 +24,19 @@ class AspectMovementType(str, Enum):
     mutually_separating = "Mutually Separating"
 
 
+class HouseSystem(str, Enum):
+    """
+    Enumerates all of the house systems.
+    """
+
+    whole_sign = "Whole Sign"  # W
+    placidus = "Placidus"  # P
+    equal = "Equal"  # E
+    porphyry = "Porphyry"  # O
+    regiomontanus = "Regiomontanus"  # R
+    campanus = "Campanus"  # C
+
+
 class Polarity(str, Enum):
     """
     Enumerates all of the polarities.

@@ -1,3 +1,4 @@
+from astro.collection import zodiac_sign_traits
 from astro.schema import PointSchema
 from astro.util import ZodiacSign, zodiac_sign_order
 from astro.collection.point_traits import point_traits
@@ -16,6 +17,10 @@ def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: 
     """
 
     point.sign = calculate_sign(point.longitude)
+    sign_traits = zodiac_sign_traits.signs[point.sign]
+    point.modality = sign_traits.modality
+    point.element = sign_traits.element
+
     point.degrees_in_sign = calculate_degrees_in_sign(point.longitude)
     point.minutes_in_degree = calculate_minutes_in_degree(point.longitude)
 
@@ -80,13 +85,17 @@ def calculate_velocity_properties(point: PointSchema, stationary_pct_of_avg_spee
      that a point must be under to be considered stationary.
     """
 
-    if point.longitude_velocity:
-        point.is_retrograde = point.longitude_velocity < 0
+    if point.longitude_velocity is None:
+        return
 
-        if point.name in point_traits.points and point_traits.points[point.name].speed_avg:
-            average_speed = point_traits.points[point.name].speed_avg
-            threshold_speed = average_speed * stationary_pct_of_avg_speed
+    point.is_retrograde = point.longitude_velocity < 0
 
-            point.is_stationary = \
-                0 < point.longitude_velocity < threshold_speed or 0 > point.longitude_velocity > -threshold_speed
-            point.is_retrograde = point.longitude_velocity < 0
+    if point.name not in point_traits.points or not point_traits.points[point.name].speed_avg:
+        return
+
+    average_speed = point_traits.points[point.name].speed_avg
+    threshold_speed = average_speed * stationary_pct_of_avg_speed
+
+    point.is_stationary = \
+        0 < point.longitude_velocity < threshold_speed or 0 > point.longitude_velocity > -threshold_speed
+    point.is_retrograde = point.longitude_velocity < 0

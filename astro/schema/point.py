@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from pydantic import Field
 
-from astro.util.enums import ZodiacSign, Point, SectPlacement
+from astro.util.enums import ZodiacSign, Point, SectPlacement, Modality, Element, HouseSystem
 from .base import BaseSchema
 
 
@@ -83,18 +83,18 @@ class PointRulersSchema(BaseSchema):
     Defines the traditional rulers of the segment of the chart this point falls in.
     """
 
-    sign: Point = Field(
-        Point.moon,
+    sign: Optional[Point] = Field(
+        None,
         title="Sign Ruler",
         description="The traditional planet that rules this sign",
     )
-    decan: Point = Field(
-        Point.moon,
+    decan: Optional[Point] = Field(
+        None,
         title="Decan Ruler",
         description="The traditional planet that rules this decan",
     )
-    bound: Point = Field(
-        Point.moon,
+    bound: Optional[Point] = Field(
+        None,
         title="Bound Ruler",
         description="The traditional planet that rules this bound",
     )
@@ -102,6 +102,30 @@ class PointRulersSchema(BaseSchema):
         [],
         title="Triplicity Ruler",
         description="The traditional planets that rule this sign in the order of importance",
+    )
+
+
+class PointHousesSchema(BaseSchema):
+    """
+    Defines the house and ruled houses of a point for a given house system.
+    """
+
+    house_system: HouseSystem = Field(
+        HouseSystem.whole_sign,
+        title="House System",
+        description="The house system used.",
+    )
+    house: Optional[int] = Field(
+        None,
+        title="House",
+        description="The house that this planet is in.",
+        ge=1,
+        le=12
+    )
+    ruled_houses: List[int] = Field(
+        [],
+        title="Ruled Houses",
+        description="The houses that this planet rules."
     )
 
 
@@ -145,6 +169,17 @@ class PointSchema(BaseSchema):
         title="Zodiac Sign",
         description="The zodiac sign this point is located within."
     )
+    modality: Modality = Field(
+        Modality.cardinal,
+        title="Zodiac Sign Modality",
+        description="The modality of this point's zodiac sign."
+    )
+    element: Element = Field(
+        Element.fire,
+        title="Zodiac Sign Element",
+        description="The element of this point's zodiac sign."
+    )
+
     degrees_in_sign: int = Field(
         0,
         title="Degrees of current sign",
@@ -167,18 +202,17 @@ class PointSchema(BaseSchema):
         description="Whether this point is retrograde on the ecliptic."
     )
 
-    house: Optional[int] = Field(
-        None,
-        title="House",
-        description="The house that this planet is in, relative to the ascendant.",
-        ge=1,
-        le=12
+    houses_whole_sign: PointHousesSchema = Field(
+        PointHousesSchema(),
+        title="Whole Sign Houses",
+        description="The whole sign house and ruled houses of this point."
     )
-    ruled_houses: List[int] = Field(
-        [],
-        title="Ruled Houses",
-        description="The houses that this planet rules."
+    houses_secondary: PointHousesSchema = Field(
+        PointHousesSchema(),
+        title="Secondary Houses",
+        description="A secondary house system's house and ruled houses of this point."
     )
+
     rulers: PointRulersSchema = Field(
         PointRulersSchema(),
         title="Point Rulers",

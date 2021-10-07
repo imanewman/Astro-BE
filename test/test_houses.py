@@ -1,6 +1,6 @@
 from astro.chart.point import create_points_with_attributes
-from astro.chart import calculate_whole_sign_houses, calculate_house_of_point, calculate_traditional_house_rulers, \
-    calculate_houses
+from astro.chart import calculate_whole_sign_houses, calculate_whole_sign_house_of_point, \
+    calculate_traditional_house_rulers, calculate_houses
 from astro.util import ZodiacSign, Point
 from astro.util.tim import tim_natal
 
@@ -11,14 +11,14 @@ def test_calculate_houses():
     """
 
     points = create_points_with_attributes(tim_natal)
-    house_placements = calculate_houses(points)
+    houses_whole_sign = calculate_houses(points)[0]
 
-    assert house_placements[0].number is 1
-    assert house_placements[0].sign == ZodiacSign.sagittarius
-    assert house_placements[0].points == [Point.ascendant, Point.venus, Point.mars, Point.pluto]
+    assert houses_whole_sign[0].number is 1
+    assert houses_whole_sign[0].sign == ZodiacSign.sagittarius
+    assert houses_whole_sign[0].points == [Point.ascendant, Point.venus, Point.mars, Point.pluto]
 
-    assert points[Point.venus].house is 1
-    assert points[Point.venus].ruled_houses == [6, 11]
+    assert points[Point.venus].houses_whole_sign.house is 1
+    assert points[Point.venus].houses_whole_sign.ruled_houses == [6, 11]
 
 
 def test_calculate_whole_sign_houses():
@@ -38,7 +38,7 @@ def test_calculate_whole_sign_houses():
     assert house_placements[11].sign == ZodiacSign.scorpio
 
 
-def test_calculate_house_of_point():
+def test_calculate_whole_sign_house_of_point():
     """
     Tests that the houses a planet falls in are properly calculated.
     """
@@ -48,9 +48,9 @@ def test_calculate_house_of_point():
     mercury = points[Point.mercury]
     house_placements = calculate_whole_sign_houses(asc)[0]
 
-    calculate_house_of_point(mercury, house_placements)
+    calculate_whole_sign_house_of_point(mercury, house_placements)
 
-    assert mercury.house is 11
+    assert mercury.houses_whole_sign.house is 11
     assert house_placements[10].points == [Point.mercury]
 
 
@@ -67,5 +67,5 @@ def test_calculate_traditional_house_rulers():
 
     calculate_traditional_house_rulers(points, houses)
 
-    assert mercury.ruled_houses == [7, 10]
-    assert jupiter.ruled_houses == [1, 4]
+    assert mercury.houses_whole_sign.ruled_houses == [7, 10]
+    assert jupiter.houses_whole_sign.ruled_houses == [1, 4]

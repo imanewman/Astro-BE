@@ -20,7 +20,7 @@ def calculate_primary_dignities(point: PointSchema):
     if point.name in point_traits.points:
         traits = point_traits.points[point.name]
 
-        if traits.joy and traits.joy == point.house:
+        if traits.joy and traits.joy == point.houses_whole_sign.house:
             point.condition.in_joy = True
 
         if point.sign in traits.domicile:

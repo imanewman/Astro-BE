@@ -1,6 +1,6 @@
 from astro.schema import ChartSchema, SettingsSchema, ChartCollectionSchema, RelationshipCollectionSchema
 from astro.chart import create_summary, calculate_houses, calculate_relationships, \
-    calculate_condition, create_points_with_attributes
+    calculate_condition, create_points_with_attributes, calculate_is_day_time
 
 
 def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
@@ -30,17 +30,20 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
             settings.orbs
         )
 
-        houses = calculate_houses(points)
-        summary = create_summary(points)
+        houses_whole_sign, houses_secondary = calculate_houses(points)
+        is_day_time = calculate_is_day_time(points)
 
-        calculate_condition(points, summary.is_day_time)
+        calculate_condition(points, is_day_time)
+
+        summary = create_summary(points, is_day_time)
 
         all_point_arrays.append(points_and_event_type)
 
         all_charts.append(ChartSchema(
             event=event.event,
             points=points,
-            houses=houses,
+            houses_whole_sign=houses_whole_sign,
+            houses_secondary=houses_secondary,
             summary=summary,
         ))
 

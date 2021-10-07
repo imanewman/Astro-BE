@@ -41,7 +41,9 @@ def test_calculate_primary_dignities__joy():
     Tests calculating when a planet is in joy.
     """
 
-    moon = create_point_with_dignities({"house": 3})
+    moon = create_point_with_dignities({
+        "houses_whole_sign": {"house": 3}
+    })
 
     assert moon.condition.in_joy is True
 

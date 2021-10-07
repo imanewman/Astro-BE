@@ -1,7 +1,7 @@
 from typing import Dict
 
 from astro.util import Point
-from astro.schema import EventSchema, PointSchema, SettingsSchema, EventSettingsSchema
+from astro.schema import PointSchema, SettingsSchema, EventSettingsSchema
 from .ephemeris import get_julian_day
 from .point_attributes import calculate_point_attributes
 from .point_factory import create_points
