@@ -1,5 +1,5 @@
 from astro.chart.point import create_points_with_attributes
-from astro.chart import calculate_whole_sign_houses, calculate_whole_sign_house_of_point, \
+from astro.chart import calculate_whole_sign_house_cusps, calculate_whole_sign_house_of_point, \
     calculate_traditional_house_rulers, calculate_houses
 from astro.util import ZodiacSign, Point
 from astro.util.tim import tim_natal
@@ -27,7 +27,7 @@ def test_calculate_whole_sign_houses():
     """
 
     asc = create_points_with_attributes(tim_natal)[Point.ascendant]
-    house_placements, houses = calculate_whole_sign_houses(asc)
+    house_placements, houses = calculate_whole_sign_house_cusps(asc)
 
     assert houses[0] == ZodiacSign.sagittarius
     assert houses[11] == ZodiacSign.scorpio
@@ -46,7 +46,7 @@ def test_calculate_whole_sign_house_of_point():
     points = create_points_with_attributes(tim_natal)
     asc = points[Point.ascendant]
     mercury = points[Point.mercury]
-    house_placements = calculate_whole_sign_houses(asc)[0]
+    house_placements = calculate_whole_sign_house_cusps(asc)[0]
 
     calculate_whole_sign_house_of_point(mercury, house_placements)
 
@@ -63,7 +63,7 @@ def test_calculate_traditional_house_rulers():
     asc = points[Point.ascendant]
     mercury = points[Point.mercury]
     jupiter = points[Point.jupiter]
-    houses = calculate_whole_sign_houses(asc)[1]
+    houses = calculate_whole_sign_house_cusps(asc)[1]
 
     calculate_traditional_house_rulers(points, houses)
 

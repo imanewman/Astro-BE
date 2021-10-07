@@ -52,7 +52,7 @@ class SettingsSchema(BaseSchema):
         description="The events to calculate positions and aspects for"
     )
     secondary_house_system: HouseSystem = Field(
-        HouseSystem.whole_sign,
+        HouseSystem.porphyry,
         title="Secondary House System",
         description="The secondary house system to calculate, besides the default whole sign.",
     )

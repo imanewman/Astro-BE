@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field
 
@@ -27,4 +27,14 @@ class HouseSchema(BaseSchema):
         [],
         title="Points",
         description="Any planets and points within this house"
+    )
+    from_longitude: Optional[float] = Field(
+        None,
+        title="Starting Longitude",
+        description="The longitude of the beginning of the house."
+    )
+    to_longitude: Optional[float] = Field(
+        None,
+        title="Ending Longitude",
+        description="The longitude of the end of the house."
     )
