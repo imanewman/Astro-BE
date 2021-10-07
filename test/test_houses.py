@@ -63,9 +63,9 @@ def test_calculate_traditional_house_rulers():
     asc = points[Point.ascendant]
     mercury = points[Point.mercury]
     jupiter = points[Point.jupiter]
-    houses = calculate_whole_sign_house_cusps(asc)[1]
+    houses = calculate_whole_sign_house_cusps(asc)[0]
 
-    calculate_traditional_house_rulers(points, houses)
+    calculate_traditional_house_rulers(points, houses, True)
 
     assert mercury.houses_whole_sign.ruled_houses == [7, 10]
     assert jupiter.houses_whole_sign.ruled_houses == [1, 4]

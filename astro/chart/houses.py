@@ -62,7 +62,7 @@ def calculate_whole_sign_houses(points: Dict[Point, PointSchema]) -> List[HouseS
     for point in points.values():
         calculate_whole_sign_house_of_point(point, houses_whole_sign)
 
-    calculate_traditional_house_rulers(points, house_signs)
+    calculate_traditional_house_rulers(points, houses_whole_sign, True)
 
     return houses_whole_sign
 
@@ -124,7 +124,8 @@ def calculate_whole_sign_house_of_point(
 
 def calculate_traditional_house_rulers(
         points: Dict[Point, PointSchema],
-        house_signs: List[ZodiacSign]
+        houses: List[HouseSchema],
+        set_primary_houses: bool
 ):
     """
     Calculates the houses that the traditional planets rule.
@@ -132,16 +133,23 @@ def calculate_traditional_house_rulers(
     - Sets the `houses_whole_sign.ruled_houses` attribute within `points` items.
 
     :param points: A collection of points at a certain time and location.
-    :param house_signs: The zodiac sign order of houses.
+    :param houses: The calculated house cusps.
+    :param set_primary_houses: Whether to set primary or secondary house rulers.
     """
 
-    for sign, traits in zodiac_sign_traits.signs.items():
-        house_ruled = house_signs.index(sign) + 1
+    house_number = 0
 
-        if traits.rulership in points:
-            ruler = points[traits.rulership]
+    for house in houses:
+        house_number += 1
+        sign_ruler = zodiac_sign_traits.signs[house.sign].rulership
 
-            ruler.houses_whole_sign.ruled_houses.append(house_ruled)
+        if sign_ruler in points:
+            ruler = points[sign_ruler]
+
+            if set_primary_houses:
+                ruler.houses_whole_sign.ruled_houses.append(house_number)
+            else:
+                ruler.houses_secondary.ruled_houses.append(house_number)
 
 
 def calculate_secondary_houses(
@@ -167,6 +175,8 @@ def calculate_secondary_houses(
         point.houses_secondary.house_system = secondary_house_system
 
         calculate_secondary_house_of_point(point, houses_secondary)
+
+    calculate_traditional_house_rulers(points, houses_secondary, False)
 
     return houses_secondary
 
