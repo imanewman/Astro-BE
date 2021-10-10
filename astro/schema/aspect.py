@@ -127,6 +127,22 @@ class RelationshipSchema(BaseSchema):
     """
     Represents information about the relationship between two points.
     """
+
+    def __str__(self):
+        aspect_between = f'from {self.from_point} to {self.to_point}'
+        aspects = []
+
+        if self.degree_aspect:
+            aspects.append(f'({round(self.degree_aspect_orb, 4)}) ' +
+                           f'{self.degree_aspect_movement} {self.degree_aspect} {aspect_between}')
+        if self.declination_aspect:
+            aspects.append(f'({round(self.declination_aspect_orb, 4)}) ' +
+                           f'{self.declination_aspect_movement} {self.declination_aspect} {aspect_between}')
+        if len(aspects) == 0:
+            aspects.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect} {aspect_between}')
+
+        return ", ".join(aspects)
+
     from_point: Point = Field(
         ...,
         title="From Point",
