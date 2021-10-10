@@ -6,7 +6,7 @@ from .degree_aspect import calculate_degree_aspect
 from .degree_types import calculate_degree_types
 from .phase import calculate_aspect_phase
 from .sign_aspect import calculate_sign_aspect
-from astro.util import EventType
+from astro.util import EventType, AspectSortType
 
 
 def calculate_relationships(
@@ -25,9 +25,9 @@ def calculate_relationships(
 
    :return: All calculated relationships.
    """
+
     from_points, from_event_type = from_items
     to_points, to_event_type = to_items
-
     relationships = []
 
     for from_point in from_points:
@@ -52,5 +52,12 @@ def calculate_relationships(
             )
 
             relationships.append(relationship)
+
+    if settings.aspect_sort == AspectSortType.smallest_orb:
+        # Sort ordered by the smallest orb
+        def sort_smallest_rb(rel: RelationshipSchema) -> float:
+            return abs(rel.degree_aspect_orb or rel.declination_aspect_orb or 360)
+
+        relationships.sort(key=sort_smallest_rb)
 
     return relationships

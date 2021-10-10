@@ -24,6 +24,15 @@ class AspectMovementType(str, Enum):
     mutually_separating = "Mutually Separating"
 
 
+class AspectSortType(str, Enum):
+    """
+    Enumerates all of the aspect sort types.
+    """
+
+    point_order = "Point Order"
+    smallest_orb = "Smallest Orb"
+
+
 class HouseSystem(str, Enum):
     """
     Enumerates all of the house systems.

@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import Field
 
-from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects
+from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, AspectSortType
 from .aspect import AspectOrbsSchema
 from .base import BaseSchema, EventSchema
 
@@ -65,6 +65,11 @@ class SettingsSchema(BaseSchema):
         default_enabled_aspects,
         title="Enabled Aspects",
         description="Defines what aspects should be enabled for calculations."
+    )
+    aspect_sort: AspectSortType = Field(
+        AspectSortType.smallest_orb,
+        title="Aspect Sort",
+        description="The way to sort the aspects."
     )
     stationary_pct_of_avg_speed: float = Field(
         0.30,

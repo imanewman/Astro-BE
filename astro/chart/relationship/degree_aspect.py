@@ -2,6 +2,7 @@ from typing import Tuple
 
 from astro.schema import RelationshipSchema, PointSchema, SettingsSchema
 from astro.collection import aspectTraits
+from astro.util import point_axis_list
 
 
 def calculate_degree_aspect(
@@ -21,6 +22,11 @@ def calculate_degree_aspect(
     :param to_point: The ending point in the relationship.
     :param settings: The settings to use for calculations.
     """
+
+    if [from_point.name, to_point.name] in point_axis_list \
+            or [to_point.name, from_point.name] in point_axis_list:
+        # Dont calculate aspects for an axis.
+        return
 
     # Find the relative degrees from the faster to the slower point.
     absolute_arc_between = calculate_arc_between(relationship, from_point, to_point)

@@ -26,6 +26,7 @@ def calculate_declination_aspect(
             or to_point.declination is None \
             or [from_point.name, to_point.name] in point_axis_list \
             or [to_point.name, from_point.name] in point_axis_list:
+        # Dont calculate aspects with no declination or for an axis.
         return
 
     parallel_orb = to_point.declination - from_point.declination
