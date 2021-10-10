@@ -1,14 +1,15 @@
 import swisseph as swe
 
 from astro.schema import PointTraitsCollection
-from astro.util import Point, PointCategory, ZodiacSign, convert_to_degrees
+from astro.util import Point, PointCategory, ZodiacSign, convert_to_degrees, PointAssociation
 
-point_traits = PointTraitsCollection(**{
-    "points": {
+point_traits = PointTraitsCollection(
+    points={
         Point.moon: {
             "swe_id": swe.MOON,
             "name": Point.moon,
             "category": PointCategory.visible,
+            "association": PointAssociation.personal,
             "joy": 3,
             "domicile": [ZodiacSign.cancer],
             "exaltation": [ZodiacSign.taurus],
@@ -22,6 +23,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.MERCURY,
             "name": Point.mercury,
             "category": PointCategory.visible,
+            "association": PointAssociation.personal,
             "joy": 1,
             "domicile": [ZodiacSign.gemini, ZodiacSign.virgo],
             "exaltation": [ZodiacSign.virgo],
@@ -35,6 +37,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.VENUS,
             "name": Point.venus,
             "category": PointCategory.visible,
+            "association": PointAssociation.personal,
             "joy": 5,
             "domicile": [ZodiacSign.taurus, ZodiacSign.libra],
             "exaltation": [ZodiacSign.pisces],
@@ -48,6 +51,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.SUN,
             "name": Point.sun,
             "category": PointCategory.visible,
+            "association": PointAssociation.personal,
             "joy": 9,
             "domicile": [ZodiacSign.leo],
             "exaltation": [ZodiacSign.aries],
@@ -61,6 +65,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.MARS,
             "name": Point.mars,
             "category": PointCategory.visible,
+            "association": PointAssociation.personal,
             "joy": 6,
             "domicile": [ZodiacSign.aries, ZodiacSign.scorpio],
             "exaltation": [ZodiacSign.capricorn],
@@ -74,6 +79,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.JUPITER,
             "name": Point.jupiter,
             "category": PointCategory.visible,
+            "association": PointAssociation.social,
             "joy": 11,
             "domicile": [ZodiacSign.sagittarius, ZodiacSign.pisces],
             "exaltation": [ZodiacSign.cancer],
@@ -87,6 +93,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.SATURN,
             "name": Point.saturn,
             "category": PointCategory.visible,
+            "association": PointAssociation.social,
             "joy": 12,
             "domicile": [ZodiacSign.capricorn, ZodiacSign.aquarius],
             "exaltation": [ZodiacSign.libra],
@@ -100,6 +107,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.URANUS,
             "name": Point.uranus,
             "category": PointCategory.outer,
+            "association": PointAssociation.transpersonal,
             "domicile": [ZodiacSign.aquarius],
             "exaltation": [ZodiacSign.scorpio],
             "detriment": [ZodiacSign.leo],
@@ -112,6 +120,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.NEPTUNE,
             "name": Point.neptune,
             "category": PointCategory.outer,
+            "association": PointAssociation.transpersonal,
             "domicile": [ZodiacSign.pisces],
             "exaltation": [],
             "detriment": [ZodiacSign.virgo],
@@ -124,6 +133,7 @@ point_traits = PointTraitsCollection(**{
             "swe_id": swe.PLUTO,
             "name": Point.pluto,
             "category": PointCategory.outer,
+            "association": PointAssociation.transpersonal,
             "domicile": [ZodiacSign.scorpio],
             "exaltation": [],
             "detriment": [ZodiacSign.taurus],
@@ -134,61 +144,137 @@ point_traits = PointTraitsCollection(**{
         },
 
         # TODO: these require a path to the swiss ephemeris with their locations
-        # Point.chiron: {
-        #     "swe_id": swe.CHIRON,
-        #     "name": Point.chiron,
-        #     "speed_avg": convert_to_degrees(0, 2, 0),
-        #     "speed_high": convert_to_degrees(0, 10, 0),
-        #     "speed_low": convert_to_degrees(0, -6, 0),
-        # },
-        # Point.pholus: {
-        #     "swe_id": swe.PHOLUS,
-        #     "name": Point.pholus,
-        # },
-        # Point.ceres: {
-        #     "swe_id": swe.CERES,
-        #     "name": Point.ceres,
-        #     "speed_avg": convert_to_degrees(0, 12, 40),
-        #     "speed_high": convert_to_degrees(0, 30, 0),
-        #     "speed_low": convert_to_degrees(0, -16, 0),
-        # },
-        # Point.pallas: {
-        #     "swe_id": swe.PALLAS,
-        #     "name": Point.pallas,
-        #     "speed_avg": convert_to_degrees(0, 12, 20),
-        #     "speed_high": convert_to_degrees(0, 40, 30),
-        #     "speed_low": convert_to_degrees(0, -22, -30),
-        # },
-        # Point.juno: {
-        #     "swe_id": swe.JUNO,
-        #     "name": Point.juno,
-        #     "speed_avg": convert_to_degrees(0, 14, 15),
-        #     "speed_high": convert_to_degrees(0, 39, 0),
-        #     "speed_low": convert_to_degrees(0, -18, 0),
-        # },
-        # Point.vesta: {
-        #     "swe_id": swe.VESTA,
-        #     "name": Point.vesta,
-        #     "speed_avg": convert_to_degrees(0, 16, 15),
-        #     "speed_high": convert_to_degrees(0, 36, 0),
-        #     "speed_low": convert_to_degrees(0, -17, -32),
-        # },
-        # Point.psyche: {
-        #     "swe_id": None,
-        #     "name": Point.psyche,
-        # },
-        # Point.charklo: {
-        #     "swe_id": None,
-        #     "name": Point.charklo,
-        # },
-        # Point.eros: {
-        #     "swe_id": None,
-        #     "name": Point.eros,
-        # },
-        # Point.eris: {
-        #     "swe_id": None,
-        #     "name": Point.eris,
-        # },
+        Point.chiron: {
+            "swe_id": swe.CHIRON,
+            "name": Point.chiron,
+            "category": PointCategory.centaur,
+            "association": PointAssociation.transformational,
+            "speed_avg": convert_to_degrees(0, 2, 0),
+            "speed_high": convert_to_degrees(0, 10, 0),
+            "speed_low": convert_to_degrees(0, -6, 0),
+        },
+        Point.pholus: {
+            "swe_id": swe.PHOLUS,
+            "name": Point.pholus,
+            "category": PointCategory.centaur,
+            "association": PointAssociation.transformational,
+        },
+        Point.charklo: {
+            "swe_id": swe.AST_OFFSET + 10199,
+            "name": Point.charklo,
+            "category": PointCategory.centaur,
+            "association": PointAssociation.transformational,
+        },
+
+        Point.ceres: {
+            "swe_id": swe.CERES,
+            "name": Point.ceres,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+            "speed_avg": convert_to_degrees(0, 12, 40),
+            "speed_high": convert_to_degrees(0, 30, 0),
+            "speed_low": convert_to_degrees(0, -16, 0),
+        },
+        Point.pallas: {
+            "swe_id": swe.PALLAS,
+            "name": Point.pallas,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+            "speed_avg": convert_to_degrees(0, 12, 20),
+            "speed_high": convert_to_degrees(0, 40, 30),
+            "speed_low": convert_to_degrees(0, -22, -30),
+        },
+        Point.juno: {
+            "swe_id": swe.JUNO,
+            "name": Point.juno,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+            "speed_avg": convert_to_degrees(0, 14, 15),
+            "speed_high": convert_to_degrees(0, 39, 0),
+            "speed_low": convert_to_degrees(0, -18, 0),
+        },
+        Point.vesta: {
+            "swe_id": swe.VESTA,
+            "name": Point.vesta,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+            "speed_avg": convert_to_degrees(0, 16, 15),
+            "speed_high": convert_to_degrees(0, 36, 0),
+            "speed_low": convert_to_degrees(0, -17, -32),
+        },
+
+        Point.psyche: {
+            "swe_id": swe.AST_OFFSET + 16,
+            "name": Point.psyche,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.eros: {
+            "swe_id": swe.AST_OFFSET + 4433,
+            "name": Point.eros,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.lilith: {
+            "swe_id": swe.AST_OFFSET + 1181,
+            "name": Point.lilith,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.toro: {
+            "swe_id": swe.AST_OFFSET + 1685,
+            "name": Point.toro,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.sappho: {
+            "swe_id": swe.AST_OFFSET + 80,
+            "name": Point.sappho,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.amor: {
+            "swe_id": swe.AST_OFFSET + 1221,
+            "name": Point.amor,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.pandora: {
+            "swe_id": swe.AST_OFFSET + 55,
+            "name": Point.pandora,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.icarus: {
+            "swe_id": swe.AST_OFFSET + 1566,
+            "name": Point.icarus,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.diana: {
+            "swe_id": swe.AST_OFFSET + 78,
+            "name": Point.diana,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.hidalgo: {
+            "swe_id": swe.AST_OFFSET + 944,
+            "name": Point.hidalgo,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.urania: {
+            "swe_id": swe.AST_OFFSET + 30,
+            "name": Point.urania,
+            "category": PointCategory.asteroid,
+            "association": PointAssociation.transformational,
+        },
+        Point.eris: {
+            "swe_id": swe.AST_OFFSET + 136199,
+            "name": Point.eris,
+            "category": PointCategory.TNO,
+            "association": PointAssociation.transformational,
+        },
 
         Point.north_mode: {
             "swe_id": swe.TRUE_NODE,
@@ -196,7 +282,7 @@ point_traits = PointTraitsCollection(**{
             "category": PointCategory.point,
         },
     }
-})
+)
 """
 Associates each point with relevant information.
 
@@ -206,4 +292,5 @@ Associates each point with relevant information.
   https://www.into-it.com/blog/outerplanetdignities
   - outer planets are missing debated dignities
 - Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
+- Common Asteroid numbers: https://nssdc.gsfc.nasa.gov/planetary/factsheet/asteroidfact.html
 """

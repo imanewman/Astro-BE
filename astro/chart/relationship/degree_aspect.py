@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from astro.schema import RelationshipSchema, PointSchema, AspectOrbsSchema
+from astro.schema import RelationshipSchema, PointSchema, SettingsSchema
 from astro.collection import aspectTraits
 
 
@@ -8,7 +8,7 @@ def calculate_degree_aspect(
         relationship: RelationshipSchema,
         from_point: PointSchema,
         to_point: PointSchema,
-        orbs: AspectOrbsSchema = AspectOrbsSchema(),
+        settings: SettingsSchema = SettingsSchema()
 ):
     """
     Calculates thee arc and degree based aspect between 2 points.
@@ -19,15 +19,18 @@ def calculate_degree_aspect(
     :param relationship: The relationship between points to store calculations in.
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
-    :param orbs: The orbs to use for calculations.
+    :param settings: The settings to use for calculations.
     """
 
     # Find the relative degrees from the faster to the slower point.
     absolute_arc_between = calculate_arc_between(relationship, from_point, to_point)
 
-    aspect_to_orb = orbs.aspect_to_orb()
+    aspect_to_orb = settings.orbs.aspect_to_orb()
 
     for aspect_type, aspect in aspectTraits.aspects.items():
+        if aspect_type not in settings.enabled_aspects:
+            return
+
         # For each type of aspect, calculate whether the degrees of separation between points
         # is within the orb of the degrees for this aspect.
         for orb in calculate_aspect_orbs(aspect.degrees, absolute_arc_between):

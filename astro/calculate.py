@@ -29,7 +29,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
             points_and_event_type,
             points_and_event_type,
             True,
-            settings.orbs
+            settings
         )
 
         houses_whole_sign, houses_secondary = calculate_houses(points, event, secondary_house_system)
@@ -62,7 +62,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
                 all_point_arrays[from_index],
                 all_point_arrays[to_index],
                 False,
-                settings.orbs
+                settings
             )
 
             all_relationships.append(RelationshipCollectionSchema(

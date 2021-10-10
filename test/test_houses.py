@@ -16,7 +16,10 @@ def test_calculate_whole_sign_houses():
 
     assert houses_whole_sign[0].number is 1
     assert houses_whole_sign[0].sign == ZodiacSign.sagittarius
-    assert houses_whole_sign[0].points == [Point.ascendant, Point.venus, Point.mars, Point.pluto]
+    assert houses_whole_sign[0].points == [
+        Point.ascendant, Point.venus, Point.mars,
+        Point.pluto, Point.icarus, Point.hidalgo
+    ]
 
     assert points[Point.venus].houses_whole_sign.house is 1
     assert points[Point.venus].houses_whole_sign.ruled_houses == [6, 11]
@@ -82,7 +85,7 @@ def test_calculate_secondary_houses():
 
     assert houses_secondary[0].number is 1
     assert houses_secondary[0].sign == ZodiacSign.sagittarius
-    assert houses_secondary[0].points == [Point.ascendant, Point.mars]
+    assert houses_secondary[0].points == [Point.ascendant, Point.mars, Point.icarus]
 
     assert points[Point.venus].houses_secondary.house is 12
     assert points[Point.venus].houses_secondary.ruled_houses == [6, 11]

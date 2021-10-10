@@ -5,7 +5,7 @@ import swisseph as swe
 
 from astro.util import HouseSystem
 
-swe.set_ephe_path()
+swe.set_ephe_path("/home/tim/Astro/Astro-BE/ephemeris")
 
 
 def get_julian_day(timestamp: datetime) -> float:

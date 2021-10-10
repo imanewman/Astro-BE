@@ -105,13 +105,24 @@ class Point(str, Enum):
 
     chiron = "Chiron"
     pholus = "Pholus"
+    charklo = "Charklo"
+
     ceres = "Ceres"
     pallas = "Pallas"
     juno = "Juno"
     vesta = "Vesta"
+
     psyche = "Psyche"
-    charklo = "Charklo"
     eros = "Eros"
+    lilith = "Lilith"
+    toro = "Toro"
+    sappho = "Sappho"
+    amor = "Amor"
+    pandora = "Pandora"
+    icarus = "Icarus"
+    diana = "Diana"
+    hidalgo = "Hidalgo"
+    urania = "Urania"
     eris = "Eris"
 
     ascendant = "Ascendant"
@@ -124,6 +135,17 @@ class Point(str, Enum):
     south_node = "South Node"
 
 
+class PointAssociation(str, Enum):
+    """
+    Enumerates the different associations of points to one's life.
+    """
+
+    personal = "Personal Planet"
+    social = "Social Planet"
+    transpersonal = "Transpersonal Planet"
+    transformational = "Transformational Planet"
+
+
 class PointCategory(str, Enum):
     """
     Enumerates the different types of points.
@@ -131,7 +153,11 @@ class PointCategory(str, Enum):
 
     visible = "Visible Planet"
     outer = "Outer Planet"
-    point = "Calculated Point"
+    asteroid = "Asteroid"
+    TNO = "Trans Neptunian Object"
+    centaur = "Centaur"
+    transplutonian = "Transplutonian"
+    point = "Point"
 
 
 class AspectType(str, Enum):
@@ -141,16 +167,16 @@ class AspectType(str, Enum):
 
     conjunction = "Conjunction"
     opposition = "Opposition"
-    square = "Square"
     trine = "Trine"
+    square = "Square"
     sextile = "Sextile"
 
     quintile = "Quintile"
     septile = "Septile"
-    octile = "Octile"
+    octile = "Octile (Semi-Square)"
     novile = "Novile"
     semi_sextile = "Semi-Sextile"
-    quincunx = "Quincunx"
+    quincunx = "Quincunx (Inconjunct)"
     sesquiquadrate = "Sesquiquadrate"
     bi_quintile = "Bi-Quintile"
 

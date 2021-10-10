@@ -1,19 +1,19 @@
 from typing import List, Tuple
 
-from astro.schema import PointSchema, AspectOrbsSchema, RelationshipSchema
+from astro.schema import PointSchema, RelationshipSchema, SettingsSchema
 from .declination_aspect import calculate_declination_aspect
 from .degree_aspect import calculate_degree_aspect
 from .degree_types import calculate_degree_types
 from .phase import calculate_aspect_phase
 from .sign_aspect import calculate_sign_aspect
-from ...util import EventType
+from astro.util import EventType
 
 
 def calculate_relationships(
         from_items: Tuple[List[PointSchema], EventType],
         to_items: Tuple[List[PointSchema], EventType],
         is_natal: bool = False,
-        orbs: AspectOrbsSchema = AspectOrbsSchema(),
+        settings: SettingsSchema = SettingsSchema()
 ) -> List[RelationshipSchema]:
     """
    Calculates the relationships between each set of 2 points.
@@ -21,7 +21,7 @@ def calculate_relationships(
    :param from_items: The points to calculate aspects from, and the event type.
    :param to_items: The points to calculate aspects to, and the event type.
    :param is_natal: If true, aspects will not be bi-directionally duplicated.
-   :param orbs: The orbs to use for calculations.
+   :param settings: The settings to use for calculations.
 
    :return: All calculated relationships.
    """
@@ -42,9 +42,9 @@ def calculate_relationships(
             )
 
             calculate_sign_aspect(relationship, from_point, to_point)
-            calculate_degree_aspect(relationship, from_point, to_point, orbs)
+            calculate_degree_aspect(relationship, from_point, to_point, settings)
             calculate_aspect_phase(relationship, from_point, to_point)
-            calculate_declination_aspect(relationship, from_point, to_point, orbs)
+            calculate_declination_aspect(relationship, from_point, to_point, settings)
             calculate_degree_types(
                 relationship,
                 (from_point, from_event_type),
