@@ -2,8 +2,8 @@ from typing import List
 
 from fastapi import FastAPI
 
-from astro.schema import ZodiacSignCollection, ChartSchema, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, EventSchema, EventSettingsSchema, RelationshipSchema
+from astro.schema import ZodiacSignCollection, SettingsSchema, \
+    PointTraitsCollection, AspectTraitsCollection, EventSettingsSchema, RelationshipSchema
 from astro.collection import aspectTraits
 from astro.collection.point_traits import point_traits
 from astro.collection.zodiac_sign_traits import zodiac_sign_traits
@@ -12,6 +12,7 @@ from astro.util.tim import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
 app = FastAPI()
+
 
 # Static Collections
 
@@ -129,21 +130,37 @@ async def calc_tim_upcoming() -> List[RelationshipSchema]:
 
     calculated_transits = await calc_tim_transits()
     aspects = calculated_transits.relationships[2].relationships
-    threshold = 1
+    threshold = 7
     applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_applying]
 
     def do_track_aspect(aspect: RelationshipSchema) -> bool:
-        if aspect.degree_aspect_orb and abs(aspect.degree_aspect_orb) < threshold and \
+        if aspect.degree_aspect_approx_days is not None and \
+                abs(aspect.degree_aspect_approx_days) < threshold and \
                 aspect.degree_aspect_movement in applying_aspects:
             return True
 
-        if aspect.declination_aspect_orb and abs(aspect.declination_aspect_orb) < threshold and \
+        if aspect.declination_aspect_approx_days is not None and \
+                abs(aspect.declination_aspect_approx_days) < threshold and \
                 aspect.declination_aspect_movement in applying_aspects:
             return True
 
         return False
 
-    return list(filter(do_track_aspect, aspects))
+    def sort_aspect(aspect: RelationshipSchema) -> float:
+        if aspect.degree_aspect_approx_days is not None and aspect.declination_aspect_approx_days is not None:
+            return min(abs(aspect.degree_aspect_approx_days), abs(aspect.declination_aspect_approx_days))
+        elif aspect.degree_aspect_approx_days is not None:
+            return abs(aspect.degree_aspect_approx_days)
+        elif aspect.declination_aspect_approx_days is not None:
+            return aspect.declination_aspect_approx_days
+
+        return threshold
+
+    upcoming_aspects = list(filter(do_track_aspect, aspects))
+
+    upcoming_aspects.sort(key=sort_aspect)
+
+    return upcoming_aspects
 
 
 @app.get("/tim/upcoming-text")

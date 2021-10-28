@@ -20,11 +20,12 @@ def calculate_degree_types(
     :param to_item: The ending point in the relationship, and the type of chart it is from.
     """
 
-    relationship.degree_aspect_movement = calculate_degree_types_from_speed(
-        (from_item[0].longitude_velocity, from_item[1]),
-        (to_item[0].longitude_velocity, to_item[1]),
-        relationship.degree_aspect_orb
-    )
+    relationship.degree_aspect_movement, relationship.degree_aspect_approx_days = \
+        calculate_degree_types_from_speed(
+            (from_item[0].longitude_velocity, from_item[1]),
+            (to_item[0].longitude_velocity, to_item[1]),
+            relationship.degree_aspect_orb
+        )
 
     to_velocity = to_item[0].declination_velocity
     aspect_orb = relationship.declination_aspect_orb
@@ -34,18 +35,19 @@ def calculate_degree_types(
         to_velocity *= -1
         aspect_orb *= -1
 
-    relationship.declination_aspect_movement = calculate_degree_types_from_speed(
-        (from_item[0].declination_velocity, from_item[1]),
-        (to_velocity, to_item[1]),
-        aspect_orb
-    )
+    relationship.declination_aspect_movement, relationship.declination_aspect_approx_days = \
+        calculate_degree_types_from_speed(
+            (from_item[0].declination_velocity, from_item[1]),
+            (to_velocity, to_item[1]),
+            aspect_orb
+        )
 
 
 def calculate_degree_types_from_speed(
         from_item: Tuple[Optional[float], EventType],
         to_item: Tuple[Optional[float], EventType],
         orb: float
-) -> Optional[AspectMovementType]:
+) -> Tuple[Optional[AspectMovementType], Optional[float]]:
     """
     Calculates whether points are applying or separating.
 
@@ -53,27 +55,37 @@ def calculate_degree_types_from_speed(
     :param to_item: The ending speed in the relationship, and the type of chart it is from.
     :param orb: The orb between the two points.
 
-    :return: The direction of movement between the two speeds.
+    :return:
+        [0] The direction of movement between the two speeds.
+        [1] The approximate days until exact aspect.
     """
 
     if orb is None or from_item[0] is None or to_item[0] is None:
-        return
+        return None, None
 
     from_velocity, to_velocity, is_same_direction = calculate_degree_types_direction(from_item, to_item)
     from_is_faster = from_velocity >= to_velocity
+    relative_velocity = from_velocity - to_velocity
+    approximate_days_until_exact = orb / relative_velocity
 
     if orb >= 0 if from_is_faster else orb < 0:
         # If the orb is positive and first object is faster,
         # or the orb is negative and the second object is faster,
         # the aspect is applying.
-        return AspectMovementType.applying if is_same_direction \
+        degree_type = AspectMovementType.applying if is_same_direction \
             else AspectMovementType.mutually_applying
+
+        return degree_type, approximate_days_until_exact
     if orb >= 0 if not from_is_faster else orb < 0:
         # If the orb is positive and second object is faster,
         # or the orb is negative and the first object is faster,
         # the aspect is separating.
-        return AspectMovementType.separating if is_same_direction \
+        degree_type = AspectMovementType.separating if is_same_direction \
             else AspectMovementType.mutually_separating
+
+        return degree_type, approximate_days_until_exact
+
+    return None, None
 
 
 def calculate_degree_types_direction(

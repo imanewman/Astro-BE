@@ -1,3 +1,4 @@
+import math
 from typing import Dict, Optional, List
 
 from pydantic import Field
@@ -132,11 +133,21 @@ class RelationshipSchema(BaseSchema):
         aspect_between = f'from {self.from_point} to {self.to_point}'
         aspects = []
 
+        def days_to_string(days: Optional[float]) -> str:
+            if days is None:
+                return ""
+
+            return f'[{round(days * 24, 2)}H To Exact] '
+
         if self.degree_aspect:
-            aspects.append(f'({round(self.degree_aspect_orb, 4)}) ' +
+            hours_until_exact_text = days_to_string(self.degree_aspect_approx_days)
+
+            aspects.append(f'[{round(self.degree_aspect_orb, 4)} Orb] {hours_until_exact_text}' +
                            f'{self.degree_aspect_movement} {self.degree_aspect} {aspect_between}')
         if self.declination_aspect:
-            aspects.append(f'({round(self.declination_aspect_orb, 4)}) ' +
+            hours_until_exact_text = days_to_string(self.declination_aspect_approx_days)
+
+            aspects.append(f'[{round(self.declination_aspect_orb, 4)} Orb] {hours_until_exact_text}' +
                            f'{self.declination_aspect_movement} {self.declination_aspect} {aspect_between}')
         if len(aspects) == 0:
             aspects.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect} {aspect_between}')
@@ -204,6 +215,11 @@ class RelationshipSchema(BaseSchema):
         title="Degree Aspect Movement",
         description="Whether the degree aspect is applying or separating."
     )
+    degree_aspect_approx_days: Optional[float] = Field(
+        None,
+        title="Degree Aspect Approximate Days Until Exist",
+        description="The approximate amount of days until this degree aspect goes exact, if less than a week."
+    )
 
     declination_arc: Optional[float] = Field(
         None,
@@ -224,6 +240,11 @@ class RelationshipSchema(BaseSchema):
         None,
         title="Declination Aspect Movement",
         description="Whether the declination aspect is applying or separating."
+    )
+    declination_aspect_approx_days: Optional[float] = Field(
+        None,
+        title="Declination Aspect Approximate Days Until Exist",
+        description="The approximate amount of days until this declination aspect goes exact, if less than a week."
     )
 
 

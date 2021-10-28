@@ -35,55 +35,57 @@ class EventSchema(BaseSchema):
     name: str = Field(
         "Event",
         title="Event Name",
-        description="The name of the person or event represented"
-    )
-    timezone: str = Field(
-        "Unknown",
-        title="Timezone",
-        description="The name of the timezone this event is in"
-    )
-    utc_offset: str = Field(
-        "UTC-0.00",
-        title="UTC Offset",
-        description="The UTC offset time based on this event's timezone"
-    )
-    local_date: datetime = Field(
-        default_factory=lambda: datetime.utcnow(),
-        title="Date",
-        description="The local time for the location, defaulting to now"
-    )
-    utc_date: datetime = Field(
-        default_factory=lambda: datetime.utcnow(),
-        title="Date",
-        description="The UTC time for the location used for all calculations, defaulting to now"
-    )
-    location: str = Field(
-        "Unknown Location",
-        title="Location",
-        description="The name of the location of the event"
-    )
-    latitude: float = Field(
-        0,
-        title="Location Latitude",
-        description="The latitude of the location, defaulting to Null Island"
-    )
-    longitude: float = Field(
-        0,
-        title="Location Longitude",
-        description="The longitude of the location, defaulting to Null Island"
-    )
-    julian_day: float = Field(
-        0,
-        title="Julian Day",
-        description="The standardized julian day for this date"
+        description="The name of the person or event represented."
     )
     type: EventType = Field(
         EventType.event,
         title="Event Type",
-        description="The general type of event this represents"
+        description="The general type of event this represents."
     )
     tags: List[str] = Field(
         [],
         title="Tags",
-        description="Any tags this event is grouped by"
+        description="Any tags this event is grouped by."
+    )
+
+    local_date: datetime = Field(
+        default_factory=lambda: datetime.utcnow(),
+        title="Date",
+        description="The local time for the location, defaulting to now."
+    )
+    utc_date: datetime = Field(
+        default_factory=lambda: datetime.utcnow(),
+        title="Date",
+        description="The UTC time for the location used for all calculations, defaulting to now."
+    )
+    timezone: str = Field(
+        "Unknown",
+        title="Timezone",
+        description="The name of the timezone this event is in."
+    )
+    utc_offset: str = Field(
+        "UTC-0.00",
+        title="UTC Offset",
+        description="The UTC offset time based on this event's timezone."
+    )
+    julian_day: float = Field(
+        0,
+        title="Julian Day",
+        description="The standardized julian day for this date."
+    )
+
+    location: str = Field(
+        "Unknown Location",
+        title="Location",
+        description="The name of the location of the event."
+    )
+    latitude: float = Field(
+        0,
+        title="Location Latitude",
+        description="The latitude of the location."
+    )
+    longitude: float = Field(
+        0,
+        title="Location Longitude",
+        description="The longitude of the location."
     )
