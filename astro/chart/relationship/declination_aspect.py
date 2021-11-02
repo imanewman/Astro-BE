@@ -12,8 +12,8 @@ def calculate_declination_aspect(
     Calculates the declination degrees between and declination aspect between points.
 
     - If either point has no declination, or the points form an axis, no calculations are done.
-    - Sets the relationship's `declination_between`, `declination_aspect`,
-      and `declination_aspect_orb` attributes.
+    - Sets the relationship's `declination_arc`, `declination_aspect.type`,
+      and `declination_aspect.orb` attributes.
 
     :param relationship: The relationship between points to store calculations in.
     :param from_point: The starting point in the relationship.
@@ -36,10 +36,10 @@ def calculate_declination_aspect(
 
     if AspectType.parallel in settings.enabled_aspects and \
             abs(parallel_orb) <= settings.orbs.parallel:
-        relationship.declination_aspect = AspectType.parallel
-        relationship.declination_aspect_orb = parallel_orb
+        relationship.declination_aspect.type = AspectType.parallel
+        relationship.declination_aspect.orb = parallel_orb
 
     elif AspectType.contraparallel in settings.enabled_aspects and \
             abs(contraparallel_orb) <= settings.orbs.contraparallel:
-        relationship.declination_aspect = AspectType.contraparallel
-        relationship.declination_aspect_orb = contraparallel_orb
+        relationship.declination_aspect.type = AspectType.contraparallel
+        relationship.declination_aspect.orb = contraparallel_orb

@@ -1,4 +1,5 @@
 import math
+from datetime import datetime
 from typing import Dict, Optional, List
 
 from pydantic import Field
@@ -124,35 +125,76 @@ class AspectOrbsSchema(BaseSchema):
         }
 
 
+class AspectSchema(BaseSchema):
+    """
+    Represents information about the aspect between two points.
+    """
+
+    def __str__(self):
+        if self.orb is None:
+            return ""
+
+        orb_string = f'[{round(self.orb, 4)} Orb]'
+        aspect_string = f'{self.movement} {self.type}'
+
+        if self.local_date_of_exact:
+            return f'{aspect_string} {orb_string} [Exact {self.local_date_of_exact}]'
+        else:
+            return f'{aspect_string} {orb_string}'
+
+    type: Optional[AspectType] = Field(
+        None,
+        title="Aspect Type",
+        description="The type of aspect between the two points."
+    )
+    angle: Optional[float] = Field(
+        None,
+        title="Aspect Angle",
+        description="The exact degrees of the angle between points."
+    )
+    orb: Optional[float] = Field(
+        None,
+        title="Aspect Orb",
+        description="The current orb in degrees of the aspect."
+    )
+    movement: Optional[AspectMovementType] = Field(
+        None,
+        title="Aspect Movement",
+        description="Whether the aspect is applying or separating."
+    )
+    days_until_exact: Optional[float] = Field(
+        None,
+        title="Degree Aspect Approximate Days Until Exact",
+        description="The approximate amount of days until this aspect goes exact, if less than a week."
+    )
+    utc_date_of_exact: Optional[datetime] = Field(
+        None,
+        title="Degree Aspect Approximate Exact Date (UTC)",
+        description="The approximate UTC date aspect goes exact, if in less than a week."
+    )
+    local_date_of_exact: Optional[datetime] = Field(
+        None,
+        title="Degree Aspect Approximate Exact Date (Local)",
+        description="The approximate local date aspect goes exact, if in less than a week."
+    )
+
+
 class RelationshipSchema(BaseSchema):
     """
     Represents information about the relationship between two points.
     """
 
     def __str__(self):
-        aspect_between = f'from {self.from_point} to {self.to_point}'
         aspects = []
 
-        def days_to_string(days: Optional[float]) -> str:
-            if days is None:
-                return ""
-
-            return f'[{round(days * 24, 2)}H To Exact] '
-
-        if self.degree_aspect:
-            hours_until_exact_text = days_to_string(self.degree_aspect_approx_days)
-
-            aspects.append(f'[{round(self.degree_aspect_orb, 4)} Orb] {hours_until_exact_text}' +
-                           f'{self.degree_aspect_movement} {self.degree_aspect} {aspect_between}')
-        if self.declination_aspect:
-            hours_until_exact_text = days_to_string(self.declination_aspect_approx_days)
-
-            aspects.append(f'[{round(self.declination_aspect_orb, 4)} Orb] {hours_until_exact_text}' +
-                           f'{self.declination_aspect_movement} {self.declination_aspect} {aspect_between}')
+        if self.ecliptic_aspect.type:
+            aspects.append(f'{self.ecliptic_aspect}')
+        if self.declination_aspect.type:
+            aspects.append(f'{self.declination_aspect}')
         if len(aspects) == 0:
-            aspects.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect} {aspect_between}')
+            aspects.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect}')
 
-        return ", ".join(aspects)
+        return f'From {self.from_point} to {self.to_point}: {", ".join(aspects)}'
 
     from_point: Point = Field(
         ...,
@@ -183,6 +225,11 @@ class RelationshipSchema(BaseSchema):
         description="The arc between the two points relative to their longitude along the ecliptic. "
                     "This value will always be the smaller arc between the two points."
     )
+    declination_arc: Optional[float] = Field(
+        None,
+        title="Declination Degrees Arc",
+        description="The degrees between the two points relative to their declination from the equator."
+    )
 
     phase: Optional[PhaseType] = Field(
         None,
@@ -195,56 +242,15 @@ class RelationshipSchema(BaseSchema):
         description="The point being used as the base for the phase between points."
     )
 
-    degree_aspect: Optional[AspectType] = Field(
-        None,
-        title="Degree Based Aspect",
-        description="The type of aspect by degree between the two points."
+    ecliptic_aspect: AspectSchema = Field(
+        AspectSchema(),
+        title="Ecliptic Aspect",
+        description="The aspect between the two points based on ecliptic longitude."
     )
-    degree_aspect_angle: Optional[float] = Field(
-        None,
-        title="Degree Aspect Angle",
-        description="The angle degrees of the degree based aspect."
-    )
-    degree_aspect_orb: Optional[float] = Field(
-        None,
-        title="Degree Aspect Orb",
-        description="The orb of the degree based aspect."
-    )
-    degree_aspect_movement: Optional[AspectMovementType] = Field(
-        None,
-        title="Degree Aspect Movement",
-        description="Whether the degree aspect is applying or separating."
-    )
-    degree_aspect_approx_days: Optional[float] = Field(
-        None,
-        title="Degree Aspect Approximate Days Until Exist",
-        description="The approximate amount of days until this degree aspect goes exact, if less than a week."
-    )
-
-    declination_arc: Optional[float] = Field(
-        None,
-        title="Declination Degrees Arc",
-        description="The degrees between the two points relative to their declination from the equator."
-    )
-    declination_aspect: Optional[AspectType] = Field(
-        None,
-        title="Declination Based Aspect",
-        description="The type of aspect by declination between the two points,."
-    )
-    declination_aspect_orb: Optional[float] = Field(
-        None,
-        title="Declination Aspect Orb",
-        description="The orb the declination based aspect."
-    )
-    declination_aspect_movement: Optional[AspectMovementType] = Field(
-        None,
-        title="Declination Aspect Movement",
-        description="Whether the declination aspect is applying or separating."
-    )
-    declination_aspect_approx_days: Optional[float] = Field(
-        None,
-        title="Declination Aspect Approximate Days Until Exist",
-        description="The approximate amount of days until this declination aspect goes exact, if less than a week."
+    declination_aspect: AspectSchema = Field(
+        AspectSchema(),
+        title="Declination Aspect",
+        description="The aspect between the two points based on declination."
     )
 
 

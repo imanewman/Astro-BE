@@ -1,4 +1,4 @@
-from astro.chart.relationship.degree_aspect import calculate_aspect_orbs
+from astro.chart.relationship.ecliptic_aspect import calculate_aspect_orbs
 from astro.schema import PointSchema, AspectOrbsSchema
 
 

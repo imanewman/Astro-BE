@@ -1,8 +1,8 @@
 from typing import Tuple, Optional
 
-from astro.chart import calculate_degree_types, calculate_degree_aspect, calculate_declination_aspect
-from astro.chart.relationship.degree_types import calculate_degree_types_direction
-from astro.schema import RelationshipSchema
+from astro.chart import calculate_aspect_movement, calculate_ecliptic_aspect, calculate_declination_aspect
+from astro.chart.relationship.aspect_movement import calculate_degree_types_direction
+from astro.schema import RelationshipSchema, EventSchema
 from astro.util import EventType, AspectMovementType
 from test.utils import create_test_points
 
@@ -34,12 +34,12 @@ def create_longitude_separated_points(
     )
     relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
 
-    calculate_degree_aspect(relationship, from_point, to_point)
+    calculate_ecliptic_aspect(relationship, from_point, to_point)
 
-    calculate_degree_types(
+    calculate_aspect_movement(
         relationship,
-        (from_point, from_item[1]),
-        (to_point, to_item[1])
+        (from_point, EventSchema(type=from_item[1])),
+        (to_point, EventSchema(type=to_item[1]))
     )
 
     return relationship
@@ -72,10 +72,10 @@ def create_declination_separated_points(
 
     calculate_declination_aspect(relationship, from_point, to_point)
 
-    calculate_degree_types(
+    calculate_aspect_movement(
         relationship,
-        (from_point, from_item[2]),
-        (to_point, to_item[2])
+        (from_point, EventSchema(type=from_item[2])),
+        (to_point, EventSchema(type=to_item[2]))
     )
 
     return relationship
@@ -88,8 +88,8 @@ def test_calculate_degree_types_direction__from_transit():
     """
 
     from_speed, to_speed, is_same_direction = calculate_degree_types_direction(
-        (1, EventType.event),
-        (1, EventType.transit),
+        (1, EventSchema(type=EventType.event)),
+        (1, EventSchema(type=EventType.transit)),
     )
 
     assert from_speed == 0
@@ -104,8 +104,8 @@ def test_calculate_degree_types_direction__to_transit():
     """
 
     from_speed, to_speed, is_same_direction = calculate_degree_types_direction(
-        (1, EventType.transit),
-        (1, EventType.event),
+        (1, EventSchema(type=EventType.transit)),
+        (1, EventSchema(type=EventType.event)),
     )
 
     assert from_speed == 1
@@ -120,8 +120,8 @@ def test_calculate_degree_types_direction__same_direction():
     """
 
     from_speed, to_speed, is_same_direction = calculate_degree_types_direction(
-        (1, EventType.event),
-        (1, EventType.event),
+        (1, EventSchema(type=EventType.event)),
+        (1, EventSchema(type=EventType.event)),
     )
 
     assert from_speed == 1
@@ -136,8 +136,8 @@ def test_calculate_degree_types_direction__different_direction():
     """
 
     from_speed, to_speed, is_same_direction = calculate_degree_types_direction(
-        (1, EventType.event),
-        (-1, EventType.event),
+        (1, EventSchema(type=EventType.event)),
+        (-1, EventSchema(type=EventType.event)),
     )
 
     assert from_speed == 1
@@ -156,7 +156,7 @@ def test_calculate_degree_types_longitude__no_speed():
         (None, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement is None
+    assert relationship.ecliptic_aspect.movement is None
 
 
 def test_calculate_degree_types_longitude__no_orb():
@@ -170,7 +170,7 @@ def test_calculate_degree_types_longitude__no_orb():
         (-1, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement is None
+    assert relationship.ecliptic_aspect.movement is None
 
 
 def test_calculate_degree_types_longitude__applying_positive():
@@ -184,7 +184,7 @@ def test_calculate_degree_types_longitude__applying_positive():
         (1, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.applying
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.applying
 
 
 def test_calculate_degree_types_longitude__applying_negative():
@@ -198,7 +198,7 @@ def test_calculate_degree_types_longitude__applying_negative():
         (2, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.applying
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.applying
 
 
 def test_calculate_degree_types_longitude__mutually_applying_positive():
@@ -212,7 +212,7 @@ def test_calculate_degree_types_longitude__mutually_applying_positive():
         (-1, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.mutually_applying
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.mutually_applying
 
 
 def test_calculate_degree_types_longitude__mutually_applying_negative():
@@ -226,7 +226,7 @@ def test_calculate_degree_types_longitude__mutually_applying_negative():
         (1, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.mutually_applying
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.mutually_applying
 
 
 def test_calculate_degree_types_longitude__separating_positive():
@@ -240,7 +240,7 @@ def test_calculate_degree_types_longitude__separating_positive():
         (2, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.separating
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.separating
 
 
 def test_calculate_degree_types_longitude__separating_negative():
@@ -254,7 +254,7 @@ def test_calculate_degree_types_longitude__separating_negative():
         (1, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.separating
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.separating
 
 
 def test_calculate_degree_types_longitude__mutually_separating_positive():
@@ -268,7 +268,7 @@ def test_calculate_degree_types_longitude__mutually_separating_positive():
         (2, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.mutually_separating
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.mutually_separating
 
 
 def test_calculate_degree_types_longitude__mutually_separating_negative():
@@ -282,7 +282,7 @@ def test_calculate_degree_types_longitude__mutually_separating_negative():
         (-1, EventType.event),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.mutually_separating
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.mutually_separating
 
 
 def test_calculate_degree_types_longitude__applying_transit():
@@ -296,7 +296,7 @@ def test_calculate_degree_types_longitude__applying_transit():
         (-1, EventType.transit),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.applying
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.applying
 
 
 def test_calculate_degree_types_longitude__separating_transit():
@@ -310,7 +310,7 @@ def test_calculate_degree_types_longitude__separating_transit():
         (1, EventType.transit),
     )
 
-    assert relationship.degree_aspect_movement == AspectMovementType.separating
+    assert relationship.ecliptic_aspect.movement == AspectMovementType.separating
 
 
 def test_calculate_degree_types_declination__applying_positive():
@@ -323,7 +323,7 @@ def test_calculate_degree_types_declination__applying_positive():
         (2, 1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.applying
+    assert relationship.declination_aspect.movement == AspectMovementType.applying
 
 
 def test_calculate_degree_types_declination__applying_negative():
@@ -336,7 +336,7 @@ def test_calculate_degree_types_declination__applying_negative():
         (1, -1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.applying
+    assert relationship.declination_aspect.movement == AspectMovementType.applying
 
 
 def test_calculate_degree_types_declination__applying_contraparallel():
@@ -349,7 +349,7 @@ def test_calculate_degree_types_declination__applying_contraparallel():
         (-1, -2, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.applying
+    assert relationship.declination_aspect.movement == AspectMovementType.applying
 
 
 def test_calculate_degree_types_declination__mutually_applying_positive():
@@ -362,7 +362,7 @@ def test_calculate_degree_types_declination__mutually_applying_positive():
         (2, -1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.mutually_applying
+    assert relationship.declination_aspect.movement == AspectMovementType.mutually_applying
 
 
 def test_calculate_degree_types_declination__mutually_applying_negative():
@@ -375,7 +375,7 @@ def test_calculate_degree_types_declination__mutually_applying_negative():
         (1, 1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.mutually_applying
+    assert relationship.declination_aspect.movement == AspectMovementType.mutually_applying
 
 
 def test_calculate_degree_types_declination__mutually_applying_contraparallel():
@@ -388,7 +388,7 @@ def test_calculate_degree_types_declination__mutually_applying_contraparallel():
         (-1, -1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.mutually_applying
+    assert relationship.declination_aspect.movement == AspectMovementType.mutually_applying
 
 
 def test_calculate_degree_types_declination__separating_positive():
@@ -401,7 +401,7 @@ def test_calculate_degree_types_declination__separating_positive():
         (2, 2, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.separating
+    assert relationship.declination_aspect.movement == AspectMovementType.separating
 
 
 def test_calculate_degree_types_declination__separating_negative():
@@ -414,7 +414,7 @@ def test_calculate_degree_types_declination__separating_negative():
         (1, 1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.separating
+    assert relationship.declination_aspect.movement == AspectMovementType.separating
 
 
 def test_calculate_degree_types_declination__separating_contraparallel():
@@ -427,7 +427,7 @@ def test_calculate_degree_types_declination__separating_contraparallel():
         (1, 1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.separating
+    assert relationship.declination_aspect.movement == AspectMovementType.separating
 
 
 def test_calculate_degree_types_declination__mutually_separating_positive():
@@ -440,7 +440,7 @@ def test_calculate_degree_types_declination__mutually_separating_positive():
         (2, 2, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.mutually_separating
+    assert relationship.declination_aspect.movement == AspectMovementType.mutually_separating
 
 
 def test_calculate_degree_types_declination__mutually_separating_negative():
@@ -453,7 +453,7 @@ def test_calculate_degree_types_declination__mutually_separating_negative():
         (1, -1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.mutually_separating
+    assert relationship.declination_aspect.movement == AspectMovementType.mutually_separating
 
 
 def test_calculate_degree_types_declination__mutually_separating_contraparallel():
@@ -466,4 +466,4 @@ def test_calculate_degree_types_declination__mutually_separating_contraparallel(
         (1, -1, EventType.event),
     )
 
-    assert relationship.declination_aspect_movement == AspectMovementType.mutually_separating
+    assert relationship.declination_aspect.movement == AspectMovementType.mutually_separating

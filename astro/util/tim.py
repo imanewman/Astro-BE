@@ -1,3 +1,5 @@
+import datetime
+
 from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import EventType, Point
@@ -7,6 +9,9 @@ local_event = EventSettingsSchema(
         latitude=47.6769,
         longitude=-122.2060,
         type=EventType.transit,
+        utc_date=datetime.datetime.utcnow(),
+        local_date=datetime.datetime.now(),
+        utc_offset="UTC-7.00"
     ),
     enabled_points=[
         Point.moon,

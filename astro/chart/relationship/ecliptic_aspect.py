@@ -5,7 +5,7 @@ from astro.collection import aspectTraits
 from astro.util import point_axis_list
 
 
-def calculate_degree_aspect(
+def calculate_ecliptic_aspect(
         relationship: RelationshipSchema,
         from_point: PointSchema,
         to_point: PointSchema,
@@ -15,7 +15,7 @@ def calculate_degree_aspect(
     Calculates thee arc and degree based aspect between 2 points.
 
     - If a degree based aspect is in orb, sets the relationship's
-      `degree_aspect` and `degree_aspect_orb` attribute.
+      `ecliptic_aspect.type`, `ecliptic_aspect.orb`, and `ecliptic_aspect.angle` attributes.
 
     :param relationship: The relationship between points to store calculations in.
     :param from_point: The starting point in the relationship.
@@ -41,9 +41,9 @@ def calculate_degree_aspect(
         # is within the orb of the degrees for this aspect.
         for orb in calculate_aspect_orbs(aspect.degrees, absolute_arc_between):
             if abs(orb) <= aspect_to_orb[aspect_type]:
-                relationship.degree_aspect = aspect_type
-                relationship.degree_aspect_orb = orb
-                relationship.degree_aspect_angle = aspect.degrees
+                relationship.ecliptic_aspect.type = aspect_type
+                relationship.ecliptic_aspect.orb = orb
+                relationship.ecliptic_aspect.angle = aspect.degrees
 
                 break
 
