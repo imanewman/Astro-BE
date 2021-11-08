@@ -7,7 +7,7 @@ from astro.schema import ZodiacSignCollection, SettingsSchema, \
 from astro.collection import aspectTraits
 from astro.collection.point_traits import point_traits
 from astro.collection.zodiac_sign_traits import zodiac_sign_traits
-from astro.util import AspectMovementType
+from astro.util import AspectMovementType, AspectType
 from astro.util.tim import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
@@ -68,19 +68,6 @@ async def calc_chart(settings: SettingsSchema) -> ChartCollectionSchema:
 
 @app.get("/now")
 async def calc_now() -> ChartCollectionSchema:
-    """
-    Calculates the chart for the current time.
-
-    :return: Calculated points and aspects.
-    """
-
-    return await calc_chart(SettingsSchema(
-        events=[EventSettingsSchema()]
-    ))
-
-
-@app.get("/now-local")
-async def calc_local() -> ChartCollectionSchema:
     """
     Calculates the current chart in the current location.
 

@@ -46,6 +46,33 @@ default_enabled_points = [
 Defines the list of points enabled for calculations by default.
 """
 
+major_aspects = [
+    AspectType.conjunction,
+    AspectType.opposition,
+    AspectType.trine,
+    AspectType.square,
+    AspectType.sextile,
+    AspectType.parallel,
+    AspectType.contraparallel,
+]
+"""
+Defines all major aspects.
+"""
+
+minor_aspects = [
+    AspectType.quintile,
+    AspectType.septile,
+    AspectType.octile,
+    AspectType.novile,
+    AspectType.semi_sextile,
+    AspectType.quincunx,
+    AspectType.sesquiquadrate,
+    AspectType.bi_quintile,
+]
+"""
+Defines all minor aspects.
+"""
+
 default_enabled_aspects = [
     AspectType.conjunction,
     AspectType.opposition,

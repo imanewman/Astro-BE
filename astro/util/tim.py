@@ -49,7 +49,26 @@ tim_natal = EventSettingsSchema(
         longitude=-73.96625,
         type=EventType.natal,
         tags=["Me"]
-    )
+    ),
+    enabled_points=[
+        Point.moon,
+        Point.mercury,
+        Point.venus,
+        Point.sun,
+        Point.mars,
+        Point.jupiter,
+        Point.saturn,
+        Point.uranus,
+        Point.neptune,
+        Point.pluto,
+        Point.north_mode,
+        Point.chiron,
+        Point.pholus,
+        Point.ceres,
+        Point.pallas,
+        Point.juno,
+        Point.vesta,
+    ]
 )
 """
 The date time of Tim's birth.
