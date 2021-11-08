@@ -185,16 +185,32 @@ class RelationshipSchema(BaseSchema):
     """
 
     def __str__(self):
-        aspects = []
+        aspects_strings = []
 
-        if self.ecliptic_aspect.type:
-            aspects.append(f'{self.ecliptic_aspect}')
-        if self.declination_aspect.type:
-            aspects.append(f'{self.declination_aspect}')
-        if len(aspects) == 0:
-            aspects.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect}')
+        for aspect in self.get_existing_aspects():
+            aspects_strings.append(f'{aspect}')
 
-        return f'From {self.from_point} to {self.to_point}: {", ".join(aspects)}'
+        if len(aspects_strings) == 0:
+            aspects_strings.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect}')
+
+        return f'From {self.from_point} to {self.to_point}: {", ".join(aspects_strings)}'
+
+    def get_existing_aspects(self) -> List[AspectSchema]:
+        """
+        Returns all aspects that have a type.
+
+        :return: A list of aspects.
+        """
+
+        aspects = [
+            self.ecliptic_aspect,
+            self.precession_corrected_aspect,
+            self.declination_aspect
+        ]
+
+        filter(lambda aspect: aspect.orb, aspects)
+
+        return aspects
 
     from_point: Point = Field(
         ...,
@@ -242,10 +258,21 @@ class RelationshipSchema(BaseSchema):
         description="The point being used as the base for the phase between points."
     )
 
+    precession_correction: float = Field(
+        0,
+        title="Precession Correction",
+        description="The precession correction in degrees from the first to the second event."
+    )
+
     ecliptic_aspect: AspectSchema = Field(
         AspectSchema(),
         title="Ecliptic Aspect",
         description="The aspect between the two points based on ecliptic longitude."
+    )
+    precession_corrected_aspect: AspectSchema = Field(
+        AspectSchema(),
+        title="Precession Corrected Ecliptic Aspect",
+        description="The aspect between the two points based on ecliptic longitude, corrected for precession."
     )
     declination_aspect: AspectSchema = Field(
         AspectSchema(),

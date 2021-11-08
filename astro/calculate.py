@@ -13,7 +13,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
     """
     chart_count = len(settings.events)
     secondary_house_system = settings.secondary_house_system
-    all_point_arrays = []
+    all_points_and_events = []
     all_charts = []
     all_relationships = []
 
@@ -23,11 +23,11 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         event = event_settings.event
         points = create_points_with_attributes(event_settings, settings)
         points_array = [point for point in points.values()]
-        points_and_event_type = (points_array, event)
+        points_and_event = (points_array, event)
 
         relationships = calculate_relationships(
-            points_and_event_type,
-            points_and_event_type,
+            points_and_event,
+            points_and_event,
             True,
             settings
         )
@@ -39,7 +39,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
 
         summary = create_summary(points, is_day_time)
 
-        all_point_arrays.append(points_and_event_type)
+        all_points_and_events.append(points_and_event)
 
         all_charts.append(ChartSchema(
             event=event,
@@ -59,8 +59,8 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
     for from_index in range(chart_count - 1):
         for to_index in range(from_index + 1, chart_count):
             relationships = calculate_relationships(
-                all_point_arrays[from_index],
-                all_point_arrays[to_index],
+                all_points_and_events[from_index],
+                all_points_and_events[to_index],
                 False,
                 settings
             )

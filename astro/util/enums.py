@@ -31,6 +31,7 @@ class AspectSortType(str, Enum):
 
     point_order = "Point Order"
     smallest_orb = "Smallest Orb"
+    closest_exact = "Closest Exact"
 
 
 class HouseSystem(str, Enum):

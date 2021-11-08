@@ -13,8 +13,28 @@ def calculate_aspect_movement(
     """
     Calculates whether degree or declination aspects are applying or separating.
 
-    - Sets the `relationship`'s attributes `degree_aspect_movement` and `declination_aspect_movement`
-      to the direction of movement between the two points.
+    - Sets each aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
+      if there is an orb of aspect and both objects have a speed.
+
+    :param relationship: The relationship between points to store calculations in.
+    :param from_item: The starting point in the relationship, and the event it is from.
+    :param to_item: The ending point in the relationship, and the event it is from.
+    """
+
+    calculate_aspect_movement_ecliptic(relationship, from_item, to_item)
+    calculate_aspect_movement_declination(relationship, from_item, to_item)
+
+
+def calculate_aspect_movement_ecliptic(
+        relationship: RelationshipSchema,
+        from_item: Tuple[PointSchema, EventSchema],
+        to_item: Tuple[PointSchema, EventSchema],
+):
+    """
+    Calculates whether degree or declination aspects are applying or separating.
+
+    - Sets ecliptic aspects' `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
+      if there is an orb of aspect and both objects have a speed.
 
     :param relationship: The relationship between points to store calculations in.
     :param from_item: The starting point in the relationship, and the event it is from.
@@ -27,6 +47,30 @@ def calculate_aspect_movement(
         (to_item[0].longitude_velocity, to_item[1]),
         relationship.ecliptic_aspect.orb
     )
+
+    calculate_degree_types_from_speed(
+        relationship.precession_corrected_aspect,
+        (from_item[0].longitude_velocity, from_item[1]),
+        (to_item[0].longitude_velocity, to_item[1]),
+        relationship.precession_corrected_aspect.orb
+    )
+
+
+def calculate_aspect_movement_declination(
+        relationship: RelationshipSchema,
+        from_item: Tuple[PointSchema, EventSchema],
+        to_item: Tuple[PointSchema, EventSchema],
+):
+    """
+    Calculates whether degree or declination aspects are applying or separating.
+
+    - Sets declination aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
+      if there is an orb of aspect and both objects have a speed.
+
+    :param relationship: The relationship between points to store calculations in.
+    :param from_item: The starting point in the relationship, and the event it is from.
+    :param to_item: The ending point in the relationship, and the event it is from.
+    """
 
     to_velocity = to_item[0].declination_velocity
     aspect_orb = relationship.declination_aspect.orb
@@ -53,7 +97,8 @@ def calculate_degree_types_from_speed(
     """
     Calculates whether points are applying or separating.
 
-    - Sets the aspect's `movement` and `days_until_exact` if there is an orb of aspect and both objects have a speed.
+    - Sets the aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
+      if there is an orb of aspect and both objects have a speed.
 
     :param aspect: The aspect object to update.
     :param from_item: The starting speed in the relationship, and the chart it is from.

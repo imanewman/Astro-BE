@@ -19,7 +19,6 @@ def calculate_declination_aspect(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     :param settings: The settings to use for calculations.
-    :param settings: The settings to use for calculations.
     """
 
     if from_point.declination is None \

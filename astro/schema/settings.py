@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from pydantic import Field
@@ -22,17 +23,17 @@ class EventSettingsSchema(BaseSchema):
         description="Defines what points should be enabled for calculations."
     )
     # TODO
-    progress_to: Optional[EventSchema] = Field(
-        None,
-        title="Progressed Start Time and Location",
-        description="The progressed date, time, and location of calculations."
-    )
+    # progress_to: Optional[EventSchema] = Field(
+    #     None,
+    #     title="Progressed Start Time and Location",
+    #     description="The progressed date, time, and location of calculations."
+    # )
     # TODO
-    solar_arc_to: Optional[EventSchema] = Field(
-        None,
-        title="Solar Arc Start Time and Location",
-        description="The solar arc date, time, and location of calculations."
-    )
+    # solar_arc_to: Optional[EventSchema] = Field(
+    #     None,
+    #     title="Solar Arc Start Time and Location",
+    #     description="The solar arc date, time, and location of calculations."
+    # )
 
 
 class SettingsSchema(BaseSchema):
@@ -67,7 +68,7 @@ class SettingsSchema(BaseSchema):
         description="Defines what aspects should be enabled for calculations."
     )
     aspect_sort: AspectSortType = Field(
-        AspectSortType.smallest_orb,
+        AspectSortType.closest_exact,
         title="Aspect Sort",
         description="The way to sort the aspects."
     )

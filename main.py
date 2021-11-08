@@ -132,29 +132,20 @@ async def calc_tim_upcoming() -> List[RelationshipSchema]:
     aspects = calculated_transits.relationships[2].relationships
     applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_applying]
 
-    def do_track_aspect(aspect: RelationshipSchema) -> bool:
-        if aspect.ecliptic_aspect.days_until_exact is not None and \
-                aspect.ecliptic_aspect.movement in applying_aspects:
-            return True
-
-        if aspect.declination_aspect.days_until_exact is not None and \
-                aspect.declination_aspect.movement in applying_aspects:
-            return True
+    def do_track_aspect(relationship: RelationshipSchema) -> bool:
+        for aspect in relationship.get_existing_aspects():
+            if aspect.movement in applying_aspects:
+                return True
 
         return False
 
-    def sort_aspect(aspect: RelationshipSchema) -> float:
-        ecliptic_days_until_exact = aspect.ecliptic_aspect.days_until_exact
-        declination_days_until_exact = aspect.declination_aspect.days_until_exact
+    def sort_aspect(relationship: RelationshipSchema) -> float:
+        aspect_days = map(
+            lambda aspect: abs(aspect.days_until_exact or 7),
+            relationship.get_existing_aspects()
+        )
 
-        if ecliptic_days_until_exact is not None and declination_days_until_exact is not None:
-            return min(abs(ecliptic_days_until_exact), abs(declination_days_until_exact))
-        elif ecliptic_days_until_exact is not None:
-            return abs(ecliptic_days_until_exact)
-        elif declination_days_until_exact is not None:
-            return abs(declination_days_until_exact)
-
-        return 7
+        return min(aspect_days)
 
     upcoming_aspects = list(filter(do_track_aspect, aspects))
 

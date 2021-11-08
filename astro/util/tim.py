@@ -9,7 +9,7 @@ local_event = EventSettingsSchema(
         latitude=47.6769,
         longitude=-122.2060,
         type=EventType.transit,
-        utc_date=datetime.datetime.utcnow(),
+        utc_date=datetime.datetime.utcnow().astimezone(),
         local_date=datetime.datetime.now(),
         utc_offset="UTC-7.00"
     ),
