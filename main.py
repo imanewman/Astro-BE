@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from fastapi import FastAPI
 
@@ -155,7 +155,7 @@ async def calc_tim_upcoming() -> List[RelationshipSchema]:
 
 
 @app.get("/tim/upcoming-text")
-async def calc_tim_upcoming_text() -> List[str]:
+async def calc_tim_upcoming_text() -> List[Dict[str, List[str]]]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects in text.
@@ -165,4 +165,6 @@ async def calc_tim_upcoming_text() -> List[str]:
 
     upcoming_transits = await calc_tim_upcoming()
 
-    return list(map(lambda aspect: str(aspect), upcoming_transits))
+    return list(map(lambda aspect: {
+        aspect.get_aspect_name(): aspect.get_aspect_descriptions()
+    }, upcoming_transits))

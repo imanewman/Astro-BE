@@ -185,15 +185,20 @@ class RelationshipSchema(BaseSchema):
     """
 
     def __str__(self):
+        return f'{self.get_aspect_name()}: {", ".join(self.get_aspect_descriptions())}'
+
+    def get_aspect_name(self) -> str:
+        return f'From {self.from_point} to {self.to_point}'
+
+    def get_aspect_descriptions(self) -> List[str]:
         aspects_strings = []
 
         for aspect in self.get_existing_aspects():
             aspects_strings.append(f'{aspect}')
 
-        if len(aspects_strings) == 0:
-            aspects_strings.append(f'({round(self.arc_ordered, 4)}) Whole Sign {self.sign_aspect}')
+        aspects_strings.append(f'Whole Sign {self.sign_aspect} [{round(self.arc_ordered, 4)} Arc]')
 
-        return f'From {self.from_point} to {self.to_point}: {", ".join(aspects_strings)}'
+        return aspects_strings
 
     def get_existing_aspects(self) -> List[AspectSchema]:
         """
@@ -208,9 +213,7 @@ class RelationshipSchema(BaseSchema):
             self.declination_aspect
         ]
 
-        filter(lambda aspect: aspect.orb, aspects)
-
-        return aspects
+        return list(filter(lambda aspect: aspect.orb, aspects))
 
     from_point: Point = Field(
         ...,
