@@ -138,7 +138,7 @@ class AspectSchema(BaseSchema):
         aspect_string = f'{self.movement} {self.type}'
 
         if self.local_date_of_exact:
-            return f'{aspect_string} {orb_string} [Exact {self.local_date_of_exact}]'
+            return f'[Exact {self.local_date_of_exact}] {aspect_string} {orb_string}'
         else:
             return f'{aspect_string} {orb_string}'
 
@@ -196,7 +196,8 @@ class RelationshipSchema(BaseSchema):
         for aspect in self.get_existing_aspects():
             aspects_strings.append(f'{aspect}')
 
-        aspects_strings.append(f'Whole Sign {self.sign_aspect} [{round(self.arc_ordered, 4)} Arc]')
+        if len(aspects_strings) == 0:
+            aspects_strings.append(f'Whole Sign {self.sign_aspect} [{round(self.arc_ordered, 4)} Arc]')
 
         return aspects_strings
 
