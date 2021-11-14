@@ -132,7 +132,7 @@ def test_calculate_degree_based_aspects__septile():
     relationship = create_separated_points(52)
 
     assert relationship.ecliptic_aspect.type == AspectType.septile
-    assert relationship.ecliptic_aspect.orb == 1
+    assert relationship.ecliptic_aspect.orb - 0.57 < 0.01
 
 
 def test_calculate_degree_based_aspects__octile():

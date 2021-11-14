@@ -1,6 +1,6 @@
 from astro import calculate_relationships
 from astro.util import AspectType, EventType
-from astro.util.tim import tim_natal
+from astro.util.test_events import tim_natal
 from test.utils import create_test_points
 
 

@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from pydantic import Field
 
@@ -46,7 +45,6 @@ class SettingsSchema(BaseSchema):
     - Default sun conjunction orbs uses ranges found here here:
       https://crystalbastrology.com/meaning-of-cazimi-in-astrology/
     """
-
     events: List[EventSettingsSchema] = Field(
         [],
         title="Events",
@@ -77,4 +75,3 @@ class SettingsSchema(BaseSchema):
         title="Stationary Speed Factor",
         description="The percent of the average speed of a planet that it must be under to be considered stationary."
     )
-

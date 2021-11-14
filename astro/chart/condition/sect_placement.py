@@ -13,7 +13,6 @@ def calculate_sect_placement(point: PointSchema, is_day_time: bool):
     :param point: The point to calculate the sect placement of.
     :param is_day_time: Whether the point is found during the day.
     """
-
     if (is_day_time and point.name == Point.sun) or \
             (not is_day_time and point.name == Point.moon):
         point.condition.sect_placement = SectPlacement.sect_light

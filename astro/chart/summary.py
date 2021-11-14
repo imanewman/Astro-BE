@@ -13,8 +13,6 @@ def create_summary(
 
     - Requires that planetary conditions have been calculated.
 
-    - Finds the sign of the sun, moon, and ascendant.
-    - Finds the planet that rules the ascendant.
     - Determines whether the chart is during the day.
 
     :param points: The current collection of calculated points.
@@ -22,9 +20,8 @@ def create_summary(
 
     :return: The calculated chart summary.
     """
-
-    # Return an empty summary if the big 3 points are not all calculated
     if Point.sun not in points or Point.moon not in points or Point.ascendant not in points:
+        # Return an empty summary if the big 3 points are not all calculated.
         return SummarySchema()
 
     sun, moon, asc = points[Point.sun], points[Point.moon], points[Point.ascendant]

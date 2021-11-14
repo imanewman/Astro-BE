@@ -11,7 +11,6 @@ class BaseSchema(BaseModel):
     """
     A base schema that all models inherit configuration from.
     """
-
     class Config:
         # CamelCase to snake_case translation automatically for every field
         alias_generator = camelize
@@ -31,7 +30,6 @@ class EventSchema(BaseSchema):
     """
     Defines a date and time at a geographic location.
     """
-
     name: str = Field(
         "Event",
         title="Event Name",

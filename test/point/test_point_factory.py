@@ -5,7 +5,7 @@ from astro.chart import calculate_point_attributes
 from astro.chart.point.point_factory import create_swe_point, create_south_node, create_angles
 from astro.schema import PointSchema
 from astro.util import Point, ZodiacSign
-from astro.util.tim import tim_natal
+from astro.util.test_events import tim_natal
 
 
 def test_create_all_points():

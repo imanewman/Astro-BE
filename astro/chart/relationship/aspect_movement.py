@@ -20,7 +20,6 @@ def calculate_aspect_movement(
     :param from_item: The starting point in the relationship, and the event it is from.
     :param to_item: The ending point in the relationship, and the event it is from.
     """
-
     calculate_aspect_movement_ecliptic(relationship, from_item, to_item)
     calculate_aspect_movement_declination(relationship, from_item, to_item)
 
@@ -40,7 +39,6 @@ def calculate_aspect_movement_ecliptic(
     :param from_item: The starting point in the relationship, and the event it is from.
     :param to_item: The ending point in the relationship, and the event it is from.
     """
-
     calculate_degree_types_from_speed(
         relationship.ecliptic_aspect,
         (from_item[0].longitude_velocity, from_item[1]),
@@ -71,7 +69,6 @@ def calculate_aspect_movement_declination(
     :param from_item: The starting point in the relationship, and the event it is from.
     :param to_item: The ending point in the relationship, and the event it is from.
     """
-
     to_velocity = to_item[0].declination_velocity
     aspect_orb = relationship.declination_aspect.orb
 
@@ -97,22 +94,57 @@ def calculate_degree_types_from_speed(
     """
     Calculates whether points are applying or separating.
 
-    - Sets the aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
-      if there is an orb of aspect and both objects have a speed.
-
     :param aspect: The aspect object to update.
-    :param from_item: The starting speed in the relationship, and the chart it is from.
-    :param to_item: The ending speed in the relationship, and the chart it is from.
+    :param from_item: The starting velocity in the relationship, and the chart it is from.
+    :param to_item: The ending velocity in the relationship, and the chart it is from.
     :param orb: The orb between the two points.
     """
-
     from_velocity, to_velocity, is_same_direction = calculate_degree_types_direction(from_item, to_item)
 
     if orb is None or from_velocity is None or to_velocity is None:
         return
 
     from_is_faster = from_velocity >= to_velocity
-    relative_velocity = from_velocity - to_velocity
+
+    calculate_degree_types_timing(
+        aspect,
+        (from_velocity, from_item[1]),
+        (to_velocity, to_item[1]),
+        orb
+    )
+
+    if orb >= 0 if from_is_faster else orb < 0:
+        # If the orb is positive and first object is faster,
+        # or the orb is negative and the second object is faster,
+        # the aspect is applying.
+        aspect.movement = AspectMovementType.applying if is_same_direction \
+            else AspectMovementType.mutually_applying
+    if orb >= 0 if not from_is_faster else orb < 0:
+        # If the orb is positive and second object is faster,
+        # or the orb is negative and the first object is faster,
+        # the aspect is separating.
+        aspect.movement = AspectMovementType.separating if is_same_direction \
+            else AspectMovementType.mutually_separating
+
+
+def calculate_degree_types_timing(
+        aspect: AspectSchema,
+        from_item: Tuple[float, EventSchema],
+        to_item: Tuple[float, EventSchema],
+        orb: float
+):
+    """
+    Calculates approximately when an aspect goes exact.
+
+    - Sets the aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
+      if there is an orb of aspect and both objects have a speed.
+
+    :param aspect: The aspect object to update.
+    :param from_item: The starting velocity in the relationship, and the chart it is from.
+    :param to_item: The ending velocity in the relationship, and the chart it is from.
+    :param orb: The orb between the two points.
+    """
+    relative_velocity = from_item[0] - to_item[0]
     approximate_days_until_exact = orb / relative_velocity
 
     if approximate_days_until_exact < 7:
@@ -130,19 +162,6 @@ def calculate_degree_types_from_speed(
             aspect.utc_date_of_exact = to_event.utc_date + time_delta
             aspect.local_date_of_exact = to_event.local_date + time_delta
 
-    if orb >= 0 if from_is_faster else orb < 0:
-        # If the orb is positive and first object is faster,
-        # or the orb is negative and the second object is faster,
-        # the aspect is applying.
-        aspect.movement = AspectMovementType.applying if is_same_direction \
-            else AspectMovementType.mutually_applying
-    if orb >= 0 if not from_is_faster else orb < 0:
-        # If the orb is positive and second object is faster,
-        # or the orb is negative and the first object is faster,
-        # the aspect is separating.
-        aspect.movement = AspectMovementType.separating if is_same_direction \
-            else AspectMovementType.mutually_separating
-
 
 def calculate_degree_types_direction(
         from_item: Tuple[Optional[float], EventSchema],
@@ -156,7 +175,6 @@ def calculate_degree_types_direction(
 
     :return: The from speed, the to speed, and whether the points are moving in the same direction.
     """
-
     from_velocity, from_event = from_item
     to_velocity, to_event = to_item
 

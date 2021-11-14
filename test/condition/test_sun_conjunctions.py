@@ -1,6 +1,6 @@
 from astro.chart.condition.sun_conjunctions import calculate_sun_conjunctions
 from astro.schema import PointSchema
-from astro.util import Point
+from astro.util import Point, SunCondition
 from test.utils import create_test_points
 
 
@@ -31,9 +31,7 @@ def test_calculate_sun_conjunctions__none():
 
     moon = create_sun_conjunction(20)
 
-    assert moon.condition.is_cazimi is False
-    assert moon.condition.is_combust is False
-    assert moon.condition.is_under_beams is False
+    assert moon.condition.sun_proximity is None
 
 
 def test_calculate_sun_conjunctions__under_beams():
@@ -43,9 +41,7 @@ def test_calculate_sun_conjunctions__under_beams():
 
     moon = create_sun_conjunction(10)
 
-    assert moon.condition.is_cazimi is False
-    assert moon.condition.is_combust is False
-    assert moon.condition.is_under_beams is True
+    assert moon.condition.sun_proximity is SunCondition.under_the_beams
 
 
 def test_calculate_sun_conjunctions__combust():
@@ -55,9 +51,7 @@ def test_calculate_sun_conjunctions__combust():
 
     moon = create_sun_conjunction(5)
 
-    assert moon.condition.is_cazimi is False
-    assert moon.condition.is_combust is True
-    assert moon.condition.is_under_beams is False
+    assert moon.condition.sun_proximity is SunCondition.combust
 
 
 def test_calculate_sun_conjunctions__cazimi():
@@ -67,6 +61,4 @@ def test_calculate_sun_conjunctions__cazimi():
 
     moon = create_sun_conjunction(0.1)
 
-    assert moon.condition.is_cazimi is True
-    assert moon.condition.is_combust is False
-    assert moon.condition.is_under_beams is False
+    assert moon.condition.sun_proximity is SunCondition.cazimi

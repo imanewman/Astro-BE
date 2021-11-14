@@ -11,7 +11,6 @@ def convert_to_degrees(degrees: int, minutes: int, seconds: int) -> float:
 
     :return: The combined degrees as a float.
     """
-
     return degrees + (minutes / 60) + (seconds / 60 / 60)
 
 

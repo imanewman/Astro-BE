@@ -3,7 +3,7 @@ from typing import Tuple, Dict, List
 from .ephemeris import get_point_properties, get_angles
 from astro.schema import EventSchema, PointSchema
 from astro.util import Point, default_enabled_points
-from ...collection.point_traits import point_traits
+from ...collection import point_traits
 
 
 def create_points(
@@ -20,7 +20,6 @@ def create_points(
 
     :return: The calculated points.
     """
-
     points = {}
 
     # Add the points for the angles.
@@ -55,7 +54,6 @@ def create_angles(event: EventSchema) -> Tuple[PointSchema, PointSchema, PointSc
         [3] The IC point for the given event.
         [4] The Vertex point for the given event.
     """
-
     asc, mc, desc, ic, vertex = get_angles(event.julian_day, event.latitude, event.longitude)
 
     return (
@@ -103,7 +101,6 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
 
     :return: The calculated point object with calculated degrees from aries, declination, and speed.
     """
-
     if point not in point_traits.points:
         raise Exception(f"No point traits exist for: {point}")
 
@@ -130,13 +127,14 @@ def create_south_node(north_node: PointSchema) -> PointSchema:
 
     :return: The current location of the south node.
     """
-
-    south_node_longitude = (north_node.longitude + 180) % 360
+    longitude = (north_node.longitude + 180) % 360
     declination = north_node.declination and -north_node.declination
+    declination_velocity = north_node.declination_velocity and -north_node.declination_velocity
 
     return PointSchema(
         name=Point.south_node,
-        longitude=south_node_longitude,
+        longitude=longitude,
         longitude_velocity=north_node.longitude_velocity,
         declination=declination,
+        declination_velocity=declination_velocity,
     )

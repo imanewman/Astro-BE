@@ -15,12 +15,11 @@ def calculate_divisions(point: PointSchema):
 
     :param point: The point to calculate the division rulers for.
     """
-
     traits = zodiac_sign_traits.signs[point.sign]
 
     point.rulers.sign = traits.rulership
 
-    # Calculate bound ruler
+    # Calculate bound ruler.
     for bound in traits.bounds:
         if bound.from_degree <= point.degrees_in_sign < bound.to_degree:
             point.rulers.bound = bound.ruler
@@ -28,7 +27,7 @@ def calculate_divisions(point: PointSchema):
             if point.name == bound.ruler:
                 point.condition.in_bound = True
 
-    # Calculate decan ruler
+    # Calculate decan ruler.
     for decan in traits.decans:
         if decan.from_degree <= point.degrees_in_sign < decan.to_degree:
             point.rulers.decan = decan.ruler

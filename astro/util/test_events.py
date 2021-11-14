@@ -14,7 +14,7 @@ local_event = EventSettingsSchema(
         utc_offset="UTC-7.00"
     ),
     enabled_points=[
-        Point.moon,
+        # Point.moon,
         Point.mercury,
         Point.venus,
         Point.sun,
@@ -51,6 +51,11 @@ tim_natal = EventSettingsSchema(
         tags=["Me"]
     ),
     enabled_points=[
+        Point.ascendant,
+        Point.midheaven,
+        Point.descendant,
+        Point.inner_heaven,
+        Point.vertex,
         Point.moon,
         Point.mercury,
         Point.venus,

@@ -1,5 +1,5 @@
 from astro import calculate_condition
-from astro.util import Point, SectPlacement
+from astro.util import Point, SectPlacement, SunCondition
 from test.utils import create_test_points
 
 
@@ -23,7 +23,7 @@ def test_calculate_condition():
     assert moon.condition.sect_placement == SectPlacement.sect_light
     assert moon.condition.in_triplicity is True
     assert moon.condition.in_decan is True
-    assert moon.condition.is_cazimi is True
+    assert moon.condition.sun_proximity is SunCondition.cazimi
 
 
 

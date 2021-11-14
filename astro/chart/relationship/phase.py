@@ -24,8 +24,6 @@ def calculate_aspect_phase(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     """
-
-    # Set a placeholder degrees between in case one of the points doesn't have a speed.
     relationship.arc_ordered = calculate_degrees_between(from_point, to_point)
 
     # Find which body has the slower speed, which is used as the fulcrum.
@@ -57,7 +55,6 @@ def calculate_degrees_between(slower: PointSchema, faster: PointSchema) -> float
 
     :return: The degrees out of 360 from the slower to the faster planet.
     """
-
     return (faster.longitude - slower.longitude) % 360
 
 
@@ -77,19 +74,16 @@ def calculate_faster_point(
         [0] The faster point, if one exists.
         [1] The slower point, if one exists.
     """
-
-    # Avoid calculations for planets without traits
     if from_point.name not in point_traits.points or to_point.name not in point_traits.points:
         return None, None
 
     from_speed = point_traits.points[from_point.name].speed_avg
     to_speed = point_traits.points[to_point.name].speed_avg
 
-    # Avoid calculations for planets without speeds
     if not from_speed or not to_speed:
         return None, None
 
-    # find which body has the slower speed
+    # find which body has the slower speed.
     return (from_point, to_point) if from_speed < to_speed else (to_point, from_point)
 
 
@@ -101,7 +95,6 @@ def calculate_superior_aspect_phase(relationship: RelationshipSchema):
 
     :param relationship: The relationship between points to store calculations in.
     """
-
     if relationship.arc_ordered < 45:
         relationship.phase = PhaseType.new
     elif 45 <= relationship.arc_ordered < 90:
@@ -131,7 +124,6 @@ def calculate_inferior_aspect_phase(relationship: RelationshipSchema, faster: Po
     :param relationship: The relationship between points to store calculations in.
     :param faster: The faster point in the relationship, either Mercury or Venus.
     """
-
     if relationship.arc_ordered > 180:
         if faster.longitude_velocity < 0:
             # The cycle begins with the retrograde conjunction with the Sun

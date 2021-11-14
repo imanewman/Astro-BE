@@ -16,7 +16,6 @@ def get_julian_day(timestamp: datetime) -> float:
 
     :return: The julian day for that time.
     """
-
     hours = timestamp.hour + (timestamp.minute / 60)
 
     return swe.julday(timestamp.year, timestamp.month, timestamp.day, hours)
@@ -35,7 +34,6 @@ def get_point_properties(jul_day: float, swe_id: int) -> Tuple[float, float, flo
         [2] The declination of this point in degrees.
         [3] The declination velocity per day of this point in degrees.
     """
-
     longitude, longitude_velocity = get_longitude_and_velocity(jul_day, swe_id)
     declination, declination_velocity = get_declination_and_velocity(jul_day, swe_id)
 
@@ -53,7 +51,6 @@ def get_longitude_and_velocity(jul_day: float, swe_id: int) -> Tuple[float, floa
         [0] The ecliptic longitude of this point in degrees.
         [1] The ecliptic longitude velocity per day of this point in degrees.
     """
-
     # [0] ecliptic longitude degrees.
     # [1] ecliptic latitude degrees.
     # [2] ???
@@ -75,7 +72,6 @@ def get_declination_and_velocity(jul_day: float, swe_id: int) -> Tuple[float, fl
         [0] The equatorial declination of this point in degrees.
         [1] The equatorial declination velocity per day of this point in degrees.
     """
-
     # [0] equatorial right ascension degrees.
     # [1] equatorial declination degrees.
     # [2] ???
@@ -115,7 +111,6 @@ def get_angles(
         [3] The ecliptic longitude, velocity, and equatorial declination of the IC.
         [4] The ecliptic longitude, velocity, and equatorial declination of the Vertex.
     """
-
     # [0] Cusps: tuple of 12 float for cusps.
     # [1] Asc MC: tuple of 8 float for additional points.
     # [2] Cusps Speed: tuple of 12 float for cusps speeds.
@@ -167,8 +162,6 @@ def get_house_cusps(
 
     :return: The longitude of the 12 house cusps.
     """
-
-    # A mapping from the internal house system names to their byte representations used by the ephemeris.
     house_system_to_id = {
         HouseSystem.whole_sign: b'W',
         HouseSystem.placidus: b'P',

@@ -3,7 +3,7 @@ from astro.chart import calculate_is_day_time
 from astro.chart.point import create_points_with_attributes
 from astro.schema import PointSchema
 from astro.util import ZodiacSign, Point
-from astro.util.tim import tim_natal
+from astro.util.test_events import tim_natal
 
 
 def test_create_summary():

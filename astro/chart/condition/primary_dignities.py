@@ -16,7 +16,6 @@ def calculate_primary_dignities(point: PointSchema):
 
     :param point: The point to calculate the dignities for.
     """
-
     if point.name in point_traits.points:
         traits = point_traits.points[point.name]
 

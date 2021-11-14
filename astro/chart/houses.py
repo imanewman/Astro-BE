@@ -27,14 +27,12 @@ def calculate_houses(
         [0] A 12 item a list of house objects for each whole sign house.
         [1] A 12 item a list of house objects for each secondary house.
     """
-
     houses_whole_sign = calculate_whole_sign_houses(points)
 
     if event is None or secondary_house_system is HouseSystem.whole_sign:
         # Return just whole signs if a secondary house system cannot be calculated.
 
         return houses_whole_sign, houses_whole_sign
-
     else:
         # Calculate secondary houses.
         houses_secondary = calculate_secondary_houses(points, event, secondary_house_system)
@@ -52,9 +50,8 @@ def calculate_whole_sign_houses(points: Dict[Point, PointSchema]) -> List[HouseS
 
     :return: A 12 item a list of house objects for each whole sign house.
     """
-
-    # Skip house calculations if the ascendant point hasn't been calculated.
     if Point.ascendant not in points:
+        # Skip house calculations if the ascendant point hasn't been calculated.
         return []
 
     houses_whole_sign, house_signs = calculate_whole_sign_house_cusps(points[Point.ascendant])
@@ -77,7 +74,6 @@ def calculate_whole_sign_house_cusps(asc: PointSchema) -> Tuple[List[HouseSchema
         [0] A 12 item a list of house objects for each whole sign house.
         [1] A 12 item a list of the zodiac signs for each whole sign house.
     """
-
     zodiac_index_of_ascendant = zodiac_sign_order.index(asc.sign)
     houses = []
     house_signs = []
@@ -111,7 +107,6 @@ def calculate_whole_sign_house_of_point(
     :param point: The point to find the house of.
     :param houses: The order of houses.
     """
-
     for house in houses:
         if house.sign == point.sign:
             point.houses_whole_sign.house = house.number
@@ -136,7 +131,6 @@ def calculate_traditional_house_rulers(
     :param houses: The calculated house cusps.
     :param set_primary_houses: Whether to set primary or secondary house rulers.
     """
-
     house_number = 0
 
     for house in houses:
@@ -168,7 +162,6 @@ def calculate_secondary_houses(
 
     :return: A 12 item a list of house objects for each secondary house.
     """
-
     houses_secondary = calculate_secondary_house_cusps(event, secondary_house_system)
 
     for point in points.values():
@@ -193,19 +186,16 @@ def calculate_secondary_house_cusps(
 
     :return: A 12 item a list of house objects for each secondary house.
     """
-
     cusps = get_house_cusps(event.julian_day, event.latitude, event.longitude, secondary_house_system)
     houses = []
 
     for house_number in range(number_of_signs):
-        house = HouseSchema(
+        houses.append(HouseSchema(
             number=house_number + 1,
             sign=zodiac_sign_order[int(cusps[house_number] / degrees_per_sign)],
             from_longitude=cusps[house_number],
             to_longitude=cusps[(house_number + 1) % number_of_signs],
-        )
-
-        houses.append(house)
+        ))
 
     return houses
 
@@ -223,12 +213,12 @@ def calculate_secondary_house_of_point(
     :param point: The point to find the house of.
     :param houses: The order of houses.
     """
-
     for house in houses:
-        normalize_point_longitude = (point.longitude - house.from_longitude) % 360
-        normalize_max_longitude = (house.to_longitude - house.from_longitude) % 360
+        normalized_point_longitude = (point.longitude - house.from_longitude) % 360
+        normalized_max_longitude = (house.to_longitude - house.from_longitude) % 360
 
-        if normalize_point_longitude < normalize_max_longitude:
+        if normalized_point_longitude < normalized_max_longitude:
+            # If this point is within the arc of this house, track this house for the point.
             point.houses_secondary.house = house.number
 
             house.points.append(point.name)

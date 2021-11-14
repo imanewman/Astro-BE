@@ -13,7 +13,6 @@ def calculate_triplicity(point: PointSchema, is_day_time: bool):
     :param point: The point to calculate the triplicity rulers for.
     :param is_day_time: Whether the point is found during the day.
     """
-
     traits = zodiac_sign_traits.signs[point.sign]
 
     point.condition.in_triplicity = point.name in traits.triplicity

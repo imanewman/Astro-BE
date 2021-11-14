@@ -15,7 +15,6 @@ def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: 
     :param stationary_pct_of_avg_speed: The percent of the average speed of the point
      that a point must be under to be considered stationary.
     """
-
     point.sign = calculate_sign(point.longitude)
     sign_traits = zodiac_sign_traits.signs[point.sign]
     point.modality = sign_traits.modality
@@ -35,7 +34,6 @@ def calculate_sign(longitude: float) -> ZodiacSign:
 
     :return: The point's zodiac sign.
     """
-
     twelfth_of_circle = int(longitude / 30)
 
     return zodiac_sign_order[twelfth_of_circle]
@@ -49,7 +47,6 @@ def calculate_degrees_in_sign(longitude: float) -> int:
 
     :return: The point's integer degrees within its zodiac sign, out of 30.
     """
-
     return int(longitude % 30)
 
 
@@ -61,7 +58,6 @@ def calculate_minutes_in_degree(longitude: float) -> int:
 
     :return: The point's integer minutes of the current degree, out of 60.
     """
-
     fraction_of_degree = longitude % 1
     degrees_per_minute = 60
 
@@ -82,9 +78,8 @@ def calculate_velocity_properties(point: PointSchema, stationary_pct_of_avg_spee
 
     :param point: The point to calculate velocity attributes for.
     :param stationary_pct_of_avg_speed: The percent of the average velocity of the point
-     that a point must be under to be considered stationary.
+                                        that a point must be under to be considered stationary.
     """
-
     if point.longitude_velocity is None:
         return
 
@@ -96,6 +91,5 @@ def calculate_velocity_properties(point: PointSchema, stationary_pct_of_avg_spee
     average_speed = point_traits.points[point.name].speed_avg
     threshold_speed = average_speed * stationary_pct_of_avg_speed
 
-    point.is_stationary = \
-        0 < point.longitude_velocity < threshold_speed or 0 > point.longitude_velocity > -threshold_speed
+    point.is_stationary = -threshold_speed < point.longitude_velocity < threshold_speed
     point.is_retrograde = point.longitude_velocity < 0

@@ -61,36 +61,34 @@ Defines all major aspects.
 
 minor_aspects = [
     AspectType.quintile,
+    AspectType.bi_quintile,
     AspectType.septile,
+    AspectType.bi_septile,
+    AspectType.tri_septile,
     AspectType.octile,
+    AspectType.sesquiquadrate,
     AspectType.novile,
+    AspectType.bi_novile,
+    AspectType.quadri_novile,
     AspectType.semi_sextile,
     AspectType.quincunx,
-    AspectType.sesquiquadrate,
-    AspectType.bi_quintile,
 ]
 """
 Defines all minor aspects.
 """
 
-default_enabled_aspects = [
-    AspectType.conjunction,
-    AspectType.opposition,
-    AspectType.trine,
-    AspectType.square,
-    AspectType.sextile,
-
-    AspectType.quintile,
-    AspectType.septile,
-    AspectType.octile,
-    AspectType.novile,
-    AspectType.semi_sextile,
-    AspectType.quincunx,
-    AspectType.sesquiquadrate,
-    AspectType.bi_quintile,
-
+declination_aspects = [
     AspectType.parallel,
     AspectType.contraparallel,
+]
+"""
+Defines all declination aspects.
+"""
+
+default_enabled_aspects = [
+    *major_aspects,
+    *minor_aspects,
+    *declination_aspects,
 ]
 """
 Defines the list of aspects enabled for calculations by default.
@@ -111,7 +109,7 @@ zodiac_sign_order = [
     ZodiacSign.pisces
 ]
 """
-Exports the traditional order of zodiac signs.
+Defines the traditional order of zodiac signs.
 """
 
 point_axis_list = [

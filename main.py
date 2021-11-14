@@ -1,14 +1,12 @@
 from typing import List, Dict
+from functools import reduce
 
 from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, EventSettingsSchema, RelationshipSchema
-from astro.collection import aspectTraits
-from astro.collection.point_traits import point_traits
-from astro.collection.zodiac_sign_traits import zodiac_sign_traits
-from astro.util import AspectMovementType, AspectType
-from astro.util.tim import tim_natal, local_event
+    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema
+from astro.collection import aspectTraits, point_traits, zodiac_sign_traits
+from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
 app = FastAPI()
@@ -24,7 +22,6 @@ async def get_signs() -> ZodiacSignCollection:
 
     :return: The zodiac signs.
     """
-
     return zodiac_sign_traits
 
 
@@ -35,7 +32,6 @@ async def get_points() -> PointTraitsCollection:
 
     :return: The points.
     """
-
     return point_traits
 
 
@@ -46,7 +42,6 @@ async def get_aspects() -> AspectTraitsCollection:
 
     :return: The zodiac signs.
     """
-
     return aspectTraits
 
 
@@ -62,7 +57,6 @@ async def calc_chart(settings: SettingsSchema) -> ChartCollectionSchema:
 
     :return: Calculated points and aspects.
     """
-
     return create_chart(settings)
 
 
@@ -73,7 +67,6 @@ async def calc_now() -> ChartCollectionSchema:
 
     :return: Calculated points and aspects.
     """
-
     return await calc_chart(SettingsSchema(
         events=[local_event]
     ))
@@ -114,44 +107,33 @@ async def calc_tim_upcoming() -> List[RelationshipSchema]:
 
     :return: Calculated aspects.
     """
-
     calculated_transits = await calc_tim_transits()
     aspects = calculated_transits.relationships[2].relationships
-    applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_applying]
-
-    def do_track_aspect(relationship: RelationshipSchema) -> bool:
-        for aspect in relationship.get_existing_aspects():
-            if aspect.movement in applying_aspects:
-                return True
-
-        return False
 
     def sort_aspect(relationship: RelationshipSchema) -> float:
-        aspect_days = map(
+        return min(map(
             lambda aspect: abs(aspect.days_until_exact or 7),
-            relationship.get_existing_aspects()
-        )
+            relationship.get_applying_aspects()
+        ), default=7)
 
-        return min(aspect_days)
+    aspects.sort(key=sort_aspect)
 
-    upcoming_aspects = list(filter(do_track_aspect, aspects))
-
-    upcoming_aspects.sort(key=sort_aspect)
-
-    return upcoming_aspects
+    return aspects
 
 
-@app.get("/tim/upcoming-text")
-async def calc_tim_upcoming_text() -> List[Dict[str, List[str]]]:
+@app.get("/tim/upcoming-min")
+async def calc_tim_upcoming_minimal() -> Dict[str, List[str]]:
     """
     Calculates the natal chart of tim with current transits.
-    Returns ordered upcoming aspects in text.
+    Returns ordered upcoming aspects concisely.
 
     :return: Calculated aspects.
     """
-
-    upcoming_transits = await calc_tim_upcoming()
-
-    return list(map(lambda aspect: {
-        aspect.get_aspect_name(): aspect.get_aspect_descriptions()
-    }, upcoming_transits))
+    return reduce(
+        lambda acc, cur: {**acc, **cur},
+        map(
+            lambda aspect: {aspect.get_aspect_name(): aspect.get_aspect_descriptions()},
+            await calc_tim_upcoming()
+        ),
+        {}
+    )

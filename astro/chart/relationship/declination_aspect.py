@@ -20,7 +20,6 @@ def calculate_declination_aspect(
     :param to_point: The ending point in the relationship.
     :param settings: The settings to use for calculations.
     """
-
     if from_point.declination is None \
             or to_point.declination is None \
             or [from_point.name, to_point.name] in point_axis_list \

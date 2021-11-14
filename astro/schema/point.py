@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from pydantic import Field
 
-from astro.util.enums import ZodiacSign, Point, SectPlacement, Modality, Element, HouseSystem
+from astro.util.enums import ZodiacSign, Point, SectPlacement, Modality, Element, HouseSystem, SunCondition
 from .base import BaseSchema
 
 
@@ -11,70 +11,59 @@ class PointConditionSchema(BaseSchema):
     Defines the bonification and maltreatment of a planet.
     For points that arent planets, all values are false.
     """
-
     in_joy: bool = Field(
         False,
         title="In Joy",
-        description="Whether a planet is in its joy"
+        description="Whether a planet is in its joy."
     )
 
     in_domicile: bool = Field(
         False,
         title="In Domicile",
-        description="Whether a planet is in its domicile"
+        description="Whether a planet is in its domicile."
     )
     in_exaltation: bool = Field(
         False,
         title="In Exaltation",
-        description="Whether a planet is in its exaltation"
+        description="Whether a planet is in its exaltation."
     )
-    in_triplicity: Optional[int] = Field(
-        None,
-        title="Triplicity Ruler Order",
-        description="If it is in its triplicity, the order of triplicity importance between 1 and 3"
-    )
-    in_bound: bool = Field(
-        False,
-        title="Is Bound Ruler",
-        description="Whether a planet is in its bound"
-    )
-    in_decan: bool = Field(
-        False,
-        title="Is Decan Ruler",
-        description="Whether a planet is in its decan"
-    )
-
     in_detriment: bool = Field(
         False,
         title="In Detriment",
-        description="Whether a planet is in its detriment"
+        description="Whether a planet is in its detriment."
     )
     in_fall: bool = Field(
         False,
         title="In Fall",
-        description="Whether a planet is in its fall"
+        description="Whether a planet is in its fall."
+    )
+
+    in_triplicity: Optional[int] = Field(
+        None,
+        title="Triplicity Ruler Order",
+        description="If it is in its triplicity, the order of triplicity importance between 1 and 3."
+    )
+    in_bound: bool = Field(
+        False,
+        title="Is Bound Ruler",
+        description="Whether a planet is in its own bound."
+    )
+    in_decan: bool = Field(
+        False,
+        title="Is Decan Ruler",
+        description="Whether a planet is in its own decan."
     )
 
     sect_placement: Optional[SectPlacement] = Field(
         None,
         title="Sect Placement",
-        description="Properties about this planet determined by sect"
+        description="Properties of this planet determined by sect."
     )
 
-    is_under_beams: bool = Field(
-        False,
-        title="Is Under The Beams",
-        description="Whether the planet is under the beams of the sun"
-    )
-    is_combust: bool = Field(
-        False,
-        title="Is Combust",
-        description="Whether the planet is combust the sun"
-    )
-    is_cazimi: bool = Field(
-        False,
-        title="Is Cazimi",
-        description="Whether the planet is cazimi the sun"
+    sun_proximity: Optional[SunCondition] = Field(
+        None,
+        title="Sun Proximity",
+        description="Whether the planet is under the beams of, combust, or cazimi sun."
     )
 
 
@@ -82,26 +71,25 @@ class PointRulersSchema(BaseSchema):
     """
     Defines the traditional rulers of the segment of the chart this point falls in.
     """
-
     sign: Optional[Point] = Field(
         None,
         title="Sign Ruler",
-        description="The traditional planet that rules this sign",
+        description="The traditional planet that rules this sign.",
     )
     decan: Optional[Point] = Field(
         None,
         title="Decan Ruler",
-        description="The traditional planet that rules this decan",
+        description="The traditional planet that rules this decan.",
     )
     bound: Optional[Point] = Field(
         None,
         title="Bound Ruler",
-        description="The traditional planet that rules this bound",
+        description="The traditional planet that rules this bound.",
     )
     triplicity: List[Point] = Field(
         [],
         title="Triplicity Ruler",
-        description="The traditional planets that rule this sign in the order of importance",
+        description="The traditional planets that rule this element in the order of importance.",
     )
 
 
@@ -109,7 +97,6 @@ class PointHousesSchema(BaseSchema):
     """
     Defines the house and ruled houses of a point for a given house system.
     """
-
     house_system: HouseSystem = Field(
         HouseSystem.whole_sign,
         title="House System",
@@ -133,7 +120,6 @@ class PointSchema(BaseSchema):
     """
     Defines any planetary body's position relative to Earth.
     """
-
     name: Point = Field(
         ...,
         title="Planet or Point",

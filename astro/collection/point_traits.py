@@ -143,7 +143,6 @@ point_traits = PointTraitsCollection(
             "speed_low": convert_to_degrees(0, -1, -48),
         },
 
-        # TODO: these require a path to the swiss ephemeris with their locations
         Point.chiron: {
             "swe_id": swe.CHIRON,
             "name": Point.chiron,

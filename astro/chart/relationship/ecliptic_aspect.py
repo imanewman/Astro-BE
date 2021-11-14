@@ -22,8 +22,6 @@ def calculate_ecliptic_aspect(
     :param to_point: The ending point in the relationship.
     :param settings: The settings to use for calculations.
     """
-
-    # Find the relative degrees from the faster to the slower point.
     absolute_arc_between = calculate_arc_between(relationship, from_point, to_point)
 
     aspect_type, orb, angle = calculate_ecliptic_aspect_type(
@@ -68,7 +66,6 @@ def calculate_ecliptic_aspect_type(
         [1] The aspect orb between the two points.
         [2] The aspect type's perfect degrees.
     """
-
     aspect_to_orb = settings.orbs.aspect_to_orb()
 
     for aspect_type, aspect in aspectTraits.aspects.items():
@@ -101,8 +98,6 @@ def calculate_arc_between(
 
     :return: The relative degrees from the faster to the slower point.
     """
-
-    # Find the relative degrees from the first to the second point.
     arc_between = (from_point.longitude - to_point.longitude) % 360
 
     # Set the smaller arc of relative degrees between the points.
@@ -124,7 +119,6 @@ def calculate_aspect_orbs(aspect_degrees: float, degrees_of_separation: float) -
 
     :return: The two orbs of separation for this aspect.
     """
-
     return (
         360 - aspect_degrees - degrees_of_separation,
         aspect_degrees - degrees_of_separation,

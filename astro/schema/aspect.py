@@ -5,7 +5,7 @@ from typing import Dict, Optional, List
 from pydantic import Field
 
 from .base import BaseSchema
-from astro.util import AspectType, Point, PhaseType, AspectMovementType
+from astro.util import AspectType, Point, PhaseType, AspectMovementType, applying_aspects
 
 
 class AspectOrbsSchema(BaseSchema):
@@ -44,21 +44,55 @@ class AspectOrbsSchema(BaseSchema):
         title="Quintile",
         description="Orb of quintile"
     )
+    bi_quintile: float = Field(
+        1,
+        title="Bi-Quintile",
+        description="Orb of bi-quintile"
+    )
+
     septile: float = Field(
         1,
         title="Septile",
         description="Orb of septile"
     )
+    bi_septile: float = Field(
+        1,
+        title="Bi-Septile",
+        description="Orb of bi-septile"
+    )
+    tri_septile: float = Field(
+        1,
+        title="Tri-Septile",
+        description="Orb of tri-septile"
+    )
+
     octile: float = Field(
         1,
         title="Octile",
         description="Orb of octile"
     )
+    sesquiquadrate: float = Field(
+        1,
+        title="Sesquiquadrate",
+        description="Orb of sesquiquadrate"
+    )
+
     novile: float = Field(
         1,
         title="Novile",
         description="Orb of novile"
     )
+    bi_novile: float = Field(
+        1,
+        title="Bi-Novile",
+        description="Orb of bi-novile"
+    )
+    quadri_novile: float = Field(
+        1,
+        title="Quadri-Novile",
+        description="Orb of quadri-novile"
+    )
+
     semi_sextile: float = Field(
         1,
         title="Semi-Sextile",
@@ -68,16 +102,6 @@ class AspectOrbsSchema(BaseSchema):
         5,
         title="Quincunx",
         description="Orb of quincunx"
-    )
-    sesquiquadrate: float = Field(
-        1,
-        title="Sesquiquadrate",
-        description="Orb of sesquiquadrate"
-    )
-    bi_quintile: float = Field(
-        1,
-        title="Bi-Quintile",
-        description="Orb of bi-quintile"
     )
 
     parallel: float = Field(
@@ -115,13 +139,17 @@ class AspectOrbsSchema(BaseSchema):
             AspectType.trine: self.trine,
             AspectType.sextile: self.sextile,
             AspectType.quintile: self.quintile,
+            AspectType.bi_quintile: self.bi_quintile,
             AspectType.septile: self.septile,
+            AspectType.bi_septile: self.bi_septile,
+            AspectType.tri_septile: self.tri_septile,
             AspectType.octile: self.octile,
+            AspectType.sesquiquadrate: self.sesquiquadrate,
             AspectType.novile: self.novile,
+            AspectType.bi_novile: self.bi_novile,
+            AspectType.quadri_novile: self.quadri_novile,
             AspectType.semi_sextile: self.semi_sextile,
             AspectType.quincunx: self.quincunx,
-            AspectType.sesquiquadrate: self.sesquiquadrate,
-            AspectType.bi_quintile: self.bi_quintile,
         }
 
 
@@ -134,11 +162,17 @@ class AspectSchema(BaseSchema):
         if self.orb is None:
             return ""
 
-        orb_string = f'[{round(self.orb, 4)} Orb]'
         aspect_string = f'{self.movement} {self.type}'
 
+        if self.is_precession_corrected:
+            orb_string = f'[{round(self.orb, 4)} PC Orb]'
+        else:
+            orb_string = f'[{round(self.orb, 4)} Orb]'
+
         if self.local_date_of_exact:
-            return f'[Exact {self.local_date_of_exact}] {aspect_string} {orb_string}'
+            date_string = str(self.local_date_of_exact).split(".")[0]
+
+            return f'[{date_string}] {aspect_string} {orb_string}'
         else:
             return f'{aspect_string} {orb_string}'
 
@@ -146,6 +180,11 @@ class AspectSchema(BaseSchema):
         None,
         title="Aspect Type",
         description="The type of aspect between the two points."
+    )
+    is_precession_corrected: bool = Field(
+        False,
+        title="Is Precession Corrected",
+        description="Whether this aspect is corrected for precession between events."
     )
     angle: Optional[float] = Field(
         None,
@@ -188,12 +227,12 @@ class RelationshipSchema(BaseSchema):
         return f'{self.get_aspect_name()}: {", ".join(self.get_aspect_descriptions())}'
 
     def get_aspect_name(self) -> str:
-        return f'From {self.from_point} to {self.to_point}'
+        return f'{self.from_point} To {self.to_point}'
 
     def get_aspect_descriptions(self) -> List[str]:
         aspects_strings = []
 
-        for aspect in self.get_existing_aspects():
+        for aspect in self.get_applying_aspects():
             aspects_strings.append(f'{aspect}')
 
         if len(aspects_strings) == 0:
@@ -201,20 +240,22 @@ class RelationshipSchema(BaseSchema):
 
         return aspects_strings
 
-    def get_existing_aspects(self) -> List[AspectSchema]:
+    def get_applying_aspects(self) -> List[AspectSchema]:
         """
-        Returns all aspects that have a type.
+        Returns all aspects that have an approximate exact date.
 
         :return: A list of aspects.
         """
-
         aspects = [
             self.ecliptic_aspect,
             self.precession_corrected_aspect,
             self.declination_aspect
         ]
 
-        return list(filter(lambda aspect: aspect.orb, aspects))
+        return list(filter(
+            lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
+            aspects
+        ))
 
     from_point: Point = Field(
         ...,
@@ -274,7 +315,7 @@ class RelationshipSchema(BaseSchema):
         description="The aspect between the two points based on ecliptic longitude."
     )
     precession_corrected_aspect: AspectSchema = Field(
-        AspectSchema(),
+        AspectSchema(is_precession_corrected=True),
         title="Precession Corrected Ecliptic Aspect",
         description="The aspect between the two points based on ecliptic longitude, corrected for precession."
     )

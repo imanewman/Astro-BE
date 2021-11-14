@@ -25,7 +25,6 @@ def calculate_relationships(
 
     :return: All calculated relationships.
     """
-
     from_points, from_event = from_items
     to_points, to_event = to_items
     precession_correction = calculate_precession_correction_degrees(from_event, to_event)
@@ -57,13 +56,12 @@ def sort_relationships(relationships: List[RelationshipSchema], aspect_sort: Asp
     :param relationships: The relationships to sort.
     :param aspect_sort: The sort type to run.
     """
-
     if aspect_sort == AspectSortType.smallest_orb:
-        # Sort ordered by the smallest orb
+        # Sort ordered by the smallest orb.
         def sort_smallest_orb(rel: RelationshipSchema) -> float:
             aspect_orbs = map(
                 lambda aspect: abs(aspect.orb or 360),
-                rel.get_existing_aspects()
+                rel.get_applying_aspects()
             )
 
             return min(aspect_orbs, default=360)
@@ -71,11 +69,11 @@ def sort_relationships(relationships: List[RelationshipSchema], aspect_sort: Asp
         relationships.sort(key=sort_smallest_orb)
 
     elif aspect_sort == AspectSortType.closest_exact:
-        # Sort ordered by the smallest orb
+        # Sort ordered by the closest exact aspect.
         def sort_closest_exact(rel: RelationshipSchema) -> float:
             aspect_orbs = map(
                 lambda aspect: abs(aspect.days_until_exact or 7),
-                rel.get_existing_aspects()
+                rel.get_applying_aspects()
             )
 
             return min(aspect_orbs, default=7)
@@ -101,7 +99,6 @@ def create_relationship(
 
     :return: The created relationship.
     """
-
     from_point, from_event = from_item
     to_point, to_event = to_item
 

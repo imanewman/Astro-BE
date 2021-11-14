@@ -13,7 +13,6 @@ class SummarySchema(BaseSchema):
     """
     Summarizes the most important details of a generated chart.
     """
-
     is_day_time: bool = Field(
         True,
         title="Is Day Time",
@@ -55,7 +54,6 @@ class ChartSchema(BaseSchema):
     """
     Defines a calculated chart's positions and condition.
     """
-
     event: EventSchema = Field(
         ...,
         title="Event Time and Location",
@@ -92,7 +90,6 @@ class ChartCollectionSchema(BaseSchema):
     """
     Defines a collection of multiple calculated charts, and the aspects between them.
     """
-
     charts: List[ChartSchema] = Field(
         [],
         title="Charts",
