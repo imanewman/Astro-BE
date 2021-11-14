@@ -4,11 +4,15 @@ from astro.util import AspectType
 from test.utils import create_test_points
 
 
-def create_separated_points(degrees_of_separation: int) -> RelationshipSchema:
+def create_separated_points(
+        degrees_of_separation: int,
+        precession_correction: float = 0
+) -> RelationshipSchema:
     """
     Creates a relationship with a degree aspect by the given degrees of separation.
 
     :param degrees_of_separation: The degrees of separation between points.
+    :param precession_correction: The precession correction between events.
 
     :return: The created relationship.
     """
@@ -17,7 +21,12 @@ def create_separated_points(degrees_of_separation: int) -> RelationshipSchema:
         {"longitude": 0},
         {"longitude": degrees_of_separation % 360},
     )
-    relationship = RelationshipSchema(from_point=from_point.name, to_point=to_point.name)
+
+    relationship = RelationshipSchema(
+        from_point=from_point.name,
+        to_point=to_point.name,
+        precession_correction=precession_correction
+    )
 
     calculate_ecliptic_aspect(relationship, from_point, to_point)
 
@@ -67,6 +76,15 @@ def test_calculate_degree_based_aspects__exists_polarity():
 
     assert create_separated_points(5).ecliptic_aspect.orb == 5
     assert create_separated_points(-5).ecliptic_aspect.orb == -5
+
+
+def test_calculate_degree_based_aspects__precession_correction():
+    """
+    Tests that orbs are properly shifted to account for precession correction
+    """
+
+    assert create_separated_points(1, 1).ecliptic_aspect.orb == 1
+    assert create_separated_points(1, 0.5).precession_corrected_aspect.orb == 0.5
 
 
 def test_calculate_degree_based_aspects__opposition():

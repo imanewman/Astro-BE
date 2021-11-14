@@ -136,6 +136,8 @@ def calculate_degree_types_timing(
     """
     Calculates approximately when an aspect goes exact.
 
+    - Uses the time zone of the transit events, otherwise the second item.
+
     - Sets the aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
       if there is an orb of aspect and both objects have a speed.
 
@@ -145,6 +147,10 @@ def calculate_degree_types_timing(
     :param orb: The orb between the two points.
     """
     relative_velocity = from_item[0] - to_item[0]
+
+    if relative_velocity == 0:
+        return
+
     approximate_days_until_exact = orb / relative_velocity
 
     if approximate_days_until_exact < 7:
