@@ -132,7 +132,7 @@ async def calc_tim_upcoming_minimal() -> Dict[str, List[str]]:
     return reduce(
         lambda acc, cur: {**acc, **cur},
         map(
-            lambda aspect: {aspect.get_aspect_name(): aspect.get_aspect_descriptions()},
+            lambda aspect: {aspect.get_aspect_name(): aspect.get_applying_aspect_descriptions()},
             await calc_tim_upcoming()
         ),
         {}

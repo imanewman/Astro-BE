@@ -163,11 +163,10 @@ class AspectSchema(BaseSchema):
             return ""
 
         aspect_string = f'{self.movement} {self.type}'
+        orb_string = f'[{round(self.orb, 4)} Orb]'
 
         if self.is_precession_corrected:
-            orb_string = f'[{round(self.orb, 4)} PC Orb]'
-        else:
-            orb_string = f'[{round(self.orb, 4)} Orb]'
+            orb_string += " (PC)"
 
         if self.local_date_of_exact:
             date_string = str(self.local_date_of_exact).split(".")[0]
@@ -224,19 +223,16 @@ class RelationshipSchema(BaseSchema):
     """
 
     def __str__(self):
-        return f'{self.get_aspect_name()}: {", ".join(self.get_aspect_descriptions())}'
+        return f'{self.get_aspect_name()}: {", ".join(self.get_applying_aspect_descriptions())}'
 
     def get_aspect_name(self) -> str:
         return f'{self.from_point} To {self.to_point}'
 
-    def get_aspect_descriptions(self) -> List[str]:
+    def get_applying_aspect_descriptions(self) -> List[str]:
         aspects_strings = []
 
         for aspect in self.get_applying_aspects():
             aspects_strings.append(f'{aspect}')
-
-        if len(aspects_strings) == 0:
-            aspects_strings.append(f'Whole Sign {self.sign_aspect} [{round(self.arc_ordered, 4)} Arc]')
 
         return aspects_strings
 
