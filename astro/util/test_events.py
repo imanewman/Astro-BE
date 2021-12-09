@@ -37,6 +37,36 @@ local_event = EventSettingsSchema(
 A local location.
 """
 
+omega_event = EventSettingsSchema(
+    event=EventSchema(
+        latitude=47.6769,
+        longitude=-122.2060,
+        type=EventType.transit,
+        local_date="2028-12-12T05:12:00.000Z",
+        utc_date="2028-12-12T12:12:00.000Z",
+        utc_offset="UTC-7.00"
+    ),
+    enabled_points=[
+        # Point.moon,
+        Point.mercury,
+        Point.venus,
+        Point.sun,
+        Point.mars,
+        Point.jupiter,
+        Point.saturn,
+        Point.uranus,
+        Point.neptune,
+        Point.pluto,
+        Point.north_mode,
+        Point.chiron,
+        Point.pholus,
+        Point.ceres,
+        Point.pallas,
+        Point.juno,
+        Point.vesta,
+    ]
+)
+
 tim_natal = EventSettingsSchema(
     event=EventSchema(
         name="Tim Newman",

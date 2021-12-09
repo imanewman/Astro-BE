@@ -40,39 +40,39 @@ class AspectOrbsSchema(BaseSchema):
     )
 
     quintile: float = Field(
-        1,
+        5,
         title="Quintile",
         description="Orb of quintile"
     )
     bi_quintile: float = Field(
-        1,
+        5,
         title="Bi-Quintile",
         description="Orb of bi-quintile"
     )
 
     septile: float = Field(
-        1,
+        3,
         title="Septile",
         description="Orb of septile"
     )
     bi_septile: float = Field(
-        1,
+        3,
         title="Bi-Septile",
         description="Orb of bi-septile"
     )
     tri_septile: float = Field(
-        1,
+        3,
         title="Tri-Septile",
         description="Orb of tri-septile"
     )
 
     octile: float = Field(
-        1,
+        3,
         title="Octile",
         description="Orb of octile"
     )
     sesquiquadrate: float = Field(
-        1,
+        3,
         title="Sesquiquadrate",
         description="Orb of sesquiquadrate"
     )
@@ -99,7 +99,7 @@ class AspectOrbsSchema(BaseSchema):
         description="Orb of semi-sextile"
     )
     quincunx: float = Field(
-        5,
+        2,
         title="Quincunx",
         description="Orb of quincunx"
     )

@@ -83,7 +83,7 @@ async def calc_tim() -> ChartCollectionSchema:
     :return: Calculated points and aspects.
     """
     return await calc_chart(SettingsSchema(
-        events=[tim_natal]
+        events=[tim_natal],
     ))
 
 
