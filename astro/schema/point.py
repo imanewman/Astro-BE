@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from pydantic import Field
 
@@ -120,7 +120,7 @@ class PointSchema(BaseSchema):
     """
     Defines any planetary body's position relative to Earth.
     """
-    name: Point = Field(
+    name: Union[Point, str] = Field(
         ...,
         title="Planet or Point",
         description="The name of the planet or point."

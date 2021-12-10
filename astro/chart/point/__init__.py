@@ -23,7 +23,7 @@ def create_points_with_attributes(
     # Set the julian day for the time
     event_settings.event.julian_day = get_julian_day(event_settings.event.utc_date)
 
-    points = create_points(event_settings.event, event_settings.enabled_points)
+    points = create_points(event_settings)
 
     # Calculate the derived point attributes for each point.
     for point in points.values():

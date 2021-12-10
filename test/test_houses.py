@@ -11,6 +11,8 @@ def test_calculate_whole_sign_houses():
     Tests that all the information about house placements is added.
     """
 
+    tim_natal.enabled_midpoints = []
+
     points = create_points_with_attributes(tim_natal)
     houses_whole_sign = calculate_whole_sign_houses(points)
 
@@ -76,6 +78,8 @@ def test_calculate_secondary_houses():
     """
     Tests that all the information about house placements is added.
     """
+
+    tim_natal.enabled_midpoints = []
 
     points = create_points_with_attributes(tim_natal)
     houses_secondary = calculate_secondary_houses(points, tim_natal.event, HouseSystem.porphyry)

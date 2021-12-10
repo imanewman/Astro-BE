@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Union
 
 from pydantic import Field
 
@@ -253,12 +253,12 @@ class RelationshipSchema(BaseSchema):
             aspects
         ))
 
-    from_point: Point = Field(
+    from_point: Union[Point, str] = Field(
         ...,
         title="From Point",
         description="The point this aspect is from."
     )
-    to_point: Point = Field(
+    to_point: Union[Point, str] = Field(
         ...,
         title="To Point",
         description="The point this aspect is to."

@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 
 from pydantic import Field
 
@@ -64,7 +64,7 @@ class ChartSchema(BaseSchema):
         title="Chart Summary",
         description="Summarizes the most important information in a chart."
     )
-    points: Dict[Point, PointSchema] = Field(
+    points: Dict[Union[Point, str], PointSchema] = Field(
         [],
         title="Planets and Points",
         description="A map of the base planets and points calculated."
