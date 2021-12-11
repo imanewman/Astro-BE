@@ -1,12 +1,18 @@
 from .enums import *
+from .midpoints import calculate_midpoints
 
-default_enabled_points = [
+calculated_points = [
     Point.ascendant,
     Point.midheaven,
     Point.descendant,
     Point.inner_heaven,
     Point.vertex,
+]
+"""
+Defines points calculated by time of day.
+"""
 
+traditional_points = [
     Point.moon,
     Point.mercury,
     Point.venus,
@@ -14,21 +20,41 @@ default_enabled_points = [
     Point.mars,
     Point.jupiter,
     Point.saturn,
+]
+"""
+Defines traditional planets.
+"""
+
+modern_points = [
+    *traditional_points,
     Point.uranus,
     Point.neptune,
     Point.pluto,
+]
+"""
+Defines modern planets.
+"""
 
-    Point.north_mode,
-
+centaur_points = [
     Point.chiron,
     Point.pholus,
     Point.charklo,
+]
+"""
+Defines centaurs.
+"""
 
+primary_asteroid_points = [
     Point.ceres,
     Point.pallas,
     Point.juno,
     Point.vesta,
+]
+"""
+Defines common asteroids.
+"""
 
+secondary_asteroid_points = [
     Point.psyche,
     Point.eros,
     Point.lilith,
@@ -41,6 +67,16 @@ default_enabled_points = [
     Point.hidalgo,
     Point.urania,
     Point.eris,
+]
+"""
+Defines uncommon asteroids.
+"""
+
+default_enabled_points = [
+    *calculated_points,
+    *modern_points,
+    *primary_asteroid_points,
+    Point.north_mode,
 ]
 """
 Defines the list of points enabled for calculations by default.
@@ -119,4 +155,10 @@ point_axis_list = [
 ]
 """
 Defines a list of all points that always form an axis.
+"""
+
+
+modern_midpoints = calculate_midpoints(modern_points)
+"""
+Defines a list of all midpoints between modern planets.
 """

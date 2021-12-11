@@ -2,7 +2,7 @@ from typing import Tuple, Dict
 
 from .ephemeris import get_point_properties, get_angles
 from astro.schema import EventSchema, PointSchema, EventSettingsSchema, MidpointSettingsSchema
-from astro.util import Point
+from astro.util import Point, do_points_form_axis
 from ...collection import point_traits
 
 

@@ -1,8 +1,8 @@
 import datetime
 
 from astro.chart.point.ephemeris import get_julian_day
-from astro.schema import EventSchema, EventSettingsSchema, MidpointSettingsSchema
-from astro.util import EventType, Point
+from astro.schema import EventSchema, EventSettingsSchema
+from astro.util import EventType, Point, modern_midpoints
 
 local_event = EventSettingsSchema(
     event=EventSchema(
@@ -104,9 +104,7 @@ tim_natal = EventSettingsSchema(
         Point.juno,
         Point.vesta,
     ],
-    enabled_midpoints=[
-        MidpointSettingsSchema(from_point=Point.moon, to_point=Point.sun)
-    ]
+    enabled_midpoints=modern_midpoints
 )
 """
 The date time of Tim's birth.
