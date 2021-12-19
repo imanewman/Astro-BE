@@ -95,19 +95,39 @@ major_aspects = [
 Defines all major aspects.
 """
 
-minor_aspects = [
+fifth_harmonic_aspects = [
     AspectType.quintile,
     AspectType.bi_quintile,
+]
+
+seventh_harmonic_aspects = [
     AspectType.septile,
     AspectType.bi_septile,
     AspectType.tri_septile,
+]
+
+eighth_harmonic_aspects = [
     AspectType.octile,
     AspectType.sesquiquadrate,
+]
+
+ninth_harmonic_aspects = [
     AspectType.novile,
     AspectType.bi_novile,
     AspectType.quadri_novile,
+]
+
+twelfth_harmonic_aspects = [
     AspectType.semi_sextile,
     AspectType.quincunx,
+]
+
+minor_aspects = [
+    *fifth_harmonic_aspects,
+    *seventh_harmonic_aspects,
+    *eighth_harmonic_aspects,
+    *ninth_harmonic_aspects,
+    *twelfth_harmonic_aspects,
 ]
 """
 Defines all minor aspects.
@@ -121,9 +141,19 @@ declination_aspects = [
 Defines all declination aspects.
 """
 
-default_enabled_aspects = [
+all_aspects = [
     *major_aspects,
     *minor_aspects,
+    *declination_aspects,
+]
+"""
+Defines all aspects.
+"""
+
+default_enabled_aspects = [
+    *major_aspects,
+    *eighth_harmonic_aspects,
+    # *minor_aspects,
     *declination_aspects,
 ]
 """

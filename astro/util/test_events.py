@@ -11,7 +11,6 @@ local_event = EventSettingsSchema(
         type=EventType.transit,
         utc_date=datetime.datetime.utcnow().astimezone(),
         local_date=datetime.datetime.now(),
-        utc_offset="UTC-7.00"
     ),
     enabled_points=[
         # Point.moon,
@@ -31,7 +30,8 @@ local_event = EventSettingsSchema(
         Point.pallas,
         Point.juno,
         Point.vesta,
-    ]
+    ],
+    enabled_midpoints=modern_midpoints
 )
 """
 A local location.
@@ -64,7 +64,8 @@ omega_event = EventSettingsSchema(
         Point.pallas,
         Point.juno,
         Point.vesta,
-    ]
+    ],
+    enabled_midpoints=modern_midpoints
 )
 
 tim_natal = EventSettingsSchema(

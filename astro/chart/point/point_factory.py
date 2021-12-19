@@ -1,4 +1,4 @@
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Optional
 
 from .ephemeris import get_point_properties, get_angles
 from astro.schema import EventSchema, PointSchema, EventSettingsSchema, MidpointSettingsSchema
@@ -36,7 +36,10 @@ def create_points(
 
     # Add each midpoint that is enabled.
     for midpoint in event_settings.enabled_midpoints:
-        points[str(midpoint)] = create_midpoint(points, midpoint)
+        point = create_midpoint(points, midpoint)
+
+        if point:
+            points[str(midpoint)] = point
 
     return points
 
@@ -140,7 +143,10 @@ def create_south_node(north_node: PointSchema) -> PointSchema:
     )
 
 
-def create_midpoint(points: Dict[Point, PointSchema], midpoint: MidpointSettingsSchema) -> PointSchema:
+def create_midpoint(
+        points: Dict[Point, PointSchema],
+        midpoint: MidpointSettingsSchema
+) -> Optional[PointSchema]:
     """
     Creates a midpoint from the existing points.
 
@@ -149,29 +155,42 @@ def create_midpoint(points: Dict[Point, PointSchema], midpoint: MidpointSettings
 
     :return: The calculated midpoint object with calculated degrees from aries, declination, and speed.
     """
-    if midpoint.from_point not in points:
-        raise Exception(f"Unable to create midpoint: {midpoint.from_point} has not been calculated")
-    elif midpoint.to_point not in points:
-        raise Exception(f"Unable to create midpoint: {midpoint.to_point} has not been calculated")
+    if midpoint.from_point not in points or midpoint.to_point not in points:
+        return
 
     from_point_in_time = points[midpoint.from_point]
     to_point_in_time = points[midpoint.to_point]
 
-    midpoint_longitude = \
-        ((to_point_in_time.longitude - from_point_in_time.longitude) / 2 + from_point_in_time.longitude) % 360
-    midpoint_declination = \
-        (to_point_in_time.declination - from_point_in_time.declination) / 2 + from_point_in_time.declination
+    # Find the midpoint by longitude.
+    midpoint_longitude = (to_point_in_time.longitude + from_point_in_time.longitude) / 2
+    distance_to_midpoint = abs(to_point_in_time.longitude - midpoint_longitude)
 
-    opposite_midpoint_longitude = (midpoint_longitude + 180) % 360
-    distance_to_midpoint = to_point_in_time.longitude - midpoint_longitude % 360
-    opposite_distance_to_midpoint = to_point_in_time.longitude - opposite_midpoint_longitude % 360
-
-    if opposite_distance_to_midpoint < distance_to_midpoint:
+    if distance_to_midpoint > 90:
         # Ensure that the closer midpoint is the one used.
-        midpoint_longitude = opposite_midpoint_longitude
+        midpoint_longitude = (midpoint_longitude + 180) % 360
 
-    midpoint_longitude_velocity = 0
-    midpoint_declination_velocity = 0
+    # Find the midpoint by declination.
+    if from_point_in_time.declination is not None and to_point_in_time.declination is not None:
+        midpoint_declination = \
+            (to_point_in_time.declination + from_point_in_time.declination) / 2
+    else:
+        midpoint_declination = None
+
+    # Find the average velocity.
+    if from_point_in_time.longitude_velocity is not None \
+            and to_point_in_time.longitude_velocity is not None:
+        midpoint_longitude_velocity = \
+            (to_point_in_time.longitude_velocity + from_point_in_time.longitude_velocity) / 2
+    else:
+        midpoint_longitude_velocity = None
+
+    # Find the average declination velocity.
+    if from_point_in_time.declination_velocity is not None \
+            and to_point_in_time.declination_velocity is not None:
+        midpoint_declination_velocity = \
+            (to_point_in_time.declination_velocity + from_point_in_time.declination_velocity) / 2
+    else:
+        midpoint_declination_velocity = None
 
     return PointSchema(
         name=str(midpoint),

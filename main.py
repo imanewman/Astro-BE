@@ -116,9 +116,12 @@ async def calc_tim_upcoming() -> List[RelationshipSchema]:
             relationship.get_applying_aspects()
         ), default=7)
 
+    def filter_aspect(relationship: RelationshipSchema) -> bool:
+        return len(relationship.get_applying_aspect_descriptions()) > 0
+
     aspects.sort(key=sort_aspect)
 
-    return aspects
+    return list(filter(filter_aspect, aspects))
 
 
 @app.get("/tim/upcoming-min")

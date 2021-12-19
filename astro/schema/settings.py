@@ -13,7 +13,7 @@ class MidpointSettingsSchema(BaseSchema):
     """
 
     def __str__(self):
-        return f"{self.from_point} {self.to_point} Midpoint"
+        return f"{self.from_point}-{self.to_point} Midpoint"
 
     from_point: Point = Field(
         None,
