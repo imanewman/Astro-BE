@@ -188,7 +188,7 @@ Defines a list of all points that always form an axis.
 """
 
 
-modern_midpoints = calculate_midpoints(modern_points)
+modern_midpoints = calculate_midpoints([*modern_points, Point.chiron])
 """
 Defines a list of all midpoints between modern planets.
 """

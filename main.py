@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
     PointTraitsCollection, AspectTraitsCollection, RelationshipSchema
 from astro.collection import aspectTraits, point_traits, zodiac_sign_traits
+from astro.util import modern_midpoints
 from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
@@ -88,26 +89,36 @@ async def calc_tim() -> ChartCollectionSchema:
 
 
 @app.get("/tim/transits")
-async def calc_tim_transits() -> ChartCollectionSchema:
+async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
     """
     Calculates the natal chart of tim with current transits.
 
+    :param midpoints: Whether midpoints should be calculated.
+
     :return: Calculated points and aspects.
     """
+    enabled_midpoints = modern_midpoints if midpoints else []
+    print(midpoints)
+
     return await calc_chart(SettingsSchema(
-        events=[tim_natal, local_event]
+        events=[
+            {**tim_natal.dict(), "enabled_midpoints": enabled_midpoints},
+            {**local_event.dict(), "enabled_midpoints": enabled_midpoints},
+        ]
     ))
 
 
 @app.get("/tim/upcoming")
-async def calc_tim_upcoming() -> List[RelationshipSchema]:
+async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects.
 
+    :param midpoints: Whether midpoints should be calculated.
+
     :return: Calculated aspects.
     """
-    calculated_transits = await calc_tim_transits()
+    calculated_transits = await calc_tim_transits(midpoints)
     aspects = calculated_transits.relationships[2].relationships
 
     def sort_aspect(relationship: RelationshipSchema) -> float:
@@ -125,10 +136,12 @@ async def calc_tim_upcoming() -> List[RelationshipSchema]:
 
 
 @app.get("/tim/upcoming-min")
-async def calc_tim_upcoming_minimal() -> Dict[str, List[str]]:
+async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, List[str]]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects concisely.
+
+    :param midpoints: Whether midpoints should be calculated.
 
     :return: Calculated aspects.
     """
@@ -136,7 +149,7 @@ async def calc_tim_upcoming_minimal() -> Dict[str, List[str]]:
         lambda acc, cur: {**acc, **cur},
         map(
             lambda aspect: {aspect.get_aspect_name(): aspect.get_applying_aspect_descriptions()},
-            await calc_tim_upcoming()
+            await calc_tim_upcoming(midpoints)
         ),
         {}
     )
