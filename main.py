@@ -102,8 +102,8 @@ async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
 
     return await calc_chart(SettingsSchema(
         events=[
-            {**tim_natal.dict(), "enabled_midpoints": enabled_midpoints},
             {**local_event.dict(), "enabled_midpoints": enabled_midpoints},
+            {**tim_natal.dict(), "enabled_midpoints": enabled_midpoints},
         ]
     ))
 
@@ -136,7 +136,7 @@ async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]
 
 
 @app.get("/tim/upcoming-min")
-async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, List[str]]:
+async def calc_tim_upcoming_minimal(midpoints: bool = False) -> List[str]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects concisely.
@@ -146,10 +146,10 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, List[s
     :return: Calculated aspects.
     """
     return reduce(
-        lambda acc, cur: {**acc, **cur},
+        lambda acc, cur: [*acc, *cur],
         map(
-            lambda aspect: {aspect.get_aspect_name(): aspect.get_applying_aspect_descriptions()},
+            lambda aspect: aspect.get_applying_aspect_descriptions(),
             await calc_tim_upcoming(midpoints)
         ),
-        {}
+        []
     )

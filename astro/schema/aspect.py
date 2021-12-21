@@ -162,18 +162,14 @@ class AspectSchema(BaseSchema):
         if self.orb is None:
             return ""
 
-        aspect_string = f'{self.movement} {self.type}'
-        orb_string = f'[{round(self.orb, 4)} Orb]'
-
-        if self.is_precession_corrected:
-            orb_string += " (PC)"
+        aspect_string = f'PC {self.type}' if self.is_precession_corrected else self.type
 
         if self.local_date_of_exact:
-            date_string = str(self.local_date_of_exact).split(".")[0]
+            date_string = ":".join(str(self.local_date_of_exact).split(":")[0:2])
 
-            return f'[{date_string}] {aspect_string} {orb_string}'
+            return f'[{date_string}] {aspect_string}'
         else:
-            return f'{aspect_string} {orb_string}'
+            return aspect_string
 
     type: Optional[AspectType] = Field(
         None,
@@ -232,7 +228,7 @@ class RelationshipSchema(BaseSchema):
         aspects_strings = []
 
         for aspect in self.get_applying_aspects():
-            aspects_strings.append(f'{aspect}')
+            aspects_strings.append(f'{aspect} | {self.get_aspect_name()}')
 
         return aspects_strings
 
