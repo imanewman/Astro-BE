@@ -23,7 +23,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         event = event_settings.event
         points = create_points_with_attributes(event_settings, settings)
         points_array = [point for point in points.values()]
-        points_and_event = (points_array, event)
+        points_and_event = (points_array, event_settings)
 
         relationships = calculate_relationships(
             points_and_event,

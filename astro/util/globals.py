@@ -82,14 +82,20 @@ default_enabled_points = [
 Defines the list of points enabled for calculations by default.
 """
 
-major_aspects = [
+hard_major_aspects = [
     AspectType.conjunction,
     AspectType.opposition,
-    AspectType.trine,
     AspectType.square,
+]
+
+soft_major_aspects = [
+    AspectType.trine,
     AspectType.sextile,
-    AspectType.parallel,
-    AspectType.contraparallel,
+]
+
+major_aspects = [
+    *hard_major_aspects,
+    *soft_major_aspects,
 ]
 """
 Defines all major aspects.
@@ -153,7 +159,6 @@ Defines all aspects.
 default_enabled_aspects = [
     *major_aspects,
     *eighth_harmonic_aspects,
-    # *minor_aspects,
     *declination_aspects,
 ]
 """
@@ -187,8 +192,12 @@ point_axis_list = [
 Defines a list of all points that always form an axis.
 """
 
-
-modern_midpoints = calculate_midpoints([*modern_points, Point.chiron])
+default_midpoints = calculate_midpoints([
+    *modern_points,
+    Point.ascendant,
+    Point.midheaven,
+    Point.chiron,
+])
 """
 Defines a list of all midpoints between modern planets.
 """

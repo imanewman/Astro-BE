@@ -1,22 +1,25 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
-from astro.schema import PointSchema, RelationshipSchema, SettingsSchema, EventSchema
+from astro.schema import PointSchema, RelationshipSchema, SettingsSchema, EventSettingsSchema, EventSchema, \
+    EnabledPointsSettingsSchema
 from .declination_aspect import calculate_declination_aspect
 from .ecliptic_aspect import calculate_ecliptic_aspect
 from .aspect_movement import calculate_aspect_movement
 from .phase import calculate_aspect_phase
 from .sign_aspect import calculate_sign_aspect
-from astro.util import AspectSortType, do_points_form_axis
+from astro.util import AspectSortType, do_points_form_axis, Point
 
 
 def calculate_relationships(
-        from_items: Tuple[List[PointSchema], EventSchema],
-        to_items: Tuple[List[PointSchema], EventSchema],
+        from_items: Tuple[List[PointSchema], EventSettingsSchema],
+        to_items: Tuple[List[PointSchema], EventSettingsSchema],
         is_one_chart: bool = False,
         settings: SettingsSchema = SettingsSchema()
 ) -> List[RelationshipSchema]:
     """
     Calculates the relationships between each set of 2 points.
+
+    - Orbs and allowed aspects are decided by the first event.
 
     :param from_items: The points to calculate aspects from, and the event.
     :param to_items: The points to calculate aspects to, and the event.
@@ -27,7 +30,8 @@ def calculate_relationships(
     """
     from_points, from_event = from_items
     to_points, to_event = to_items
-    precession_correction = calculate_precession_correction_degrees(from_event, to_event)
+    precession_correction = calculate_precession_correction_degrees(
+        from_event.event, to_event.event)
     relationships = []
 
     for from_point in from_points:
@@ -36,13 +40,16 @@ def calculate_relationships(
             to_points = to_points[1:]
 
         for to_point in to_points:
-            relationships.append(create_relationship(
-                (from_point, from_event),
-                (to_point, to_event),
-                is_one_chart,
-                precession_correction,
-                settings
-            ))
+            enabled_settings = from_event.get_enabled_for_point(from_point)
+
+            if enabled_settings:
+                relationships.append(create_relationship(
+                    (from_point, from_event),
+                    (to_point, to_event),
+                    is_one_chart,
+                    precession_correction,
+                    enabled_settings
+                ))
 
     sort_relationships(relationships, settings.aspect_sort)
 
@@ -82,11 +89,11 @@ def sort_relationships(relationships: List[RelationshipSchema], aspect_sort: Asp
 
 
 def create_relationship(
-        from_item: Tuple[PointSchema, EventSchema],
-        to_item: Tuple[PointSchema, EventSchema],
+        from_item: Tuple[PointSchema, EventSettingsSchema],
+        to_item: Tuple[PointSchema, EventSettingsSchema],
         is_one_chart: bool,
         precession_correction: float = 0,
-        settings: SettingsSchema = SettingsSchema()
+        enabled_settings: EnabledPointsSettingsSchema() = EnabledPointsSettingsSchema()
 ) -> RelationshipSchema:
     """
     Creates a relationship object, initializing all internal values.
@@ -95,7 +102,7 @@ def create_relationship(
     :param to_item: The ending point in the relationship, and the event it is from.
     :param is_one_chart: If true, aspects will not be bi-directionally duplicated.
     :param precession_correction: The degrees of precession correction between events.
-    :param settings: The settings to use for calculations.
+    :param enabled_settings: The settings to use for calculations.
 
     :return: The created relationship.
     """
@@ -112,10 +119,14 @@ def create_relationship(
 
     if not is_one_chart or not do_points_form_axis(from_point.name, to_point.name):
         # Skip calculations for aspects that form an axis in the same chart.
-        calculate_ecliptic_aspect(relationship, from_point, to_point, settings)
+        calculate_ecliptic_aspect(relationship, from_point, to_point, enabled_settings)
         calculate_aspect_phase(relationship, from_point, to_point)
-        calculate_declination_aspect(relationship, from_point, to_point, settings)
-        calculate_aspect_movement(relationship, from_item, to_item)
+        calculate_declination_aspect(relationship, from_point, to_point, enabled_settings)
+        calculate_aspect_movement(
+            relationship,
+            (from_point, from_event.event),
+            (to_point, to_event.event)
+        )
 
     return relationship
 

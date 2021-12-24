@@ -1,8 +1,9 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field
 
 from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, AspectSortType
+from . import PointSchema
 from .aspect import AspectOrbsSchema
 from .base import BaseSchema, EventSchema
 
@@ -27,6 +28,53 @@ class MidpointSettingsSchema(BaseSchema):
     )
 
 
+class EnabledPointsSettingsSchema(BaseSchema):
+    """
+    Defines what points to calculate and how to calculate relationships between them.
+    """
+    points: List[Point] = Field(
+        default_enabled_points,
+        title="Enabled Points",
+        description="Defines what points should be enabled for calculations."
+    )
+    midpoints: List[MidpointSettingsSchema] = Field(
+        [],
+        title="Enabled Midpoints",
+        description="Defines what midpoints should be enabled for calculations."
+    )
+
+    orbs: AspectOrbsSchema = Field(
+        AspectOrbsSchema(),
+        title="Aspect Orbs",
+        description="The orbs to use for aspect calculations."
+    )
+    aspects: List[AspectType] = Field(
+        default_enabled_aspects,
+        title="Enabled Aspects",
+        description="Defines what aspects should be enabled for calculations."
+    )
+
+    def does_point_exist(
+            self,
+            point: PointSchema,
+    ) -> bool:
+        """
+        Returns whether the given point or midpoint is in these settings.
+
+        :param point: The point to search for.
+
+        :return: Whether the point or midpoint exists.
+        """
+        point_names = point.points
+
+        if len(point_names) == 1:
+            return point_names[0] in self.points
+
+        for midpoint in self.midpoints:
+            if midpoint.from_point == point_names[0] and midpoint.to_point == point_names[1]:
+                return True
+
+
 class EventSettingsSchema(BaseSchema):
     """
     Defines a single event to be calculated.
@@ -36,30 +84,59 @@ class EventSettingsSchema(BaseSchema):
         title="Start Time and Location",
         description="The base date, time, and location of calculations."
     )
-
-    enabled_points: List[Point] = Field(
-        default_enabled_points,
+    enabled: List[EnabledPointsSettingsSchema] = Field(
+        [EnabledPointsSettingsSchema()],
         title="Enabled Points",
         description="Defines what points should be enabled for calculations."
     )
-    enabled_midpoints: List[MidpointSettingsSchema] = Field(
-        [],
-        title="Enabled Midpoints",
-        description="Defines what midpoints should be enabled for calculations."
-    )
 
-    # TODO
     # progress_to: Optional[EventSchema] = Field(
     #     None,
     #     title="Progressed Start Time and Location",
     #     description="The progressed date, time, and location of calculations."
     # )
-    # TODO
     # solar_arc_to: Optional[EventSchema] = Field(
     #     None,
     #     title="Solar Arc Start Time and Location",
     #     description="The solar arc date, time, and location of calculations."
     # )
+
+    def get_all_enabled_points(self) -> List[Point]:
+        """
+        :return: Returns all enabled points.
+        """
+        points = []
+
+        for enabled_points in self.enabled:
+            points = [*points, *enabled_points.points]
+
+        return points
+
+    def get_all_enabled_midpoints(self) -> List[MidpointSettingsSchema]:
+        """
+        :return: Returns all enabled midpoints.
+        """
+        points = []
+
+        for enabled_points in self.enabled:
+            points = [*points, *enabled_points.midpoints]
+
+        return points
+
+    def get_enabled_for_point(
+            self,
+            point: PointSchema,
+    ) -> Optional[EnabledPointsSettingsSchema]:
+        """
+        Returns the enabled points for this point.
+
+        :param point: The point to search for.
+
+        :return: The enabled points.
+        """
+        for enabled_points in self.enabled:
+            if enabled_points.does_point_exist(point):
+                return enabled_points
 
 
 class SettingsSchema(BaseSchema):
@@ -81,16 +158,6 @@ class SettingsSchema(BaseSchema):
         HouseSystem.porphyry,
         title="Secondary House System",
         description="The secondary house system to calculate, besides the default whole sign.",
-    )
-    orbs: AspectOrbsSchema = Field(
-        AspectOrbsSchema(),
-        title="Aspect Orbs",
-        description="The orbs to use for aspect calculations."
-    )
-    enabled_aspects: List[AspectType] = Field(
-        default_enabled_aspects,
-        title="Enabled Aspects",
-        description="Defines what aspects should be enabled for calculations."
     )
     aspect_sort: AspectSortType = Field(
         AspectSortType.closest_exact,

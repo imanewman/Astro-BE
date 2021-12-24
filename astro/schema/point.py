@@ -125,6 +125,11 @@ class PointSchema(BaseSchema):
         title="Planet or Point",
         description="The name of the planet or point."
     )
+    points: List[Point] = Field(
+        ...,
+        title="Points",
+        description="THe points composited to create this point."
+    )
 
     longitude: float = Field(
         ...,

@@ -12,6 +12,7 @@ def test_calculate_point_attributes():
 
     point = PointSchema(
         name=Point.mercury,
+        points=[Point.mercury],
         longitude_velocity=1.73444,
         longitude=196.69
     )
@@ -57,6 +58,7 @@ def test_calculate_speed_properties__direct():
 
     point = PointSchema(
         name=Point.mercury,
+        points=[Point.mercury],
         longitude_velocity=1.5,
         longitude=1
     )
@@ -74,6 +76,7 @@ def test_calculate_speed_properties__stationary_direct():
 
     point = PointSchema(
         name=Point.mercury,
+        points=[Point.mercury],
         longitude_velocity=0.1,
         longitude=1
     )
@@ -91,6 +94,7 @@ def test_calculate_speed_properties__retrograde():
 
     point = PointSchema(
         name=Point.mercury,
+        points=[Point.mercury],
         longitude_velocity=-1.5,
         longitude=1
     )
@@ -108,6 +112,7 @@ def test_calculate_speed_properties__stationary_retrograde():
 
     point = PointSchema(
         name=Point.mercury,
+        points=[Point.mercury],
         longitude_velocity=-0.1,
         longitude=1
     )

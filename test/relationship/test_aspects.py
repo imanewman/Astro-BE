@@ -16,7 +16,7 @@ def test_calculate_aspects():
         {"longitude": 5, "declination": -11, "house": 1},
     )
 
-    points_and_event_type = (points, tim_natal.event)
+    points_and_event_type = (points, tim_natal)
     aspects = calculate_relationships(points_and_event_type, points_and_event_type, True)
 
     assert len(aspects) is 1

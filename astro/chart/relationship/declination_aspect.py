@@ -1,4 +1,4 @@
-from astro.schema import RelationshipSchema, PointSchema, SettingsSchema
+from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSettingsSchema
 from astro.util import AspectType, point_axis_list
 
 
@@ -6,7 +6,7 @@ def calculate_declination_aspect(
         relationship: RelationshipSchema,
         from_point: PointSchema,
         to_point: PointSchema,
-        settings: SettingsSchema = SettingsSchema()
+        enabled_settings: EnabledPointsSettingsSchema() = EnabledPointsSettingsSchema()
 ):
     """
     Calculates the declination degrees between and declination aspect between points.
@@ -18,7 +18,7 @@ def calculate_declination_aspect(
     :param relationship: The relationship between points to store calculations in.
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
-    :param settings: The settings to use for calculations.
+    :param enabled_settings: The settings to use for calculations.
     """
     if from_point.declination is None \
             or to_point.declination is None \
@@ -32,12 +32,12 @@ def calculate_declination_aspect(
 
     relationship.declination_arc = parallel_orb
 
-    if AspectType.parallel in settings.enabled_aspects and \
-            abs(parallel_orb) <= settings.orbs.parallel:
+    if AspectType.parallel in enabled_settings.aspects and \
+            abs(parallel_orb) <= enabled_settings.orbs.parallel:
         relationship.declination_aspect.type = AspectType.parallel
         relationship.declination_aspect.orb = parallel_orb
 
-    elif AspectType.contraparallel in settings.enabled_aspects and \
-            abs(contraparallel_orb) <= settings.orbs.contraparallel:
+    elif AspectType.contraparallel in enabled_settings.aspects and \
+            abs(contraparallel_orb) <= enabled_settings.orbs.contraparallel:
         relationship.declination_aspect.type = AspectType.contraparallel
         relationship.declination_aspect.orb = contraparallel_orb

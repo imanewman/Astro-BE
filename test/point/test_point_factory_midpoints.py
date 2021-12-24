@@ -11,8 +11,16 @@ def create_test_midpoint(
 ) -> Optional[PointSchema]:
     return create_midpoint(
         {
-            Point.moon: PointSchema(name=Point.moon, **from_props),
-            Point.sun: PointSchema(name=Point.sun, **to_props),
+            Point.moon: PointSchema(
+                name=Point.moon,
+                points=[Point.moon],
+                **from_props
+            ),
+            Point.sun: PointSchema(
+                name=Point.sun,
+                points=[Point.sun],
+                **to_props
+            ),
         },
         MidpointSettingsSchema(
             from_point=Point.moon,
@@ -31,10 +39,18 @@ def test_create_no_midpoint():
     )
 
     assert create_midpoint({
-        Point.moon: PointSchema(name=Point.moon, longitude=0)
+        Point.moon: PointSchema(
+            name=Point.moon,
+            points=[Point.moon],
+            longitude=0
+        )
     }, midpoint) is None
     assert create_midpoint({
-        Point.sun: PointSchema(name=Point.sun, longitude=0)
+        Point.sun: PointSchema(
+            name=Point.sun,
+            points=[Point.sun],
+            longitude=0
+        )
     }, midpoint) is None
 
 

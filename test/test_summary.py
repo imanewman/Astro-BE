@@ -35,10 +35,12 @@ def test_calculate_is_day_time():
         return calculate_is_day_time({
             Point.ascendant: PointSchema(
                 name=Point.ascendant,
+                points=[Point.ascendant],
                 longitude=asc_longitude
             ),
             Point.sun: PointSchema(
                 name=Point.sun,
+                points=[Point.sun],
                 longitude=sun_longitude
             ),
         })

@@ -61,6 +61,7 @@ def test_create_south_node():
 
     north_node = PointSchema(
         name=Point.north_mode,
+        points=[Point.north_mode],
         speed=-0.05,
         longitude=168.03,
         declination=4.73,

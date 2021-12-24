@@ -4,9 +4,9 @@ from functools import reduce
 from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema
+    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
 from astro.collection import aspectTraits, point_traits, zodiac_sign_traits
-from astro.util import modern_midpoints
+from astro.util import default_midpoints, default_enabled_aspects, hard_major_aspects
 from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
@@ -97,13 +97,21 @@ async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
 
     :return: Calculated points and aspects.
     """
-    enabled_midpoints = modern_midpoints if midpoints else []
-    print(midpoints)
+    enabled_midpoints = default_midpoints if midpoints else []
+
+    def create_event(event: EventSettingsSchema):
+        return {
+            **event.dict(),
+            "enabled": [
+                {"points": [], "midpoints": enabled_midpoints, "aspects": hard_major_aspects},
+                {**event.enabled[0].dict(), "aspects": default_enabled_aspects},
+            ]
+        }
 
     return await calc_chart(SettingsSchema(
         events=[
-            {**local_event.dict(), "enabled_midpoints": enabled_midpoints},
-            {**tim_natal.dict(), "enabled_midpoints": enabled_midpoints},
+            create_event(local_event),
+            create_event(tim_natal)
         ]
     ))
 
