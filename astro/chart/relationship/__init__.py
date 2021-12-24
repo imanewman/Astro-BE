@@ -19,7 +19,8 @@ def calculate_relationships(
     """
     Calculates the relationships between each set of 2 points.
 
-    - Orbs and allowed aspects are decided by the first event.
+    - By default, orbs and allowed aspects are decided by the first event.
+    - If either point is a midpoint, those orbs and aspects will take precidence.
 
     :param from_items: The points to calculate aspects from, and the event.
     :param to_items: The points to calculate aspects to, and the event.
@@ -40,16 +41,18 @@ def calculate_relationships(
             to_points = to_points[1:]
 
         for to_point in to_points:
-            enabled_settings = from_event.get_enabled_for_point(from_point)
+            if to_point.is_midpoint():
+                enabled_settings = to_event.get_enabled_for_point(to_point)
+            else:
+                enabled_settings = from_event.get_enabled_for_point(from_point)
 
-            if enabled_settings:
-                relationships.append(create_relationship(
-                    (from_point, from_event),
-                    (to_point, to_event),
-                    is_one_chart,
-                    precession_correction,
-                    enabled_settings
-                ))
+            relationships.append(create_relationship(
+                (from_point, from_event),
+                (to_point, to_event),
+                is_one_chart,
+                precession_correction,
+                enabled_settings
+            ))
 
     sort_relationships(relationships, settings.aspect_sort)
 

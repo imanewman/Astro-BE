@@ -126,7 +126,7 @@ class EventSettingsSchema(BaseSchema):
     def get_enabled_for_point(
             self,
             point: PointSchema,
-    ) -> Optional[EnabledPointsSettingsSchema]:
+    ) -> EnabledPointsSettingsSchema:
         """
         Returns the enabled points for this point.
 

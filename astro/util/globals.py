@@ -20,6 +20,8 @@ traditional_points = [
     Point.mars,
     Point.jupiter,
     Point.saturn,
+    Point.north_mode,
+    Point.south_node
 ]
 """
 Defines traditional planets.
@@ -76,7 +78,6 @@ default_enabled_points = [
     *calculated_points,
     *modern_points,
     *primary_asteroid_points,
-    Point.north_mode,
 ]
 """
 Defines the list of points enabled for calculations by default.

@@ -215,3 +215,9 @@ class PointSchema(BaseSchema):
         title="Condition",
         description="The state of bonification and maltreatment if this is a planet."
     )
+
+    def is_midpoint(self):
+        """
+        :return: Returns trie if this point represents a midpoint.
+        """
+        return len(self.points) == 2

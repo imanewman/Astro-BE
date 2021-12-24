@@ -34,7 +34,7 @@ def create_points(
             points[point] = create_swe_point(event_settings.event, point)
 
     # Add the south node by reflecting the north node.
-    if Point.north_mode in enabled_points:
+    if Point.north_mode in enabled_points and Point.south_node in enabled_points:
         points[Point.south_node] = create_south_node(points[Point.north_mode])
 
     # Add each midpoint that is enabled.
