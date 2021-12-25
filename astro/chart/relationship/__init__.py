@@ -7,7 +7,7 @@ from .ecliptic_aspect import calculate_ecliptic_aspect
 from .aspect_movement import calculate_aspect_movement
 from .phase import calculate_aspect_phase
 from .sign_aspect import calculate_sign_aspect
-from astro.util import AspectSortType, do_points_form_axis, Point
+from astro.util import AspectSortType, do_points_form_axis
 
 
 def calculate_relationships(

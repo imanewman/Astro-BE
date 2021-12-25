@@ -217,38 +217,6 @@ class RelationshipSchema(BaseSchema):
     """
     Represents information about the relationship between two points.
     """
-
-    def __str__(self):
-        return f'{self.get_aspect_name()}: {", ".join(self.get_applying_aspect_descriptions())}'
-
-    def get_aspect_name(self) -> str:
-        return f'{self.from_point} To {self.to_point}'
-
-    def get_applying_aspect_descriptions(self) -> List[str]:
-        aspects_strings = []
-
-        for aspect in self.get_applying_aspects():
-            aspects_strings.append(f'{aspect} | {self.get_aspect_name()}')
-
-        return aspects_strings
-
-    def get_applying_aspects(self) -> List[AspectSchema]:
-        """
-        Returns all aspects that have an approximate exact date.
-
-        :return: A list of aspects.
-        """
-        aspects = [
-            self.ecliptic_aspect,
-            self.precession_corrected_aspect,
-            self.declination_aspect
-        ]
-
-        return list(filter(
-            lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
-            aspects
-        ))
-
     from_point: Union[Point, str] = Field(
         ...,
         title="From Point",
@@ -316,6 +284,45 @@ class RelationshipSchema(BaseSchema):
         title="Declination Aspect",
         description="The aspect between the two points based on declination."
     )
+
+    def __str__(self):
+        return f'{self.get_aspect_name()}: {", ".join(self.get_applying_aspect_descriptions())}'
+
+    def get_aspect_name(self) -> str:
+        return f'{self.from_point} To {self.to_point}'
+
+    def get_applying_aspects(self) -> List[AspectSchema]:
+        """
+        Returns all aspects that have an upcoming approximate exact date.
+
+        :return: A list of aspects.
+        """
+        aspects = [
+            self.ecliptic_aspect,
+            self.precession_corrected_aspect,
+            self.declination_aspect
+        ]
+
+        return list(filter(
+            lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
+            aspects
+        ))
+
+    def has_applying_aspects(self) -> bool:
+        """
+        Returns whether any aspect has an upcoming date.
+
+        :return: Whether any aspect is closely applying.
+        """
+        return len(self.get_applying_aspects()) > 0
+
+    def get_applying_aspect_descriptions(self) -> List[str]:
+        aspects_strings = []
+
+        for aspect in self.get_applying_aspects():
+            aspects_strings.append(f'{aspect} | {self.get_aspect_name()}')
+
+        return aspects_strings
 
 
 class RelationshipCollectionSchema(BaseSchema):

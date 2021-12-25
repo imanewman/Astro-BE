@@ -13,7 +13,7 @@ local_event = EventSettingsSchema(
         local_date=datetime.datetime.now(),
     ),
     enabled=[
-        {"enabled_points": [
+        {"points": [
             # Point.moon,
             Point.mercury,
             Point.venus,
@@ -48,7 +48,7 @@ omega_event = EventSettingsSchema(
         utc_offset="UTC-7.00"
     ),
     enabled=[
-        {"enabled_points": [
+        {"points": [
             Point.moon,
             Point.mercury,
             Point.venus,
@@ -84,7 +84,7 @@ tim_natal = EventSettingsSchema(
         tags=["Me"]
     ),
     enabled=[
-        {"enabled_points": [
+        {"points": [
             Point.ascendant,
             Point.midheaven,
             Point.descendant,
@@ -101,6 +101,7 @@ tim_natal = EventSettingsSchema(
             Point.neptune,
             Point.pluto,
             Point.north_mode,
+            Point.south_node,
             Point.chiron,
             Point.pholus,
             Point.ceres,

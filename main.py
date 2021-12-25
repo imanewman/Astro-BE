@@ -1,5 +1,4 @@
-from typing import List, Dict
-from functools import reduce
+from typing import List
 
 from fastapi import FastAPI
 
@@ -129,18 +128,7 @@ async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]
     calculated_transits = await calc_tim_transits(midpoints)
     aspects = calculated_transits.relationships[2].relationships
 
-    def sort_aspect(relationship: RelationshipSchema) -> float:
-        return min(map(
-            lambda aspect: abs(aspect.days_until_exact or 7),
-            relationship.get_applying_aspects()
-        ), default=7)
-
-    def filter_aspect(relationship: RelationshipSchema) -> bool:
-        return len(relationship.get_applying_aspect_descriptions()) > 0
-
-    aspects.sort(key=sort_aspect)
-
-    return list(filter(filter_aspect, aspects))
+    return list(filter(lambda rel: rel.has_applying_aspects(), aspects))
 
 
 @app.get("/tim/upcoming-min")
@@ -153,11 +141,18 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> List[str]:
 
     :return: Calculated aspects.
     """
-    return reduce(
-        lambda acc, cur: [*acc, *cur],
-        map(
-            lambda aspect: aspect.get_applying_aspect_descriptions(),
-            await calc_tim_upcoming(midpoints)
-        ),
-        []
-    )
+    descriptions = []
+    current_date = ""
+
+    for aspect in await calc_tim_upcoming(midpoints):
+        aspect_descriptions = aspect.get_applying_aspect_descriptions()
+        aspect_date = aspect_descriptions[0].split("[")[1].split(" ")[0]
+
+        if aspect_date != current_date:
+            current_date = aspect_date
+
+            descriptions.append(aspect_date)
+
+        descriptions = [*descriptions, *aspect_descriptions]
+
+    return descriptions
