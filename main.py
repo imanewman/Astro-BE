@@ -154,8 +154,11 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, str]:
             descriptions[aspect_date] = aspect_date
 
         for description in aspect_descriptions:
-            timestamp, aspect, points = description.split(" | ")
+            timestamp, aspect = description.split(" | ")
 
-            descriptions[timestamp] = f"{aspect} | {points}"
+            if timestamp in descriptions:
+                descriptions[timestamp] += f"; {aspect}"
+            else:
+                descriptions[timestamp] = aspect
 
     return descriptions

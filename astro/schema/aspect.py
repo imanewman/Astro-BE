@@ -329,7 +329,7 @@ class RelationshipSchema(BaseSchema):
                 aspects_strings[existing_type_index] = \
                     aspects_strings[existing_type_index].replace("]", f"]{aspect.get_date_stamp()}")
             except ValueError:
-                aspects_strings.append(f'{aspect} | {self.get_aspect_name()}')
+                aspects_strings.append(f'{aspect} From {self.get_aspect_name()}')
 
             aspect_types.append(aspect.type)
 
