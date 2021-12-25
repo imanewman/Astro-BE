@@ -157,20 +157,6 @@ class AspectSchema(BaseSchema):
     """
     Represents information about the aspect between two points.
     """
-
-    def __str__(self):
-        if self.orb is None:
-            return ""
-
-        aspect_string = f'PC {self.type}' if self.is_precession_corrected else self.type
-
-        if self.local_date_of_exact:
-            date_string = ":".join(str(self.local_date_of_exact).split(":")[0:2])
-
-            return f'[{date_string}] {aspect_string}'
-        else:
-            return aspect_string
-
     type: Optional[AspectType] = Field(
         None,
         title="Aspect Type",
@@ -211,6 +197,22 @@ class AspectSchema(BaseSchema):
         title="Degree Aspect Approximate Exact Date (Local)",
         description="The approximate local date aspect goes exact, if in less than a week."
     )
+
+    def __str__(self):
+        if self.orb is None:
+            return ""
+        elif self.local_date_of_exact:
+            return f"{self.get_date_stamp()} {self.type}"
+        else:
+            return self.type
+
+    def get_date_stamp(self) -> str:
+        """
+        :return: A small date stamp of the minute of this exact aspect.
+        """
+        correction = " PC" if self.is_precession_corrected else ""
+
+        return f"[{':'.join(str(self.local_date_of_exact).split(':')[0:2])}{correction}]"
 
 
 class RelationshipSchema(BaseSchema):
@@ -318,9 +320,18 @@ class RelationshipSchema(BaseSchema):
 
     def get_applying_aspect_descriptions(self) -> List[str]:
         aspects_strings = []
+        aspect_types = []
 
         for aspect in self.get_applying_aspects():
-            aspects_strings.append(f'{aspect} | {self.get_aspect_name()}')
+            try:
+                existing_type_index = aspect_types.index(aspect.type)
+
+                aspects_strings[existing_type_index] = \
+                    aspects_strings[existing_type_index].replace("]", f"]{aspect.get_date_stamp()}")
+            except ValueError:
+                aspects_strings.append(f'{aspect} | {self.get_aspect_name()}')
+
+            aspect_types.append(aspect.type)
 
         return aspects_strings
 
