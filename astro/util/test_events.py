@@ -49,7 +49,7 @@ omega_event = EventSettingsSchema(
     ),
     enabled=[
         {"enabled_points": [
-            # Point.moon,
+            Point.moon,
             Point.mercury,
             Point.venus,
             Point.sun,

@@ -88,11 +88,17 @@ hard_major_aspects = [
     AspectType.opposition,
     AspectType.square,
 ]
+"""
+Defines major hard aspects.
+"""
 
 soft_major_aspects = [
     AspectType.trine,
     AspectType.sextile,
 ]
+"""
+Defines major soft aspects.
+"""
 
 major_aspects = [
     *hard_major_aspects,
@@ -106,28 +112,43 @@ fifth_harmonic_aspects = [
     AspectType.quintile,
     AspectType.bi_quintile,
 ]
+"""
+Defines 5th harmonic aspects.
+"""
 
 seventh_harmonic_aspects = [
     AspectType.septile,
     AspectType.bi_septile,
     AspectType.tri_septile,
 ]
+"""
+Defines 7th harmonic aspects.
+"""
 
 eighth_harmonic_aspects = [
     AspectType.octile,
     AspectType.sesquiquadrate,
 ]
+"""
+Defines 8th harmonic aspects.
+"""
 
 ninth_harmonic_aspects = [
     AspectType.novile,
     AspectType.bi_novile,
     AspectType.quadri_novile,
 ]
+"""
+Defines 9th harmonic aspects.
+"""
 
 twelfth_harmonic_aspects = [
     AspectType.semi_sextile,
     AspectType.quincunx,
 ]
+"""
+Defines 12th harmonic aspects.
+"""
 
 minor_aspects = [
     *fifth_harmonic_aspects,
