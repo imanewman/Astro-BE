@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from fastapi import FastAPI
 
@@ -132,7 +132,7 @@ async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]
 
 
 @app.get("/tim/upcoming-min")
-async def calc_tim_upcoming_minimal(midpoints: bool = False) -> List[str]:
+async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, str]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects concisely.
@@ -141,7 +141,7 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> List[str]:
 
     :return: Calculated aspects.
     """
-    descriptions = []
+    descriptions = {}
     current_date = ""
 
     for aspect in await calc_tim_upcoming(midpoints):
@@ -151,8 +151,11 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> List[str]:
         if aspect_date != current_date:
             current_date = aspect_date
 
-            descriptions.append(aspect_date)
+            descriptions[aspect_date] = aspect_date
 
-        descriptions = [*descriptions, *aspect_descriptions]
+        for description in aspect_descriptions:
+            timestamp, aspect, points = description.split(" | ")
+
+            descriptions[timestamp] = f"{aspect} | {points}"
 
     return descriptions

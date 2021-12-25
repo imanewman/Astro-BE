@@ -202,7 +202,7 @@ class AspectSchema(BaseSchema):
         if self.orb is None:
             return ""
         elif self.local_date_of_exact:
-            return f"{self.get_date_stamp()} {self.type}"
+            return f"{self.get_date_stamp()} | {self.type}"
         else:
             return self.type
 
