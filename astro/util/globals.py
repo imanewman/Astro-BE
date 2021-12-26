@@ -74,10 +74,25 @@ secondary_asteroid_points = [
 Defines uncommon asteroids.
 """
 
+lot_points = [
+    Point.lot_of_fortune,
+    Point.lot_of_spirit,
+    Point.lot_of_necessity,
+    Point.lot_of_eros,
+    Point.lot_of_courage,
+    Point.lot_of_victory,
+    Point.lot_of_nemesis,
+]
+"""
+Defines a list of all midpoints between modern planets.
+"""
+
 default_enabled_points = [
     *calculated_points,
     *modern_points,
     *primary_asteroid_points,
+    Point.lot_of_fortune,
+    Point.lot_of_spirit,
 ]
 """
 Defines the list of points enabled for calculations by default.

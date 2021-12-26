@@ -1,9 +1,13 @@
-from typing import Tuple, Dict, Optional
+from typing import Tuple, Dict
 
 from .ephemeris import get_point_properties, get_angles
-from astro.schema import EventSchema, PointSchema, EventSettingsSchema, MidpointSettingsSchema
-from astro.util import Point, do_points_form_axis
+from astro.schema import EventSchema, PointSchema, EventSettingsSchema
+from astro.util import Point
+from .lot_factory import create_lot
+from .midpoint_factory import create_midpoint
+from .is_day_time import calculate_is_day_time
 from ...collection import point_traits
+from ...collection.lot_traits import lot_traits
 
 
 def create_points(
@@ -43,6 +47,16 @@ def create_points(
 
         if point:
             points[str(midpoint)] = point
+
+    is_day_time = calculate_is_day_time(points)
+
+    # Add all lots.
+    for lot in lot_traits.lots:
+        if lot in enabled_points:
+            point = create_lot(points, lot, is_day_time)
+
+            if point:
+                points[lot] = point
 
     return points
 
@@ -123,7 +137,7 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
 
     return PointSchema(
         name=traits.name,
-            points=[traits.name],
+        points=[traits.name],
         longitude=longitude,
         longitude_velocity=longitude_velocity,
         declination=declination,
@@ -145,68 +159,9 @@ def create_south_node(north_node: PointSchema) -> PointSchema:
 
     return PointSchema(
         name=Point.south_node,
-            points=[Point.south_node],
+        points=[Point.south_node],
         longitude=longitude,
         longitude_velocity=north_node.longitude_velocity,
         declination=declination,
         declination_velocity=declination_velocity,
-    )
-
-
-def create_midpoint(
-        points: Dict[Point, PointSchema],
-        midpoint: MidpointSettingsSchema
-) -> Optional[PointSchema]:
-    """
-    Creates a midpoint from the existing points.
-
-    :param points: A collection of already created points.
-    :param midpoint: The midpoint to create.
-
-    :return: The calculated midpoint object with calculated degrees from aries, declination, and speed.
-    """
-    if midpoint.from_point not in points or midpoint.to_point not in points:
-        return
-
-    from_point_in_time = points[midpoint.from_point]
-    to_point_in_time = points[midpoint.to_point]
-
-    # Find the midpoint by longitude.
-    midpoint_longitude = (to_point_in_time.longitude + from_point_in_time.longitude) / 2
-    distance_to_midpoint = abs(to_point_in_time.longitude - midpoint_longitude)
-
-    if distance_to_midpoint > 90:
-        # Ensure that the closer midpoint is the one used.
-        midpoint_longitude = (midpoint_longitude + 180) % 360
-
-    # Find the midpoint by declination.
-    if from_point_in_time.declination is not None and to_point_in_time.declination is not None:
-        midpoint_declination = \
-            (to_point_in_time.declination + from_point_in_time.declination) / 2
-    else:
-        midpoint_declination = None
-
-    # Find the average velocity.
-    if from_point_in_time.longitude_velocity is not None \
-            and to_point_in_time.longitude_velocity is not None:
-        midpoint_longitude_velocity = \
-            (to_point_in_time.longitude_velocity + from_point_in_time.longitude_velocity) / 2
-    else:
-        midpoint_longitude_velocity = None
-
-    # Find the average declination velocity.
-    if from_point_in_time.declination_velocity is not None \
-            and to_point_in_time.declination_velocity is not None:
-        midpoint_declination_velocity = \
-            (to_point_in_time.declination_velocity + from_point_in_time.declination_velocity) / 2
-    else:
-        midpoint_declination_velocity = None
-
-    return PointSchema(
-        name=str(midpoint),
-        points=[midpoint.from_point, midpoint.to_point],
-        longitude=midpoint_longitude,
-        longitude_velocity=midpoint_longitude_velocity,
-        declination=midpoint_declination,
-        declination_velocity=midpoint_declination_velocity,
     )

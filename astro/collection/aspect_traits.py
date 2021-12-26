@@ -1,7 +1,7 @@
 from astro.schema import AspectTraitsCollection
 from astro.util import AspectType
 
-aspectTraits = AspectTraitsCollection(**{
+aspect_traits = AspectTraitsCollection(**{
     "aspects": {
         AspectType.conjunction: {
             "name": AspectType.conjunction,

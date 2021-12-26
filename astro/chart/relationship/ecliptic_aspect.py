@@ -1,7 +1,7 @@
 from typing import Tuple, Dict, Optional
 
 from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSettingsSchema
-from astro.collection import aspectTraits
+from astro.collection import aspect_traits
 from astro.util import AspectType
 
 
@@ -68,7 +68,7 @@ def calculate_ecliptic_aspect_type(
     """
     aspect_to_orb = enabled_settings.orbs.aspect_to_orb()
 
-    for aspect_type, aspect in aspectTraits.aspects.items():
+    for aspect_type, aspect in aspect_traits.aspects.items():
         if aspect_type not in enabled_settings.aspects:
             return None, None, None
 

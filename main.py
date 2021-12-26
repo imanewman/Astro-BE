@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
     PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
-from astro.collection import aspectTraits, point_traits, zodiac_sign_traits
+from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
 from astro.util import default_midpoints, default_enabled_aspects, hard_major_aspects
 from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
@@ -42,7 +42,7 @@ async def get_aspects() -> AspectTraitsCollection:
 
     :return: The zodiac signs.
     """
-    return aspectTraits
+    return aspect_traits
 
 
 # Chart Calculations

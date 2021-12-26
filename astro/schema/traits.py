@@ -111,3 +111,45 @@ class AspectTraitsCollection(BaseSchema):
         title="Default Aspect Orbs",
         description="The default orbs used for each aspect."
     )
+
+
+class LotTraits(BaseSchema):
+    """
+    Represents an Egyptian/Arabic Lot.
+    """
+    id: Point = Field(
+        ...,
+        title="Lot ID",
+        description="The ID of this lot.",
+    )
+    name: str = Field(
+        ...,
+        title="Name",
+        description="The name of this lot.",
+    )
+    add_point: Point = Field(
+        ...,
+        title="Add Point",
+        description="The point A in the lot equation: Asc. + A - B",
+    )
+    sub_point: Point = Field(
+        ...,
+        title="Subtract Point",
+        description="The point B in the lot equation: Asc. + A - B",
+    )
+    reverse_at_night: bool = Field(
+        True,
+        title="Reverse at Night",
+        description="If true, the lot equation will be reversed in night charts.",
+    )
+
+
+class LotTraitsCollection(BaseSchema):
+    """
+    A collection of all lots available to use.
+    """
+    lots: Dict[Point, LotTraits] = Field(
+        ...,
+        title="Lots",
+        description="A collection of all preset lot calculations.",
+    )

@@ -1,5 +1,4 @@
-from astro import create_summary, calculate_condition
-from astro.chart import calculate_is_day_time
+from astro import create_summary, calculate_condition, calculate_is_day_time
 from astro.chart.point import create_points_with_attributes
 from astro.schema import PointSchema
 from astro.util import ZodiacSign, Point

@@ -2,7 +2,8 @@ import datetime
 
 from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
-from astro.util import EventType, Point
+from astro.util import EventType, Point, calculated_points, modern_points, centaur_points, \
+    primary_asteroid_points, lot_points
 
 local_event = EventSettingsSchema(
     event=EventSchema(
@@ -48,25 +49,7 @@ omega_event = EventSettingsSchema(
         utc_offset="UTC-7.00"
     ),
     enabled=[
-        {"points": [
-            Point.moon,
-            Point.mercury,
-            Point.venus,
-            Point.sun,
-            Point.mars,
-            Point.jupiter,
-            Point.saturn,
-            Point.uranus,
-            Point.neptune,
-            Point.pluto,
-            Point.north_mode,
-            Point.chiron,
-            Point.pholus,
-            Point.ceres,
-            Point.pallas,
-            Point.juno,
-            Point.vesta,
-        ]}
+        {"points": modern_points}
     ]
 )
 
@@ -85,29 +68,12 @@ tim_natal = EventSettingsSchema(
     ),
     enabled=[
         {"points": [
-            Point.ascendant,
-            Point.midheaven,
-            Point.descendant,
-            Point.inner_heaven,
-            Point.vertex,
-            Point.moon,
-            Point.mercury,
-            Point.venus,
-            Point.sun,
-            Point.mars,
-            Point.jupiter,
-            Point.saturn,
-            Point.uranus,
-            Point.neptune,
-            Point.pluto,
-            Point.north_mode,
-            Point.south_node,
+            *calculated_points,
+            *modern_points,
             Point.chiron,
             Point.pholus,
-            Point.ceres,
-            Point.pallas,
-            Point.juno,
-            Point.vesta,
+            *primary_asteroid_points,
+            *lot_points,
         ]}
     ]
 )

@@ -1,6 +1,7 @@
+from astro.chart.point.is_day_time import calculate_is_day_time
 from astro.schema import ChartSchema, SettingsSchema, ChartCollectionSchema, RelationshipCollectionSchema
 from astro.chart import create_summary, calculate_houses, calculate_relationships, \
-    calculate_condition, create_points_with_attributes, calculate_is_day_time
+    calculate_condition, create_points_with_attributes
 
 
 def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:

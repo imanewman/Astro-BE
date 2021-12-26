@@ -67,12 +67,12 @@ class EnabledPointsSettingsSchema(BaseSchema):
         """
         point_names = point.points
 
-        if len(point_names) == 1:
-            return point_names[0] in self.points
+        if len(point_names) == 2:
+            for midpoint in self.midpoints:
+                if midpoint.from_point == point_names[0] and midpoint.to_point == point_names[1]:
+                    return True
 
-        for midpoint in self.midpoints:
-            if midpoint.from_point == point_names[0] and midpoint.to_point == point_names[1]:
-                return True
+        return point.name in self.points
 
 
 class EventSettingsSchema(BaseSchema):
@@ -126,7 +126,7 @@ class EventSettingsSchema(BaseSchema):
     def get_enabled_for_point(
             self,
             point: PointSchema,
-    ) -> EnabledPointsSettingsSchema:
+    ) -> Optional[EnabledPointsSettingsSchema]:
         """
         Returns the enabled points for this point.
 

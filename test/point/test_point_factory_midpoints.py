@@ -1,6 +1,6 @@
 from typing import Optional, Dict
 
-from astro.chart.point.point_factory import create_midpoint
+from astro.chart.point.midpoint_factory import create_midpoint
 from astro.schema import PointSchema, MidpointSettingsSchema
 from astro.util import Point
 

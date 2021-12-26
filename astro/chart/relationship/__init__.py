@@ -41,10 +41,13 @@ def calculate_relationships(
             to_points = to_points[1:]
 
         for to_point in to_points:
-            if to_point.is_midpoint():
-                enabled_settings = to_event.get_enabled_for_point(to_point)
+            to_enabled = to_event.get_enabled_for_point(to_point)
+            from_enabled = from_event.get_enabled_for_point(from_point)
+
+            if to_point.is_midpoint() or not from_enabled:
+                enabled_settings = to_enabled
             else:
-                enabled_settings = from_event.get_enabled_for_point(from_point)
+                enabled_settings = from_enabled
 
             relationships.append(create_relationship(
                 (from_point, from_event),
