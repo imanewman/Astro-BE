@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from pydantic import Field
 
@@ -126,17 +126,26 @@ class EventSettingsSchema(BaseSchema):
     def get_enabled_for_point(
             self,
             point: PointSchema,
-    ) -> Optional[EnabledPointsSettingsSchema]:
+    ) -> Tuple[Optional[EnabledPointsSettingsSchema], Optional[int]]:
         """
         Returns the enabled points for this point.
 
         :param point: The point to search for.
 
-        :return: The enabled points.
+        :return:
+            [0] The enabled points.
+            [1] The priority of the enabled points list,
+                with higher numbers equal to higher priority.
         """
+        idx = 0
+
         for enabled_points in self.enabled:
             if enabled_points.does_point_exist(point):
-                return enabled_points
+                return enabled_points, idx
+
+            idx += 1
+
+        return None, None
 
 
 class SettingsSchema(BaseSchema):

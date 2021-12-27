@@ -19,8 +19,8 @@ def calculate_relationships(
     """
     Calculates the relationships between each set of 2 points.
 
-    - By default, orbs and allowed aspects are decided by the first event.
-    - If either point is a midpoint, those orbs and aspects will take precidence.
+    - By default, orbs and allowed aspects are decided by the event with
+      the highest priority (enabled point index) of enabled aspects.
 
     :param from_items: The points to calculate aspects from, and the event.
     :param to_items: The points to calculate aspects to, and the event.
@@ -41,10 +41,10 @@ def calculate_relationships(
             to_points = to_points[1:]
 
         for to_point in to_points:
-            to_enabled = to_event.get_enabled_for_point(to_point)
-            from_enabled = from_event.get_enabled_for_point(from_point)
+            to_enabled, to_priority = to_event.get_enabled_for_point(to_point)
+            from_enabled, from_priority = from_event.get_enabled_for_point(from_point)
 
-            if to_point.is_midpoint() or not from_enabled:
+            if not from_priority or to_priority >= from_priority:
                 enabled_settings = to_enabled
             else:
                 enabled_settings = from_enabled

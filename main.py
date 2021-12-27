@@ -102,8 +102,12 @@ async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
         return {
             **event.dict(),
             "enabled": [
-                {"points": [], "midpoints": enabled_midpoints, "aspects": hard_major_aspects},
-                {**event.enabled[0].dict(), "aspects": default_enabled_aspects},
+                event.enabled[0],
+                {
+                    "points": [],
+                    "midpoints": enabled_midpoints,
+                    "aspects": hard_major_aspects
+                },
             ]
         }
 
