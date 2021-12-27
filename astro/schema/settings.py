@@ -87,7 +87,9 @@ class EventSettingsSchema(BaseSchema):
     enabled: List[EnabledPointsSettingsSchema] = Field(
         [EnabledPointsSettingsSchema()],
         title="Enabled Points",
-        description="Defines what points should be enabled for calculations."
+        description="Defines what points should be enabled for calculations. " +
+                    "When calculating aspect between points in different enabled objects, " +
+                    "orbs and aspect types will be taken from the later of the two points."
     )
 
     # progress_to: Optional[EventSchema] = Field(

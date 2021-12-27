@@ -44,7 +44,7 @@ def calculate_relationships(
             to_enabled, to_priority = to_event.get_enabled_for_point(to_point)
             from_enabled, from_priority = from_event.get_enabled_for_point(from_point)
 
-            if not from_priority or to_priority >= from_priority:
+            if from_priority is None or to_priority >= from_priority:
                 enabled_settings = to_enabled
             else:
                 enabled_settings = from_enabled
