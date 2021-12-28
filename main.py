@@ -1,6 +1,7 @@
 from typing import List, Dict
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
     PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
@@ -10,6 +11,16 @@ from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Static Collections

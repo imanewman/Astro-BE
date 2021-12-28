@@ -153,12 +153,13 @@ def calculate_degree_types_timing(
 
     approximate_days_until_exact = orb / relative_velocity
 
-    if approximate_days_until_exact < 7:
+    if abs(approximate_days_until_exact) < 7:
         # Set the approximate days until exact and date exact, if less than 1 week.
         aspect.days_until_exact = approximate_days_until_exact
 
         from_event = from_item[1]
         to_event = to_item[1]
+
         time_delta = datetime.timedelta(days=approximate_days_until_exact)
 
         if from_event.type == EventType.transit:
