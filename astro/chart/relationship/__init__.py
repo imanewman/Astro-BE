@@ -148,7 +148,8 @@ def calculate_precession_correction_degrees(from_event: EventSchema, to_event: E
     :return: The degrees to add to all locations in the starting event to more accurately compare them
              to the ending event.
     """
-    date_difference = to_event.utc_date - from_event.utc_date
+    date_difference = to_event.utc_date.replace(tzinfo=None) - \
+        from_event.utc_date.replace(tzinfo=None)
     date_difference_in_years = date_difference.days / 365
     precession_correction_degrees_per_year = 50.25 / 60 / 60
     precession_correction_degrees = date_difference_in_years * precession_correction_degrees_per_year

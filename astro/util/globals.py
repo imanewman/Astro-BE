@@ -28,7 +28,6 @@ Defines traditional planets.
 """
 
 modern_points = [
-    *traditional_points,
     Point.uranus,
     Point.neptune,
     Point.pluto,
@@ -89,6 +88,7 @@ Defines a list of all midpoints between modern planets.
 
 default_enabled_points = [
     *calculated_points,
+    *traditional_points,
     *modern_points,
     *primary_asteroid_points,
     Point.lot_of_fortune,
@@ -230,9 +230,12 @@ Defines a list of all points that always form an axis.
 """
 
 default_midpoints = calculate_midpoints([
+    Point.moon,
+    Point.sun,
+    Point.mars,
+    Point.jupiter,
+    Point.saturn,
     *modern_points,
-    Point.ascendant,
-    Point.midheaven,
     Point.chiron,
 ])
 """
