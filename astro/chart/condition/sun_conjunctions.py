@@ -1,6 +1,6 @@
 from astro.chart.relationship.ecliptic_aspect import calculate_aspect_orbs
 from astro.schema import PointSchema, AspectOrbsSchema
-from astro.util import SunCondition
+from astro.util import SunCondition, Point
 
 
 def calculate_sun_conjunctions(point: PointSchema, sun: PointSchema, orbs: AspectOrbsSchema = AspectOrbsSchema()):
@@ -14,6 +14,9 @@ def calculate_sun_conjunctions(point: PointSchema, sun: PointSchema, orbs: Aspec
     :param orbs: The orbs to use for calculations of proximity.
     """
     arc = abs(point.longitude - sun.longitude)
+
+    if point.name == Point.sun:
+        return
 
     for orb in calculate_aspect_orbs(0, arc):
         if abs(orb) <= orbs.sun_cazimi_orb:

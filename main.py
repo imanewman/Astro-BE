@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
     PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
-from astro.util import default_midpoints, default_enabled_aspects, hard_major_aspects
+from astro.util import default_midpoints, default_enabled_aspects, hard_major_aspects, AspectType
 from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
@@ -117,7 +117,10 @@ async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
                 {
                     "points": [],
                     "midpoints": enabled_midpoints,
-                    "aspects": hard_major_aspects
+                    "aspects": [
+                        AspectType.conjunction,
+                        AspectType.opposition,
+                    ]
                 },
             ]
         }
