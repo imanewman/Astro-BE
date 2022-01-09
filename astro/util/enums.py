@@ -229,9 +229,9 @@ class AspectMovementType(str, Enum):
     Enumerates all of the aspect movement types.
     """
     applying = "Applying"
-    mutually_applying = "Mutually Applying"
+    mutually_applying = "Applying (M)"
     separating = "Separating"
-    mutually_separating = "Mutually Separating"
+    mutually_separating = "Separating (M)"
 
 
 applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_applying]

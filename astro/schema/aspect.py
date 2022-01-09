@@ -337,6 +337,9 @@ class RelationshipSchema(BaseSchema):
 
 
 class RelationshipCollectionSchema(BaseSchema):
+    """
+    Represents the relationships between all points.
+    """
     from_chart_index: int = Field(
         0,
         title="From Chart Index",
