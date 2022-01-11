@@ -1,7 +1,7 @@
 from typing import Optional, Dict
 
 from astro.chart.point.midpoint_factory import create_midpoint
-from astro.schema import PointSchema, MidpointSettingsSchema
+from astro.schema import PointSchema, MidpointSchema
 from astro.util import Point
 
 
@@ -22,7 +22,7 @@ def create_test_midpoint(
                 **to_props
             ),
         },
-        MidpointSettingsSchema(
+        MidpointSchema(
             from_point=Point.moon,
             to_point=Point.sun,
         )
@@ -33,7 +33,7 @@ def test_create_no_midpoint():
     """
     Tests creating a midpoint when one of the points is missing.
     """
-    midpoint = MidpointSettingsSchema(
+    midpoint = MidpointSchema(
         from_point=Point.moon,
         to_point=Point.sun,
     )

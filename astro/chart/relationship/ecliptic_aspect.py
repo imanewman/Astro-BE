@@ -1,6 +1,6 @@
 from typing import Tuple, Dict, Optional
 
-from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSettingsSchema
+from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSchema
 from astro.collection import aspect_traits
 from astro.util import AspectType
 
@@ -9,7 +9,7 @@ def calculate_ecliptic_aspect(
         relationship: RelationshipSchema,
         from_point: PointSchema,
         to_point: PointSchema,
-        enabled_settings: EnabledPointsSettingsSchema() = EnabledPointsSettingsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
 ):
     """
     Calculates the arc and degree based aspect between 2 points.
@@ -53,7 +53,7 @@ def calculate_ecliptic_aspect(
 
 def calculate_ecliptic_aspect_type(
         absolute_arc_between: float,
-        enabled_settings: EnabledPointsSettingsSchema() = EnabledPointsSettingsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
 ) -> Tuple[Optional[AspectType], Optional[float], Optional[float]]:
     """
     Calculates the degree based aspect between 2 points.

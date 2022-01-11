@@ -8,7 +8,7 @@ from .aspect import AspectOrbsSchema
 from .base import BaseSchema, EventSchema
 
 
-class MidpointSettingsSchema(BaseSchema):
+class MidpointSchema(BaseSchema):
     """
     Defines a midpoint to calculate for a specific event.
     """
@@ -28,7 +28,7 @@ class MidpointSettingsSchema(BaseSchema):
     )
 
 
-class EnabledPointsSettingsSchema(BaseSchema):
+class EnabledPointsSchema(BaseSchema):
     """
     Defines what points to calculate and how to calculate relationships between them.
     """
@@ -37,7 +37,7 @@ class EnabledPointsSettingsSchema(BaseSchema):
         title="Enabled Points",
         description="Defines what points should be enabled for calculations."
     )
-    midpoints: List[MidpointSettingsSchema] = Field(
+    midpoints: List[MidpointSchema] = Field(
         [],
         title="Enabled Midpoints",
         description="Defines what midpoints should be enabled for calculations."
@@ -84,12 +84,12 @@ class EventSettingsSchema(BaseSchema):
         title="Start Time and Location",
         description="The base date, time, and location of calculations."
     )
-    enabled: List[EnabledPointsSettingsSchema] = Field(
-        [EnabledPointsSettingsSchema()],
+    enabled: List[EnabledPointsSchema] = Field(
+        [EnabledPointsSchema()],
         title="Enabled Points",
         description="Defines what points should be enabled for calculations. " +
                     "When calculating aspect between points in different enabled objects, " +
-                    "orbs and aspect types will be taken from the later of the two points."
+                    "orbs and aspect types will be taken from the latter of the two points."
     )
 
     # progress_to: Optional[EventSchema] = Field(
@@ -114,7 +114,7 @@ class EventSettingsSchema(BaseSchema):
 
         return points
 
-    def get_all_enabled_midpoints(self) -> List[MidpointSettingsSchema]:
+    def get_all_enabled_midpoints(self) -> List[MidpointSchema]:
         """
         :return: Returns all enabled midpoints.
         """
@@ -128,7 +128,7 @@ class EventSettingsSchema(BaseSchema):
     def get_enabled_for_point(
             self,
             point: PointSchema,
-    ) -> Tuple[Optional[EnabledPointsSettingsSchema], Optional[int]]:
+    ) -> Tuple[Optional[EnabledPointsSchema], Optional[int]]:
         """
         Returns the enabled points for this point.
 

@@ -1,4 +1,4 @@
-from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSettingsSchema
+from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSchema
 from astro.util import AspectType, point_axis_list
 
 
@@ -6,7 +6,7 @@ def calculate_declination_aspect(
         relationship: RelationshipSchema,
         from_point: PointSchema,
         to_point: PointSchema,
-        enabled_settings: EnabledPointsSettingsSchema() = EnabledPointsSettingsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
 ):
     """
     Calculates the declination degrees between and declination aspect between points.

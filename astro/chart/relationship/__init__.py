@@ -1,7 +1,7 @@
 from typing import List, Tuple, Dict
 
 from astro.schema import PointSchema, RelationshipSchema, SettingsSchema, EventSettingsSchema, EventSchema, \
-    EnabledPointsSettingsSchema
+    EnabledPointsSchema
 from .declination_aspect import calculate_declination_aspect
 from .ecliptic_aspect import calculate_ecliptic_aspect
 from .aspect_movement import calculate_aspect_movement
@@ -99,7 +99,7 @@ def create_relationship(
         to_item: Tuple[PointSchema, EventSettingsSchema],
         is_one_chart: bool,
         precession_correction: float = 0,
-        enabled_settings: EnabledPointsSettingsSchema() = EnabledPointsSettingsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
 ) -> RelationshipSchema:
     """
     Creates a relationship object, initializing all internal values.

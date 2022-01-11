@@ -1,12 +1,12 @@
 from typing import Dict, Optional
 
-from astro.schema import PointSchema, MidpointSettingsSchema
+from astro.schema import PointSchema, MidpointSchema
 from astro.util import Point
 
 
 def create_midpoint(
         points: Dict[Point, PointSchema],
-        midpoint: MidpointSettingsSchema
+        midpoint: MidpointSchema
 ) -> Optional[PointSchema]:
     """
     Creates a midpoint from the existing points.

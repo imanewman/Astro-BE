@@ -10,7 +10,7 @@ from astro.util import AspectType, Point, PhaseType, AspectMovementType, applyin
 
 class AspectOrbsSchema(BaseSchema):
     """
-    Defines the orbs used for degree based aspects.
+    Defines the orbs used for aspects.
     """
 
     conjunction: float = Field(

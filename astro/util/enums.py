@@ -121,8 +121,8 @@ class Point(str, Enum):
     vertex = "Vertex"
 
     # Nodes
-    north_mode = "North Node"
-    south_node = "South Node"
+    north_mode = "True North Node"
+    south_node = "True South Node"
 
     # Egyptian/Arabic Lots
     lot_of_fortune = "Lot of Fortune"  # Moon

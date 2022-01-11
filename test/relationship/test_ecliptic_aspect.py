@@ -1,5 +1,5 @@
 from astro.chart import calculate_ecliptic_aspect
-from astro.schema import RelationshipSchema, EnabledPointsSettingsSchema
+from astro.schema import RelationshipSchema, EnabledPointsSchema
 from astro.util import AspectType, all_aspects
 from test.utils import create_test_points
 
@@ -32,7 +32,7 @@ def create_separated_points(
         relationship,
         from_point,
         to_point,
-        EnabledPointsSettingsSchema(
+        EnabledPointsSchema(
             aspects=all_aspects
         )
     )
