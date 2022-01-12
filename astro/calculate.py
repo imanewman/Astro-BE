@@ -53,12 +53,19 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
 
         all_relationships.append(RelationshipCollectionSchema(
             from_chart_index=event_index,
+            from_chart_type=event.type,
+            to_chart_index=event_index,
+            to_chart_type=event.type,
+            name=f"{event.name} & {event.name}",
             relationships=relationships
         ))
 
     # Store the aspects between all sets of distinct charts.
     for from_index in range(chart_count - 1):
         for to_index in range(from_index + 1, chart_count):
+            from_event = all_points_and_events[from_index][1].event
+            to_event = all_points_and_events[to_index][1].event
+
             relationships = calculate_relationships(
                 all_points_and_events[from_index],
                 all_points_and_events[to_index],
@@ -68,7 +75,10 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
 
             all_relationships.append(RelationshipCollectionSchema(
                 from_chart_index=from_index,
+                from_chart_type=from_event.type,
                 to_chart_index=to_index,
+                to_chart_type=to_event.type,
+                name=f"{from_event.name} & {to_event.name}",
                 relationships=relationships
             ))
 

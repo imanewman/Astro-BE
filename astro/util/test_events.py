@@ -7,6 +7,7 @@ from astro.util import EventType, Point, calculated_points, modern_points, centa
 
 local_event = EventSettingsSchema(
     event=EventSchema(
+        name="Transits",
         latitude=47.6769,
         longitude=-122.2060,
         type=EventType.transit,
@@ -77,7 +78,6 @@ tim_natal = EventSettingsSchema(
             Point.chiron,
             Point.pholus,
             *primary_asteroid_points,
-            *lot_points,
         ]}
     ]
 )

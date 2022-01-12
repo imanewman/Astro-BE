@@ -345,11 +345,25 @@ class RelationshipCollectionSchema(BaseSchema):
         title="From Chart Index",
         description="The index of the chart that these aspects are calculated going from."
     )
-    to_chart_index: Optional[int] = Field(
-        None,
+    from_chart_type: str = Field(
+        "",
+        title="From Chart Type",
+        description="The type of the chart that these aspects are calculated going from."
+    )
+    to_chart_index: int = Field(
+        0,
         title="To Chart Index",
-        description="The index of the chart that these aspects are calculated going to. "
-                    "The value is null if aspects are within a single chart."
+        description="The index of the chart that these aspects are calculated going to."
+    )
+    to_chart_type: str = Field(
+        "",
+        title="To Chart Type",
+        description="The type of the chart that these aspects are calculated going to."
+    )
+    name: str = Field(
+        "",
+        title="Relationships Name",
+        description="The name of these relationships."
     )
     relationships: List[RelationshipSchema] = Field(
         [],
