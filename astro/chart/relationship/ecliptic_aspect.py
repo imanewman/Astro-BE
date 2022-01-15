@@ -70,7 +70,7 @@ def calculate_ecliptic_aspect_type(
 
     for aspect_type, aspect in aspect_traits.aspects.items():
         if aspect_type not in enabled_settings.aspects:
-            return None, None, None
+            continue
 
         # For each type of aspect, calculate whether the degrees of separation between points
         # is within the orb of the degrees for this aspect.

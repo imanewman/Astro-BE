@@ -3,7 +3,7 @@ import datetime
 from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import EventType, Point, calculated_points, modern_points, centaur_points, \
-    primary_asteroid_points, lot_points, traditional_points
+    primary_asteroid_points, traditional_points, major_aspects, eighth_harmonic_aspects
 
 local_event = EventSettingsSchema(
     event=EventSchema(
@@ -15,25 +15,31 @@ local_event = EventSettingsSchema(
         local_date=datetime.datetime.now(),
     ),
     enabled=[
-        {"points": [
-            # Point.moon,
-            Point.mercury,
-            Point.venus,
-            Point.sun,
-            Point.mars,
-            Point.jupiter,
-            Point.saturn,
-            Point.uranus,
-            Point.neptune,
-            Point.pluto,
-            Point.north_mode,
-            Point.chiron,
-            Point.pholus,
-            Point.ceres,
-            Point.pallas,
-            Point.juno,
-            Point.vesta,
-        ]}
+        {
+            "points": [
+                # Point.moon,
+                Point.mercury,
+                Point.venus,
+                Point.sun,
+                Point.mars,
+                Point.jupiter,
+                Point.saturn,
+                Point.uranus,
+                Point.neptune,
+                Point.pluto,
+                Point.north_mode,
+                Point.chiron,
+                Point.pholus,
+                Point.ceres,
+                Point.pallas,
+                Point.juno,
+                Point.vesta,
+            ],
+            "aspects": [
+                *major_aspects,
+                *eighth_harmonic_aspects
+            ]
+        }
     ]
 )
 """
@@ -50,10 +56,16 @@ omega_event = EventSettingsSchema(
         utc_offset="UTC-7.00"
     ),
     enabled=[
-        {"points": [
-            *traditional_points,
-            *modern_points,
-        ]}
+        {
+            "points": [
+                *traditional_points,
+                *modern_points,
+            ],
+            "aspects": [
+                *major_aspects,
+                *eighth_harmonic_aspects
+            ]
+        }
     ]
 )
 
@@ -71,14 +83,20 @@ tim_natal = EventSettingsSchema(
         tags=["Me"]
     ),
     enabled=[
-        {"points": [
-            *calculated_points,
-            *traditional_points,
-            *modern_points,
-            Point.chiron,
-            Point.pholus,
-            *primary_asteroid_points,
-        ]}
+        {
+            "points": [
+                *calculated_points,
+                *traditional_points,
+                *modern_points,
+                Point.chiron,
+                Point.pholus,
+                *primary_asteroid_points,
+            ],
+            "aspects": [
+                *major_aspects,
+                *eighth_harmonic_aspects
+            ]
+        }
     ]
 )
 """
