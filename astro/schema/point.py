@@ -125,6 +125,11 @@ class PointSchema(BaseSchema):
         title="Planet or Point",
         description="The name of the planet or point."
     )
+    points: List[Point] = Field(
+        ...,
+        title="Points",
+        description="THe points composited to create this point."
+    )
 
     longitude: float = Field(
         ...,
@@ -210,3 +215,9 @@ class PointSchema(BaseSchema):
         title="Condition",
         description="The state of bonification and maltreatment if this is a planet."
     )
+
+    def is_midpoint(self):
+        """
+        :return: Returns trie if this point represents a midpoint.
+        """
+        return len(self.points) == 2

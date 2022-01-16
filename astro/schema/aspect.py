@@ -10,7 +10,7 @@ from astro.util import AspectType, Point, PhaseType, AspectMovementType, applyin
 
 class AspectOrbsSchema(BaseSchema):
     """
-    Defines the orbs used for degree based aspects.
+    Defines the orbs used for aspects.
     """
 
     conjunction: float = Field(
@@ -157,24 +157,6 @@ class AspectSchema(BaseSchema):
     """
     Represents information about the aspect between two points.
     """
-
-    def __str__(self):
-        if self.orb is None:
-            return ""
-
-        aspect_string = f'{self.movement} {self.type}'
-        orb_string = f'[{round(self.orb, 4)} Orb]'
-
-        if self.is_precession_corrected:
-            orb_string += " (PC)"
-
-        if self.local_date_of_exact:
-            date_string = str(self.local_date_of_exact).split(".")[0]
-
-            return f'[{date_string}] {aspect_string} {orb_string}'
-        else:
-            return f'{aspect_string} {orb_string}'
-
     type: Optional[AspectType] = Field(
         None,
         title="Aspect Type",
@@ -216,43 +198,27 @@ class AspectSchema(BaseSchema):
         description="The approximate local date aspect goes exact, if in less than a week."
     )
 
+    def __str__(self):
+        if self.orb is None:
+            return ""
+        elif self.local_date_of_exact:
+            return f"{self.get_date_stamp()} | {self.type}"
+        else:
+            return self.type
+
+    def get_date_stamp(self) -> str:
+        """
+        :return: A small date stamp of the minute of this exact aspect.
+        """
+        correction = " PC" if self.is_precession_corrected else ""
+
+        return f"[{':'.join(str(self.local_date_of_exact).split(':')[0:2])}{correction}]"
+
 
 class RelationshipSchema(BaseSchema):
     """
     Represents information about the relationship between two points.
     """
-
-    def __str__(self):
-        return f'{self.get_aspect_name()}: {", ".join(self.get_applying_aspect_descriptions())}'
-
-    def get_aspect_name(self) -> str:
-        return f'{self.from_point} To {self.to_point}'
-
-    def get_applying_aspect_descriptions(self) -> List[str]:
-        aspects_strings = []
-
-        for aspect in self.get_applying_aspects():
-            aspects_strings.append(f'{aspect}')
-
-        return aspects_strings
-
-    def get_applying_aspects(self) -> List[AspectSchema]:
-        """
-        Returns all aspects that have an approximate exact date.
-
-        :return: A list of aspects.
-        """
-        aspects = [
-            self.ecliptic_aspect,
-            self.precession_corrected_aspect,
-            self.declination_aspect
-        ]
-
-        return list(filter(
-            lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
-            aspects
-        ))
-
     from_point: Union[Point, str] = Field(
         ...,
         title="From Point",
@@ -321,18 +287,83 @@ class RelationshipSchema(BaseSchema):
         description="The aspect between the two points based on declination."
     )
 
+    def __str__(self):
+        return f'{self.get_aspect_name()}: {", ".join(self.get_applying_aspect_descriptions())}'
+
+    def get_aspect_name(self) -> str:
+        return f'{self.from_point} To {self.to_point}'
+
+    def get_applying_aspects(self) -> List[AspectSchema]:
+        """
+        Returns all aspects that have an upcoming approximate exact date.
+
+        :return: A list of aspects.
+        """
+        aspects = [
+            self.ecliptic_aspect,
+            self.precession_corrected_aspect,
+            self.declination_aspect
+        ]
+
+        return list(filter(
+            lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
+            aspects
+        ))
+
+    def has_applying_aspects(self) -> bool:
+        """
+        Returns whether any aspect has an upcoming date.
+
+        :return: Whether any aspect is closely applying.
+        """
+        return len(self.get_applying_aspects()) > 0
+
+    def get_applying_aspect_descriptions(self) -> List[str]:
+        aspects_strings = []
+        aspect_types = []
+
+        for aspect in self.get_applying_aspects():
+            try:
+                existing_type_index = aspect_types.index(aspect.type)
+
+                aspects_strings[existing_type_index] = \
+                    aspects_strings[existing_type_index].replace("]", f"]{aspect.get_date_stamp()}")
+            except ValueError:
+                aspects_strings.append(f'{aspect} From {self.get_aspect_name()}')
+
+            aspect_types.append(aspect.type)
+
+        return aspects_strings
+
 
 class RelationshipCollectionSchema(BaseSchema):
+    """
+    Represents the relationships between all points.
+    """
     from_chart_index: int = Field(
         0,
         title="From Chart Index",
         description="The index of the chart that these aspects are calculated going from."
     )
-    to_chart_index: Optional[int] = Field(
-        None,
+    from_chart_type: str = Field(
+        "",
+        title="From Chart Type",
+        description="The type of the chart that these aspects are calculated going from."
+    )
+    to_chart_index: int = Field(
+        0,
         title="To Chart Index",
-        description="The index of the chart that these aspects are calculated going to. "
-                    "The value is null if aspects are within a single chart."
+        description="The index of the chart that these aspects are calculated going to."
+    )
+    to_chart_type: str = Field(
+        "",
+        title="To Chart Type",
+        description="The type of the chart that these aspects are calculated going to."
+    )
+    name: str = Field(
+        "",
+        title="Relationships Name",
+        description="The name of these relationships."
     )
     relationships: List[RelationshipSchema] = Field(
         [],

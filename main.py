@@ -1,15 +1,26 @@
 from typing import List, Dict
-from functools import reduce
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema
-from astro.collection import aspectTraits, point_traits, zodiac_sign_traits
+    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
+from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
+from astro.util import default_midpoints, default_enabled_aspects, hard_major_aspects, AspectType, lot_points
 from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Static Collections
@@ -42,7 +53,7 @@ async def get_aspects() -> AspectTraitsCollection:
 
     :return: The zodiac signs.
     """
-    return aspectTraits
+    return aspect_traits
 
 
 # Chart Calculations
@@ -88,52 +99,92 @@ async def calc_tim() -> ChartCollectionSchema:
 
 
 @app.get("/tim/transits")
-async def calc_tim_transits() -> ChartCollectionSchema:
+async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
     """
     Calculates the natal chart of tim with current transits.
 
+    :param midpoints: Whether midpoints should be calculated.
+
     :return: Calculated points and aspects.
     """
+    enabled_midpoints = default_midpoints if midpoints else []
+
+    def create_event(event: EventSettingsSchema):
+        return {
+            **event.dict(),
+            "enabled": [
+                event.enabled[0],
+                {
+                    "points": lot_points,
+                    "aspects": [
+                        AspectType.conjunction,
+                        AspectType.opposition,
+                        AspectType.square,
+                    ]
+                },
+                {
+                    "points": [],
+                    "midpoints": enabled_midpoints,
+                    "aspects": [
+                        AspectType.conjunction,
+                        AspectType.opposition,
+                    ]
+                },
+            ]
+        }
+
     return await calc_chart(SettingsSchema(
-        events=[tim_natal, local_event]
+        events=[
+            create_event(local_event),
+            create_event(tim_natal)
+        ]
     ))
 
 
 @app.get("/tim/upcoming")
-async def calc_tim_upcoming() -> List[RelationshipSchema]:
+async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects.
 
+    :param midpoints: Whether midpoints should be calculated.
+
     :return: Calculated aspects.
     """
-    calculated_transits = await calc_tim_transits()
+    calculated_transits = await calc_tim_transits(midpoints)
     aspects = calculated_transits.relationships[2].relationships
 
-    def sort_aspect(relationship: RelationshipSchema) -> float:
-        return min(map(
-            lambda aspect: abs(aspect.days_until_exact or 7),
-            relationship.get_applying_aspects()
-        ), default=7)
-
-    aspects.sort(key=sort_aspect)
-
-    return aspects
+    return list(filter(lambda rel: rel.has_applying_aspects(), aspects))
 
 
 @app.get("/tim/upcoming-min")
-async def calc_tim_upcoming_minimal() -> Dict[str, List[str]]:
+async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, str]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects concisely.
 
+    :param midpoints: Whether midpoints should be calculated.
+
     :return: Calculated aspects.
     """
-    return reduce(
-        lambda acc, cur: {**acc, **cur},
-        map(
-            lambda aspect: {aspect.get_aspect_name(): aspect.get_applying_aspect_descriptions()},
-            await calc_tim_upcoming()
-        ),
-        {}
-    )
+    descriptions = {}
+    current_date = ""
+
+    for aspect in await calc_tim_upcoming(midpoints):
+        aspect_descriptions = aspect.get_applying_aspect_descriptions()
+        aspect_date = aspect_descriptions[0].split("[")[1].split(" ")[0]
+
+        if aspect_date != current_date:
+            current_date = aspect_date
+
+            descriptions[aspect_date] = aspect_date
+
+        for description in aspect_descriptions:
+            timestamp, aspect = description.split(" | ")
+
+            if timestamp in descriptions:
+                descriptions[timestamp] += f"; {aspect}"
+            else:
+                descriptions[timestamp] = aspect
+
+    return descriptions

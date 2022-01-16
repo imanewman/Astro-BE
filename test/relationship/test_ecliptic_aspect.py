@@ -1,6 +1,6 @@
 from astro.chart import calculate_ecliptic_aspect
-from astro.schema import RelationshipSchema
-from astro.util import AspectType
+from astro.schema import RelationshipSchema, EnabledPointsSchema
+from astro.util import AspectType, all_aspects
 from test.utils import create_test_points
 
 
@@ -28,7 +28,14 @@ def create_separated_points(
         precession_correction=precession_correction
     )
 
-    calculate_ecliptic_aspect(relationship, from_point, to_point)
+    calculate_ecliptic_aspect(
+        relationship,
+        from_point,
+        to_point,
+        EnabledPointsSchema(
+            aspects=all_aspects
+        )
+    )
 
     return relationship
 

@@ -1,7 +1,7 @@
 from typing import Tuple, Dict, Optional
 
-from astro.schema import RelationshipSchema, PointSchema, SettingsSchema
-from astro.collection import aspectTraits
+from astro.schema import RelationshipSchema, PointSchema, SettingsSchema, EnabledPointsSchema
+from astro.collection import aspect_traits
 from astro.util import AspectType
 
 
@@ -9,7 +9,7 @@ def calculate_ecliptic_aspect(
         relationship: RelationshipSchema,
         from_point: PointSchema,
         to_point: PointSchema,
-        settings: SettingsSchema = SettingsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
 ):
     """
     Calculates the arc and degree based aspect between 2 points.
@@ -20,13 +20,13 @@ def calculate_ecliptic_aspect(
     :param relationship: The relationship between points to store calculations in.
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
-    :param settings: The settings to use for calculations.
+    :param enabled_settings: The settings to use for calculations.
     """
     absolute_arc_between = calculate_arc_between(relationship, from_point, to_point)
 
     aspect_type, orb, angle = calculate_ecliptic_aspect_type(
         absolute_arc_between,
-        settings
+        enabled_settings
     )
 
     relationship.ecliptic_aspect.type = aspect_type
@@ -43,7 +43,7 @@ def calculate_ecliptic_aspect(
         corrected_absolute_arc_between = absolute_arc_between + relationship.precession_correction
         corrected_aspect_type, corrected_orb, corrected_angle = calculate_ecliptic_aspect_type(
             corrected_absolute_arc_between,
-            settings
+            enabled_settings
         )
 
         relationship.precession_corrected_aspect.type = corrected_aspect_type
@@ -53,24 +53,24 @@ def calculate_ecliptic_aspect(
 
 def calculate_ecliptic_aspect_type(
         absolute_arc_between: float,
-        settings: SettingsSchema = SettingsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
 ) -> Tuple[Optional[AspectType], Optional[float], Optional[float]]:
     """
     Calculates the degree based aspect between 2 points.
 
     :param absolute_arc_between: The arc between two points.
-    :param settings: The settings to use for calculations.
+    :param enabled_settings: The settings to use for calculations.
 
     :return:
         [0] The aspect type between the two points.
         [1] The aspect orb between the two points.
         [2] The aspect type's perfect degrees.
     """
-    aspect_to_orb = settings.orbs.aspect_to_orb()
+    aspect_to_orb = enabled_settings.orbs.aspect_to_orb()
 
-    for aspect_type, aspect in aspectTraits.aspects.items():
-        if aspect_type not in settings.enabled_aspects:
-            return None, None, None
+    for aspect_type, aspect in aspect_traits.aspects.items():
+        if aspect_type not in enabled_settings.aspects:
+            continue
 
         # For each type of aspect, calculate whether the degrees of separation between points
         # is within the orb of the degrees for this aspect.

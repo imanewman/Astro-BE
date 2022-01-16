@@ -1,6 +1,6 @@
 from astro import calculate_relationships
 from astro.chart import calculate_precession_correction_degrees
-from astro.schema import EventSchema
+from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import AspectType, EventType
 from astro.util.test_events import tim_natal
 from test.utils import create_test_points
@@ -16,7 +16,7 @@ def test_calculate_aspects():
         {"longitude": 5, "declination": -11, "house": 1},
     )
 
-    points_and_event_type = (points, tim_natal.event)
+    points_and_event_type = (points, tim_natal)
     aspects = calculate_relationships(points_and_event_type, points_and_event_type, True)
 
     assert len(aspects) is 1
@@ -41,3 +41,24 @@ def test_calculate_precession_correction_degrees():
     )
 
     assert abs(precession_correction - 100.5 / 60 / 60) < 0.01
+
+
+def test_calculate_multiple_aspect_sets():
+    """
+    Tests calculating all aspects between sets of points with different enabled aspects.
+    """
+
+    points = create_test_points({"longitude": 0})
+
+    aspects = calculate_relationships(
+        (points, EventSettingsSchema(event=tim_natal)),
+        (points, EventSettingsSchema(
+            event=tim_natal,
+            enabled=[{"points": []}, {"aspects": []}]
+        )),
+        False
+    )
+
+    assert len(aspects) is 1
+    assert aspects[0].ecliptic_aspect.type is None
+    assert aspects[0].sign_aspect == AspectType.conjunction

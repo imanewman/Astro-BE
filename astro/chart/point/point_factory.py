@@ -1,9 +1,13 @@
 from typing import Tuple, Dict
 
 from .ephemeris import get_point_properties, get_angles
-from astro.schema import EventSchema, PointSchema, EventSettingsSchema, MidpointSettingsSchema
-from astro.util import Point, do_points_form_axis
+from astro.schema import EventSchema, PointSchema, EventSettingsSchema
+from astro.util import Point
+from .lot_factory import create_lot
+from .midpoint_factory import create_midpoint
+from .is_day_time import calculate_is_day_time
 from ...collection import point_traits
+from ...collection.lot_traits import lot_traits
 
 
 def create_points(
@@ -20,23 +24,39 @@ def create_points(
     """
     points = {}
 
+    enabled_points = event_settings.get_all_enabled_points()
+    enabled_midpoints = event_settings.get_all_enabled_midpoints()
+
     # Add the points for the angles.
     for point_in_time in create_angles(event_settings.event):
-        if point_in_time.name in event_settings.enabled_points:
+        if point_in_time.name in enabled_points:
             points[point_in_time.name] = point_in_time
 
     # Add each of the points with swiss ephemeris data.
     for point in point_traits.points:
-        if point in event_settings.enabled_points:
+        if point in enabled_points:
             points[point] = create_swe_point(event_settings.event, point)
 
     # Add the south node by reflecting the north node.
-    if Point.north_mode in event_settings.enabled_points:
+    if Point.north_mode in enabled_points and Point.south_node in enabled_points:
         points[Point.south_node] = create_south_node(points[Point.north_mode])
 
     # Add each midpoint that is enabled.
-    for midpoint in event_settings.enabled_midpoints:
-        points[str(midpoint)] = create_midpoint(points, midpoint)
+    for midpoint in enabled_midpoints:
+        point = create_midpoint(points, midpoint)
+
+        if point:
+            points[str(midpoint)] = point
+
+    is_day_time = calculate_is_day_time(points)
+
+    # Add all lots.
+    for lot in lot_traits.lots:
+        if lot in enabled_points:
+            point = create_lot(points, lot, is_day_time)
+
+            if point:
+                points[lot] = point
 
     return points
 
@@ -61,30 +81,35 @@ def create_angles(event: EventSchema) -> Tuple[PointSchema, PointSchema, PointSc
     return (
         PointSchema(
             name=Point.ascendant,
+            points=[Point.ascendant],
             longitude=asc[0],
             longitude_velocity=asc[1],
             declination=asc[2],
         ),
         PointSchema(
             name=Point.midheaven,
+            points=[Point.midheaven],
             longitude=mc[0],
             longitude_velocity=mc[1],
             declination=mc[2],
         ),
         PointSchema(
             name=Point.descendant,
+            points=[Point.descendant],
             longitude=desc[0],
             longitude_velocity=desc[1],
             declination=desc[2],
         ),
         PointSchema(
             name=Point.inner_heaven,
+            points=[Point.inner_heaven],
             longitude=ic[0],
             longitude_velocity=ic[1],
             declination=ic[2],
         ),
         PointSchema(
             name=Point.vertex,
+            points=[Point.vertex],
             longitude=vertex[0],
             longitude_velocity=vertex[1],
             declination=vertex[2],
@@ -112,6 +137,7 @@ def create_swe_point(event: EventSchema, point: Point) -> PointSchema:
 
     return PointSchema(
         name=traits.name,
+        points=[traits.name],
         longitude=longitude,
         longitude_velocity=longitude_velocity,
         declination=declination,
@@ -133,50 +159,9 @@ def create_south_node(north_node: PointSchema) -> PointSchema:
 
     return PointSchema(
         name=Point.south_node,
+        points=[Point.south_node],
         longitude=longitude,
         longitude_velocity=north_node.longitude_velocity,
         declination=declination,
         declination_velocity=declination_velocity,
-    )
-
-
-def create_midpoint(points: Dict[Point, PointSchema], midpoint: MidpointSettingsSchema) -> PointSchema:
-    """
-    Creates a midpoint from the existing points.
-
-    :param points: A collection of already created points.
-    :param midpoint: The midpoint to create.
-
-    :return: The calculated midpoint object with calculated degrees from aries, declination, and speed.
-    """
-    if midpoint.from_point not in points:
-        raise Exception(f"Unable to create midpoint: {midpoint.from_point} has not been calculated")
-    elif midpoint.to_point not in points:
-        raise Exception(f"Unable to create midpoint: {midpoint.to_point} has not been calculated")
-
-    from_point_in_time = points[midpoint.from_point]
-    to_point_in_time = points[midpoint.to_point]
-
-    midpoint_longitude = \
-        ((to_point_in_time.longitude - from_point_in_time.longitude) / 2 + from_point_in_time.longitude) % 360
-    midpoint_declination = \
-        (to_point_in_time.declination - from_point_in_time.declination) / 2 + from_point_in_time.declination
-
-    opposite_midpoint_longitude = (midpoint_longitude + 180) % 360
-    distance_to_midpoint = to_point_in_time.longitude - midpoint_longitude % 360
-    opposite_distance_to_midpoint = to_point_in_time.longitude - opposite_midpoint_longitude % 360
-
-    if opposite_distance_to_midpoint < distance_to_midpoint:
-        # Ensure that the closer midpoint is the one used.
-        midpoint_longitude = opposite_midpoint_longitude
-
-    midpoint_longitude_velocity = 0
-    midpoint_declination_velocity = 0
-
-    return PointSchema(
-        name=str(midpoint),
-        longitude=midpoint_longitude,
-        longitude_velocity=midpoint_longitude_velocity,
-        declination=midpoint_declination,
-        declination_velocity=midpoint_declination_velocity,
     )

@@ -26,7 +26,7 @@ def create_test_points(*point_args: Dict, do_init_point: bool = False) -> List[P
         if "longitude" not in args:
             args["longitude"] = 0
 
-        point = PointSchema(**args)
+        point = PointSchema(**args, points=[args["name"]])
 
         if do_init_point:
             calculate_point_attributes(point)

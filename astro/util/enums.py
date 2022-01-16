@@ -121,8 +121,17 @@ class Point(str, Enum):
     vertex = "Vertex"
 
     # Nodes
-    north_mode = "North Node"
-    south_node = "South Node"
+    north_mode = "True North Node"
+    south_node = "True South Node"
+
+    # Egyptian/Arabic Lots
+    lot_of_fortune = "Lot of Fortune"  # Moon
+    lot_of_spirit = "Lot of Spirit"  # Sun
+    lot_of_necessity = "Lot of Necessity"  # Mercury
+    lot_of_eros= "Lot of Eros"  # Venus
+    lot_of_courage = "Lot of Courage"  # Mars
+    lot_of_victory = "Lot of Victory"  # Jupiter
+    lot_of_nemesis = "Lot of Nemesis"  # Saturn
 
 
 class PointAssociation(str, Enum):
@@ -220,9 +229,9 @@ class AspectMovementType(str, Enum):
     Enumerates all of the aspect movement types.
     """
     applying = "Applying"
-    mutually_applying = "Mutually Applying"
+    mutually_applying = "Applying (M)"
     separating = "Separating"
-    mutually_separating = "Mutually Separating"
+    mutually_separating = "Separating (M)"
 
 
 applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_applying]
