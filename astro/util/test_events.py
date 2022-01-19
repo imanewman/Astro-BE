@@ -3,7 +3,7 @@ import datetime
 from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import EventType, Point, calculated_points, modern_points, centaur_points, \
-    primary_asteroid_points, traditional_points, major_aspects, eighth_harmonic_aspects
+    primary_asteroid_points, traditional_points, major_aspects, eighth_harmonic_aspects, declination_aspects
 
 local_event = EventSettingsSchema(
     event=EventSchema(
@@ -38,7 +38,8 @@ local_event = EventSettingsSchema(
             ],
             "aspects": [
                 *major_aspects,
-                *eighth_harmonic_aspects
+                *eighth_harmonic_aspects,
+                *declination_aspects,
             ]
         }
     ]
@@ -64,7 +65,8 @@ omega_event = EventSettingsSchema(
             ],
             "aspects": [
                 *major_aspects,
-                *eighth_harmonic_aspects
+                *eighth_harmonic_aspects,
+                *declination_aspects,
             ]
         }
     ]
@@ -95,7 +97,8 @@ tim_natal = EventSettingsSchema(
             ],
             "aspects": [
                 *major_aspects,
-                *eighth_harmonic_aspects
+                *eighth_harmonic_aspects,
+                *declination_aspects,
             ]
         }
     ]
