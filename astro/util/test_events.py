@@ -79,9 +79,9 @@ tim_natal = EventSettingsSchema(
         utc_offset="UTC-4.00",
         local_date="1997-10-11T11:09:00.000Z",
         utc_date="1997-10-11T15:09:00.000Z",
-        location="Manhattan, New York, NY, USA",
-        latitude=40.78343,
-        longitude=-73.96625,
+        location="Tisch Hospital, Manhattan, New York, NY, USA",
+        latitude=40.7422,
+        longitude=-73.9740,
         type=EventType.natal,
         tags=["Me"]
     ),
