@@ -80,7 +80,7 @@ async def calc_now() -> ChartCollectionSchema:
     :return: Calculated points and aspects.
     """
     return await calc_chart(SettingsSchema(
-        events=[local_event]
+        events=[local_event()]
     ))
 
 
@@ -128,7 +128,7 @@ async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
 
     return await calc_chart(SettingsSchema(
         events=[
-            create_event(local_event),
+            create_event(local_event()),
             create_event(tim_natal)
         ]
     ))

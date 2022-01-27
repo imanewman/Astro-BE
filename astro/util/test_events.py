@@ -5,48 +5,51 @@ from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import EventType, Point, calculated_points, modern_points, centaur_points, \
     primary_asteroid_points, traditional_points, major_aspects, eighth_harmonic_aspects, declination_aspects, lot_points
 
-local_event = EventSettingsSchema(
-    event=EventSchema(
-        name="Transits",
-        latitude=47.6769,
-        longitude=-122.2060,
-        type=EventType.transit,
-        utc_date=datetime.datetime.utcnow().astimezone(),
-        local_date=datetime.datetime.now(),
-        utc_offset="UTC-8.00"
-    ),
-    enabled=[
-        {
-            "points": [
-                # Point.moon,
-                Point.mercury,
-                Point.venus,
-                Point.sun,
-                Point.mars,
-                Point.jupiter,
-                Point.saturn,
-                Point.uranus,
-                Point.neptune,
-                Point.pluto,
-                Point.north_mode,
-                Point.chiron,
-                Point.pholus,
-                Point.ceres,
-                Point.pallas,
-                Point.juno,
-                Point.vesta,
-            ],
-            "aspects": [
-                *major_aspects,
-                *eighth_harmonic_aspects,
-                *declination_aspects,
-            ]
-        }
-    ]
-)
-"""
-A local location.
-"""
+
+def local_event() -> EventSettingsSchema:
+    """
+    A local location.
+    """
+    return EventSettingsSchema(
+        event=EventSchema(
+            name="Transits",
+            latitude=47.6769,
+            longitude=-122.2060,
+            type=EventType.transit,
+            utc_date=datetime.datetime.utcnow().astimezone(),
+            local_date=datetime.datetime.now(),
+            utc_offset="UTC-8.00"
+        ),
+        enabled=[
+            {
+                "points": [
+                    # Point.moon,
+                    Point.mercury,
+                    Point.venus,
+                    Point.sun,
+                    Point.mars,
+                    Point.jupiter,
+                    Point.saturn,
+                    Point.uranus,
+                    Point.neptune,
+                    Point.pluto,
+                    Point.north_mode,
+                    Point.chiron,
+                    Point.pholus,
+                    Point.ceres,
+                    Point.pallas,
+                    Point.juno,
+                    Point.vesta,
+                ],
+                "aspects": [
+                    *major_aspects,
+                    *eighth_harmonic_aspects,
+                    *declination_aspects,
+                ]
+            }
+        ]
+    )
+
 
 omega_event = EventSettingsSchema(
     event=EventSchema(
