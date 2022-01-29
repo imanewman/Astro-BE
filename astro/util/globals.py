@@ -230,11 +230,7 @@ Defines a list of all points that always form an axis.
 """
 
 default_midpoints = calculate_midpoints([
-    Point.moon,
-    Point.sun,
-    Point.mars,
-    Point.jupiter,
-    Point.saturn,
+    *traditional_points,
     *modern_points,
     Point.chiron,
 ])
