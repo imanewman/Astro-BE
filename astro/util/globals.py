@@ -20,11 +20,17 @@ traditional_points = [
     Point.mars,
     Point.jupiter,
     Point.saturn,
+]
+"""
+Defines traditional planets.
+"""
+
+lunar_nodes = [
     Point.north_mode,
     Point.south_node
 ]
 """
-Defines traditional planets.
+Defines the lunar nodes
 """
 
 modern_points = [
@@ -89,6 +95,7 @@ Defines a list of all midpoints between modern planets.
 default_enabled_points = [
     *calculated_points,
     *traditional_points,
+    *lunar_nodes,
     *modern_points,
     *primary_asteroid_points,
     Point.lot_of_fortune,
@@ -230,11 +237,7 @@ Defines a list of all points that always form an axis.
 """
 
 default_midpoints = calculate_midpoints([
-    Point.moon,
-    Point.sun,
-    Point.mars,
-    Point.jupiter,
-    Point.saturn,
+    *traditional_points,
     *modern_points,
     Point.chiron,
 ])
