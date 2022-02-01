@@ -45,7 +45,7 @@ Defines modern planets.
 centaur_points = [
     Point.chiron,
     Point.pholus,
-    Point.charklo,
+    Point.chariklo,
 ]
 """
 Defines centaurs.

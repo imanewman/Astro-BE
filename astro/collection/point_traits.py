@@ -158,9 +158,9 @@ point_traits = PointTraitsCollection(
             "category": PointCategory.centaur,
             "association": PointAssociation.transformational,
         },
-        Point.charklo: {
+        Point.chariklo: {
             "swe_id": swe.AST_OFFSET + 10199,
-            "name": Point.charklo,
+            "name": Point.chariklo,
             "category": PointCategory.centaur,
             "association": PointAssociation.transformational,
         },

@@ -91,7 +91,7 @@ class Point(str, Enum):
     # Centaur
     chiron = "Chiron"
     pholus = "Pholus"
-    charklo = "Charklo"
+    chariklo = "Chariklo"
 
     # Common Asteroids
     ceres = "Ceres"
