@@ -73,8 +73,7 @@ def calculate_aspect_movement_declination(
     aspect_orb = relationship.declination_aspect.orb
 
     if relationship.declination_aspect.type == AspectType.contraparallel \
-            and to_velocity is not None and aspect_orb is not None:
-        to_velocity *= -1
+            and aspect_orb is not None:
         aspect_orb *= -1
 
     calculate_degree_types_from_speed(
