@@ -163,11 +163,9 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, Dict[s
     """
     descriptions_by_timestamp = {}
     descriptions_by_day = {}
-    current_date = ""
 
     for aspect in await calc_tim_upcoming(midpoints):
         aspect_descriptions = aspect.get_applying_aspect_descriptions()
-        aspect_date = aspect_descriptions[0].split("[")[1].split(" ")[0]
 
         for description in aspect_descriptions:
             timestamp, aspect = description.split(" | ")
