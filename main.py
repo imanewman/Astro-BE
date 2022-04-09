@@ -1,3 +1,4 @@
+import re
 from typing import List, Dict
 
 from fastapi import FastAPI
@@ -151,7 +152,7 @@ async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]
 
 
 @app.get("/tim/upcoming-min")
-async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, str]:
+async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, Dict[str, str]]:
     """
     Calculates the natal chart of tim with current transits.
     Returns ordered upcoming aspects concisely.
@@ -160,24 +161,29 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, str]:
 
     :return: Calculated aspects.
     """
-    descriptions = {}
+    descriptions_by_timestamp = {}
+    descriptions_by_day = {}
     current_date = ""
 
     for aspect in await calc_tim_upcoming(midpoints):
         aspect_descriptions = aspect.get_applying_aspect_descriptions()
         aspect_date = aspect_descriptions[0].split("[")[1].split(" ")[0]
 
-        if aspect_date != current_date:
-            current_date = aspect_date
-
-            descriptions[aspect_date] = aspect_date
-
         for description in aspect_descriptions:
             timestamp, aspect = description.split(" | ")
 
-            if timestamp in descriptions:
-                descriptions[timestamp] += f"; {aspect}"
+            if timestamp in descriptions_by_timestamp:
+                descriptions_by_timestamp[timestamp] += f"; {aspect}"
             else:
-                descriptions[timestamp] = aspect
+                descriptions_by_timestamp[timestamp] = aspect
 
-    return descriptions
+    for timestamp, aspect in descriptions_by_timestamp.items():
+        day = timestamp.split(" ")[0][1:]
+        short_timestamp = re.sub(r"\d\d\d\d-", "", timestamp)
+
+        if day not in descriptions_by_day:
+            descriptions_by_day[day] = {}
+
+        descriptions_by_day[day][short_timestamp] = aspect
+
+    return descriptions_by_day
