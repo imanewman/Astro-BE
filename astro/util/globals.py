@@ -1,6 +1,11 @@
 from .enums import *
 from .midpoints import calculate_midpoints
 
+max_approximate_days = 2
+"""
+Defines the max day range to include exact aspect approximate times for.
+"""
+
 calculated_points = [
     Point.ascendant,
     Point.midheaven,

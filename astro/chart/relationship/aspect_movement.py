@@ -2,7 +2,7 @@ import datetime
 from typing import Tuple, Optional
 
 from astro.schema import RelationshipSchema, PointSchema, AspectSchema, EventSchema
-from astro.util import EventType, AspectMovementType, AspectType
+from astro.util import EventType, AspectMovementType, AspectType, max_approximate_days
 
 
 def calculate_aspect_movement(
@@ -152,8 +152,8 @@ def calculate_degree_types_timing(
 
     approximate_days_until_exact = orb / relative_velocity
 
-    if abs(approximate_days_until_exact) < 7:
-        # Set the approximate days until exact and date exact, if less than 1 week.
+    if abs(approximate_days_until_exact) < max_approximate_days:
+        # Set the approximate days until exact and date exact, if less than the threshold.
         aspect.days_until_exact = approximate_days_until_exact
 
         from_event = from_item[1]
