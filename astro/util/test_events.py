@@ -19,7 +19,8 @@ def local_event() -> EventSettingsSchema:
             type=EventType.transit,
             utc_date=datetime.datetime.utcnow().astimezone(),
             local_date=datetime.datetime.now(),
-            utc_offset="UTC-8.00"
+            utc_offset="UTC-8.00",
+            # utc_offset="UTC-4.00"
         ),
         enabled=[
             {
