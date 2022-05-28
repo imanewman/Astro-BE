@@ -1,4 +1,4 @@
-# Astro-BE
+# Astro Back-End
 
 ## Setup
 
