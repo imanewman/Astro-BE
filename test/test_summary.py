@@ -19,9 +19,6 @@ def test_create_summary():
     assert summary.sun == ZodiacSign.libra
     assert summary.moon == ZodiacSign.aquarius
     assert summary.asc == ZodiacSign.sagittarius
-    assert summary.asc_ruler_sign == Point.jupiter
-    assert summary.asc_ruler_decan == Point.mercury
-    assert summary.asc_ruler_bound == Point.jupiter
     assert summary.is_day_time is True
 
 

@@ -29,7 +29,4 @@ def create_summary(
     return SummarySchema(
         is_day_time=is_day_time,
         sun=sun.sign, moon=moon.sign, asc=asc.sign,
-        asc_ruler_sign=asc.rulers.sign,
-        asc_ruler_bound=asc.rulers.bound,
-        asc_ruler_decan=asc.rulers.decan,
     )

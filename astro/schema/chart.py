@@ -33,21 +33,6 @@ class SummarySchema(BaseSchema):
         title="Ascendant Sign",
         description="The current zodiac sign of the ascendant."
     )
-    asc_ruler_sign: Optional[Point] = Field(
-        None,
-        title="Ascendant Sign Ruler",
-        description="The ruling planet of the ascendant's sign."
-    )
-    asc_ruler_decan: Optional[Point] = Field(
-        None,
-        title="Ascendant Decan Ruler",
-        description="The ruling planet of the ascendant's decan."
-    )
-    asc_ruler_bound: Optional[Point] = Field(
-        None,
-        title="Ascendant Bound Ruler",
-        description="The ruling planet of the ascendant's bound."
-    )
 
 
 class ChartSchema(BaseSchema):
