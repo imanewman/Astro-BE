@@ -2,7 +2,8 @@ from typing import List, Optional, Tuple
 
 from pydantic import Field
 
-from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, AspectSortType
+from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, AspectSortType, \
+    RulershipType
 from . import PointSchema
 from .aspect import AspectOrbsSchema
 from .base import BaseSchema, EventSchema
@@ -179,4 +180,9 @@ class SettingsSchema(BaseSchema):
         0.30,
         title="Stationary Speed Factor",
         description="The percent of the average speed of a planet that it must be under to be considered stationary."
+    )
+    rulership_system: List[RulershipType] = Field(
+        [RulershipType.traditional, RulershipType.modern],
+        title="Rulership System",
+        description="The list of rulership systems to use in sign rulership calculations."
     )

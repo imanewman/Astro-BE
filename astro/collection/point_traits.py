@@ -109,9 +109,7 @@ point_traits = PointTraitsCollection(
             "category": PointCategory.outer,
             "association": PointAssociation.transpersonal,
             "domicile": [ZodiacSign.aquarius],
-            "exaltation": [ZodiacSign.scorpio],
             "detriment": [ZodiacSign.leo],
-            "fall": [ZodiacSign.taurus],
             "speed_avg": convert_to_degrees(0, 0, 42),
             "speed_high": convert_to_degrees(0, 4, 0),
             "speed_low": convert_to_degrees(0, -2, -40),
@@ -122,9 +120,7 @@ point_traits = PointTraitsCollection(
             "category": PointCategory.outer,
             "association": PointAssociation.transpersonal,
             "domicile": [ZodiacSign.pisces],
-            "exaltation": [],
             "detriment": [ZodiacSign.virgo],
-            "fall": [],
             "speed_avg": convert_to_degrees(0, 0, 24),
             "speed_high": convert_to_degrees(0, 2, 25),
             "speed_low": convert_to_degrees(0, -1, -45),
@@ -135,9 +131,7 @@ point_traits = PointTraitsCollection(
             "category": PointCategory.outer,
             "association": PointAssociation.transpersonal,
             "domicile": [ZodiacSign.scorpio],
-            "exaltation": [],
             "detriment": [ZodiacSign.taurus],
-            "fall": [],
             "speed_avg": convert_to_degrees(0, 0, 15),
             "speed_high": convert_to_degrees(0, 2, 30),
             "speed_low": convert_to_degrees(0, -1, -48),
@@ -173,6 +167,7 @@ point_traits = PointTraitsCollection(
             "speed_avg": convert_to_degrees(0, 12, 40),
             "speed_high": convert_to_degrees(0, 30, 0),
             "speed_low": convert_to_degrees(0, -16, 0),
+            "domicile": [ZodiacSign.taurus, ZodiacSign.cancer, ZodiacSign.virgo, ZodiacSign.scorpio],
         },
         Point.pallas: {
             "swe_id": swe.PALLAS,
@@ -182,6 +177,7 @@ point_traits = PointTraitsCollection(
             "speed_avg": convert_to_degrees(0, 12, 20),
             "speed_high": convert_to_degrees(0, 40, 30),
             "speed_low": convert_to_degrees(0, -22, -30),
+            "domicile": [ZodiacSign.libra, ZodiacSign.leo, ZodiacSign.aquarius],
         },
         Point.juno: {
             "swe_id": swe.JUNO,
@@ -191,6 +187,7 @@ point_traits = PointTraitsCollection(
             "speed_avg": convert_to_degrees(0, 14, 15),
             "speed_high": convert_to_degrees(0, 39, 0),
             "speed_low": convert_to_degrees(0, -18, 0),
+            "domicile": [ZodiacSign.libra, ZodiacSign.scorpio],
         },
         Point.vesta: {
             "swe_id": swe.VESTA,
@@ -200,6 +197,7 @@ point_traits = PointTraitsCollection(
             "speed_avg": convert_to_degrees(0, 16, 15),
             "speed_high": convert_to_degrees(0, 36, 0),
             "speed_low": convert_to_degrees(0, -17, -32),
+            "domicile": [ZodiacSign.virgo, ZodiacSign.scorpio],
         },
 
         Point.psyche: {
@@ -293,3 +291,33 @@ Associates each point with relevant information.
 - Speeds: https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 - Common Asteroid numbers: https://nssdc.gsfc.nasa.gov/planetary/factsheet/asteroidfact.html
 """
+
+traditional_rulership = [
+    point_traits.points[Point.moon],
+    point_traits.points[Point.mercury],
+    point_traits.points[Point.venus],
+    point_traits.points[Point.sun],
+    point_traits.points[Point.mars],
+    point_traits.points[Point.jupiter],
+    point_traits.points[Point.saturn],
+]
+
+modern_rulership = [
+    point_traits.points[Point.moon],
+    point_traits.points[Point.mercury],
+    point_traits.points[Point.venus],
+    point_traits.points[Point.sun],
+    point_traits.points[Point.mars],
+    point_traits.points[Point.jupiter],
+    point_traits.points[Point.saturn],
+    point_traits.points[Point.uranus],
+    point_traits.points[Point.neptune],
+    point_traits.points[Point.pluto],
+]
+
+asteroid_rulership = [
+    point_traits.points[Point.vesta],
+    point_traits.points[Point.ceres],
+    point_traits.points[Point.juno],
+    point_traits.points[Point.pallas],
+]

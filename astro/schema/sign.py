@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, Optional
+from typing import Tuple, Dict, Optional, List
 
 from pydantic import Field
 
@@ -52,10 +52,20 @@ class ZodiacSignTraits(BaseSchema):
         description="The element associated with this sign."
     )
 
-    rulership: Point = Field(
+    domicile_traditional: Point = Field(
         ...,
-        title="Rulership (Domicile)",
-        description="The planet that rules this sign."
+        title="Traditional Domicile",
+        description="The traditional planet that rules this sign."
+    )
+    domicile_modern: Point = Field(
+        ...,
+        title="Modern Domicile",
+        description="The modern planet that rules this sign."
+    )
+    domicile_asteroid: List[Point] = Field(
+        [],
+        title="Asteroid Domiciles",
+        description="The asteroids that rule this sign."
     )
     exaltation: Optional[Point] = Field(
         None,

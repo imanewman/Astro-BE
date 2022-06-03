@@ -16,8 +16,7 @@ def calculate_divisions(point: PointSchema):
     :param point: The point to calculate the division rulers for.
     """
     traits = zodiac_sign_traits.signs[point.sign]
-
-    point.rulers.sign = traits.rulership
+    point.rulers.sign = traits.domicile_traditional
 
     # Calculate bound ruler.
     for bound in traits.bounds:

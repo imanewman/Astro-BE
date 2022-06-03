@@ -226,7 +226,7 @@ class PhaseType(str, Enum):
 
 class AspectMovementType(str, Enum):
     """
-    Enumerates all of the aspect movement types.
+    Enumerates all the aspect movement types.
     """
     applying = "Applying"
     mutually_applying = "Applying (M)"
@@ -239,8 +239,17 @@ applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_app
 
 class AspectSortType(str, Enum):
     """
-    Enumerates all of the aspect sort types.
+    Enumerates all the aspect sort types.
     """
     point_order = "Point Order"
     smallest_orb = "Smallest Orb"
     closest_exact = "Closest Exact"
+
+
+class RulershipType(str, Enum):
+    """
+    Enumerates all the possible sign rulership schemes.
+    """
+    traditional = "Traditional"
+    modern = "Modern"
+    asteroids = "Asteroids"

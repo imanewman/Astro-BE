@@ -1,6 +1,6 @@
 from astro.chart.point import create_points_with_attributes
 from astro.chart import calculate_whole_sign_house_cusps, calculate_whole_sign_house_of_point, \
-    calculate_traditional_house_rulers, calculate_whole_sign_houses, calculate_secondary_houses, \
+    calculate_house_rulers, calculate_whole_sign_houses, calculate_secondary_houses, \
     calculate_secondary_house_cusps, calculate_secondary_house_of_point
 from astro.util import ZodiacSign, Point, HouseSystem
 from astro.util.test_events import tim_natal
@@ -65,7 +65,7 @@ def test_calculate_whole_sign_house_rulers():
     jupiter = points[Point.jupiter]
     houses = calculate_whole_sign_house_cusps(asc)[0]
 
-    calculate_traditional_house_rulers(points, houses, True)
+    calculate_house_rulers(points, houses, True)
 
     assert mercury.houses_whole_sign.ruled_houses == [7, 10]
     assert jupiter.houses_whole_sign.ruled_houses == [1, 4]
@@ -140,7 +140,7 @@ def test_calculate_secondary_house_rulers():
     jupiter = points[Point.jupiter]
     house_placements = calculate_secondary_house_cusps(tim_natal.event, HouseSystem.porphyry)
 
-    calculate_traditional_house_rulers(points, house_placements, False)
+    calculate_house_rulers(points, house_placements, False)
 
     assert mercury.houses_secondary.ruled_houses == [7, 10]
     assert jupiter.houses_secondary.ruled_houses == [1, 4]
