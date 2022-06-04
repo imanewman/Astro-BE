@@ -1,8 +1,8 @@
 from typing import Dict, List, Tuple, Optional
 
 from astro.chart.point.ephemeris import get_house_cusps
-from astro.schema import PointSchema, HouseSchema, EventSchema
-from astro.util import zodiac_sign_order, Point, ZodiacSign, HouseSystem
+from astro.schema import PointSchema, HouseSchema, EventSchema, SettingsSchema
+from astro.util import zodiac_sign_order, Point, ZodiacSign, HouseSystem, RulershipType
 from astro.collection.zodiac_sign_traits import zodiac_sign_traits
 
 degrees_per_sign = 30
@@ -12,7 +12,7 @@ number_of_signs = 12
 def calculate_houses(
         points: Dict[Point, PointSchema],
         event: Optional[EventSchema] = None,
-        secondary_house_system: HouseSystem = HouseSystem.whole_sign
+        settings: SettingsSchema = SettingsSchema()
 ) -> Tuple[List[HouseSchema], List[HouseSchema]]:
     """
     Calculates the whole sign and secondary houses and related attributes for each point.
@@ -21,7 +21,7 @@ def calculate_houses(
 
     :param points: A collection of points at a certain time and location.
     :param event: The event time and location.
-    :param secondary_house_system: The secondary house system to use.
+    :param settings: The current calculation settings.
 
     :return:
         [0] A 12 item a list of house objects for each whole sign house.
@@ -29,13 +29,13 @@ def calculate_houses(
     """
     houses_whole_sign = calculate_whole_sign_houses(points)
 
-    if event is None or secondary_house_system is HouseSystem.whole_sign:
+    if event is None or settings.secondary_house_system is HouseSystem.whole_sign:
         # Return just whole signs if a secondary house system cannot be calculated.
 
         return houses_whole_sign, houses_whole_sign
     else:
         # Calculate secondary houses.
-        houses_secondary = calculate_secondary_houses(points, event, secondary_house_system)
+        houses_secondary = calculate_secondary_houses(points, event, settings)
 
         return houses_whole_sign, houses_secondary
 
@@ -117,46 +117,10 @@ def calculate_whole_sign_house_of_point(
             return
 
 
-def calculate_house_rulers(
-        points: Dict[Point, PointSchema],
-        houses: List[HouseSchema],
-        set_primary_houses: bool
-):
-    """
-    Calculates the houses that the traditional planets rule.
-
-    - Sets the `houses_whole_sign.ruled_houses` attribute within `points` items.
-
-    :param points: A collection of points at a certain time and location.
-    :param houses: The calculated house cusps.
-    :param set_primary_houses: Whether to set primary or secondary house rulers.
-    """
-    house_number = 0
-
-    for house in houses:
-        house_number += 1
-        sign_rulers = [
-            zodiac_sign_traits.signs[house.sign].domicile_traditional,
-            zodiac_sign_traits.signs[house.sign].domicile_modern,
-            *zodiac_sign_traits.signs[house.sign].domicile_asteroid,
-        ]
-
-        for sign_ruler in sign_rulers:
-            if sign_ruler in points:
-                ruler = points[sign_ruler]
-                whole_sign_houses = ruler.houses_whole_sign.ruled_houses
-                secondary_houses = ruler.houses_secondary.ruled_houses
-
-                if set_primary_houses and house_number not in whole_sign_houses:
-                    whole_sign_houses.append(house_number)
-                elif house_number not in secondary_houses:
-                    secondary_houses.append(house_number)
-
-
 def calculate_secondary_houses(
         points: Dict[Point, PointSchema],
         event: Optional[EventSchema] = None,
-        secondary_house_system: HouseSystem = HouseSystem.whole_sign
+        settings: SettingsSchema = SettingsSchema()
 ) -> List[HouseSchema]:
     """
     Calculates the secondary houses and related attributes for each point.
@@ -165,18 +129,18 @@ def calculate_secondary_houses(
 
     :param points: A collection of points at a certain time and location.
     :param event: The event time and location.
-    :param secondary_house_system: The secondary house system to use.
+    :param settings: The current calculation settings.
 
     :return: A 12 item a list of house objects for each secondary house.
     """
-    houses_secondary = calculate_secondary_house_cusps(event, secondary_house_system)
+    houses_secondary = calculate_secondary_house_cusps(event, settings.secondary_house_system)
 
     for point in points.values():
-        point.houses_secondary.house_system = secondary_house_system
+        point.houses_secondary.house_system = settings.secondary_house_system
 
         calculate_secondary_house_of_point(point, houses_secondary)
 
-    calculate_house_rulers(points, houses_secondary, False)
+    calculate_house_rulers(points, houses_secondary, False, settings)
 
     return houses_secondary
 
@@ -231,3 +195,65 @@ def calculate_secondary_house_of_point(
             house.points.append(point.name)
 
             return
+
+
+def calculate_house_rulers(
+        points: Dict[Point, PointSchema],
+        houses: List[HouseSchema],
+        set_primary_houses: bool,
+        settings: SettingsSchema = SettingsSchema()
+):
+    """
+    Calculates the houses that the traditional planets rule.
+
+    - Sets the `houses_whole_sign.ruled_houses` attribute within `points` items.
+
+    :param points: A collection of points at a certain time and location.
+    :param houses: The calculated house cusps.
+    :param set_primary_houses: Whether to set primary or secondary house rulers.
+    :param settings: The current calculation settings.
+    """
+    house_number = 0
+
+    for house in houses:
+        house_number += 1
+        sign_rulers = get_sign_rulers(house.sign, settings)
+
+        for sign_ruler in sign_rulers:
+            if sign_ruler in points:
+                ruler = points[sign_ruler]
+                whole_sign_houses = ruler.houses_whole_sign.ruled_houses
+                secondary_houses = ruler.houses_secondary.ruled_houses
+
+                if sign_ruler not in house.rulers:
+                    house.rulers.append(sign_ruler)
+
+                if set_primary_houses and house_number not in whole_sign_houses:
+                    whole_sign_houses.append(house_number)
+                elif house_number not in secondary_houses:
+                    secondary_houses.append(house_number)
+
+
+def get_sign_rulers(
+        sign: ZodiacSign,
+        settings: SettingsSchema = SettingsSchema()
+) -> List[Point]:
+    """
+    Determines what points rule a sign based on the rulership settings.
+
+    :param sign: The sign to find the ruler of.
+    :param settings: The current calculation settings.
+    """
+    domicile_traditional = zodiac_sign_traits.signs[sign].domicile_traditional
+    domicile_modern = zodiac_sign_traits.signs[sign].domicile_modern
+    domicile_asteroid = zodiac_sign_traits.signs[sign].domicile_asteroid
+    points = []
+
+    if RulershipType.traditional in settings.rulership_system:
+        points.append(domicile_traditional)
+    if RulershipType.modern in settings.rulership_system and domicile_modern not in points:
+        points.append(domicile_modern)
+    if RulershipType.asteroids in settings.rulership_system:
+        points.append(domicile_asteroid)
+
+    return points

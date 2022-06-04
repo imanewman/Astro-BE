@@ -346,7 +346,7 @@ def test_calculate_degree_types_declination__applying_contraparallel():
 
     relationship = create_declination_separated_points(
         (2, 1, EventType.event),
-        (-1, -2, EventType.event),
+        (-1, 2, EventType.event),
     )
 
     assert relationship.declination_aspect.movement == AspectMovementType.applying
@@ -385,7 +385,7 @@ def test_calculate_degree_types_declination__mutually_applying_contraparallel():
 
     relationship = create_declination_separated_points(
         (2, -2, EventType.event),
-        (-1, -1, EventType.event),
+        (-1, 1, EventType.event),
     )
 
     assert relationship.declination_aspect.movement == AspectMovementType.mutually_applying
@@ -424,7 +424,7 @@ def test_calculate_degree_types_declination__separating_contraparallel():
 
     relationship = create_declination_separated_points(
         (-2, -2, EventType.event),
-        (1, 1, EventType.event),
+        (1, -1, EventType.event),
     )
 
     assert relationship.declination_aspect.movement == AspectMovementType.separating
@@ -463,7 +463,7 @@ def test_calculate_degree_types_declination__mutually_separating_contraparallel(
 
     relationship = create_declination_separated_points(
         (-2, -2, EventType.event),
-        (1, -1, EventType.event),
+        (1, 1, EventType.event),
     )
 
     assert relationship.declination_aspect.movement == AspectMovementType.mutually_separating

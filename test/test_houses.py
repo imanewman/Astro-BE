@@ -1,3 +1,4 @@
+from astro import SettingsSchema
 from astro.chart.point import create_points_with_attributes
 from astro.chart import calculate_whole_sign_house_cusps, calculate_whole_sign_house_of_point, \
     calculate_house_rulers, calculate_whole_sign_houses, calculate_secondary_houses, \
@@ -76,7 +77,11 @@ def test_calculate_secondary_houses():
     Tests that all the information about house placements is added.
     """
     points = create_points_with_attributes(tim_natal)
-    houses_secondary = calculate_secondary_houses(points, tim_natal.event, HouseSystem.porphyry)
+    houses_secondary = calculate_secondary_houses(
+        points,
+        tim_natal.event,
+        SettingsSchema(secondary_house_system=HouseSystem.porphyry)
+    )
 
     assert houses_secondary[0].number is 1
     assert houses_secondary[0].sign == ZodiacSign.sagittarius

@@ -22,6 +22,11 @@ class HouseSchema(BaseSchema):
         title="Zodiac Sign",
         description="The zodiac sign on the cusp of this house."
     )
+    rulers: List[Point] = Field(
+        [],
+        title="Rulers",
+        description="Any planets that rule this house."
+    )
     points: List[Point] = Field(
         [],
         title="Points",

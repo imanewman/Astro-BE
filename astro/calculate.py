@@ -8,12 +8,11 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
     """
     Calculates the default settings for the given time.
 
-    :param settings: The current calculation settings, including the time and location.
+    :param settings: The current calculation settings.
 
     :return: Calculated points and aspects.
     """
     chart_count = len(settings.events)
-    secondary_house_system = settings.secondary_house_system
     all_points_and_events = []
     all_charts = []
     all_relationships = []
@@ -33,7 +32,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
             settings
         )
 
-        houses_whole_sign, houses_secondary = calculate_houses(points, event, secondary_house_system)
+        houses_whole_sign, houses_secondary = calculate_houses(points, event, settings)
         is_day_time = calculate_is_day_time(points)
 
         calculate_condition(points, is_day_time)
@@ -45,7 +44,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         all_charts.append(ChartSchema(
             event=event,
             points=points,
-            secondary_house_system=secondary_house_system,
+            secondary_house_system=settings.secondary_house_system,
             houses_whole_sign=houses_whole_sign,
             houses_secondary=houses_secondary,
             summary=summary,
