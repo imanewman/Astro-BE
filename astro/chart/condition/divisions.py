@@ -20,16 +20,20 @@ def calculate_divisions(point: PointSchema):
 
     # Calculate bound ruler.
     for bound in traits.bounds:
-        if bound.from_degree <= point.degrees_in_sign < bound.to_degree:
+        if point.degrees_in_sign < bound.to_degree:
             point.rulers.bound = bound.ruler
 
             if point.name == bound.ruler:
                 point.condition.in_bound = True
 
+            break
+
     # Calculate decan ruler.
     for decan in traits.decans:
-        if decan.from_degree <= point.degrees_in_sign < decan.to_degree:
+        if point.degrees_in_sign < decan.to_degree:
             point.rulers.decan = decan.ruler
 
             if point.name == decan.ruler:
                 point.condition.in_decan = True
+
+            break

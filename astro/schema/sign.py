@@ -6,24 +6,51 @@ from astro.util import ZodiacSign, Polarity, Modality, Element, Point
 from .base import BaseSchema
 
 
-class SignDivision(BaseSchema):
+class SignPointDivision(BaseSchema):
     """
     Defines a segment of a zodiac sign that is ruled by a planet.
     """
     ruler: Point = Field(
         ...,
         title="Ruler",
-        description="The planet that rules this division."
-    )
-    from_degree: int = Field(
-        ...,
-        title="Starting Degrees",
-        description="The degrees of the current sign that this division begins at."
+        description="The planet that rules this segment."
     )
     to_degree: int = Field(
         ...,
         title="Ending Degrees",
-        description="The degrees of the current sign that this division ends right before."
+        description="The degrees of the current sign that this segment ends right before."
+    )
+
+
+class SignSubdivision(BaseSchema):
+    """
+    Defines a segment of a zodiac sign that corresponds to another zodiac sign.
+    """
+    sign: ZodiacSign = Field(
+        ...,
+        title="Zodiac Sign",
+        description="The sign associated with this segment."
+    )
+    to_degree: int = Field(
+        ...,
+        title="Ending Degrees",
+        description="The degrees of the current sign that this segment ends right before."
+    )
+
+
+class DegreeDivision(BaseSchema):
+    """
+    Defines a degree of a zodiac sign.
+    """
+    sign: ZodiacSign = Field(
+        ...,
+        title="Zodiac Sign",
+        description="The sign associated with this segment."
+    )
+    sabian_symbol: str = Field(
+        ...,
+        title="Sabian Symbol",
+        description="The sabian symbol associated with this segment."
     )
 
 
@@ -88,15 +115,39 @@ class ZodiacSignTraits(BaseSchema):
         title="Triplicity Lords",
         description="The triplicity rulers of this element, according to sect."
     )
-    bounds: Tuple[SignDivision, SignDivision, SignDivision, SignDivision, SignDivision] = Field(
+    decans: Tuple[SignPointDivision, SignPointDivision, SignPointDivision] = Field(
+        ...,
+        title="Decans (Faces)",
+        description="The traditional planetary rulers of the decans."
+    )
+    bounds: Tuple[
+        SignPointDivision, SignPointDivision, SignPointDivision,
+        SignPointDivision, SignPointDivision
+    ] = Field(
         ...,
         title="Bounds (Terms)",
         description="The egyptian planetary rulers of the bounds."
     )
-    decans: Tuple[SignDivision, SignDivision, SignDivision] = Field(
+    twelfth_parts: Tuple[
+        SignSubdivision, SignSubdivision, SignSubdivision, SignSubdivision,
+        SignSubdivision, SignSubdivision, SignSubdivision, SignSubdivision,
+        SignSubdivision, SignSubdivision, SignSubdivision, SignSubdivision,
+    ] = Field(
         ...,
-        title="Decans (Faces)",
-        description="The traditional planetary rulers of the decans."
+        title="12th Parts",
+        description="The 12th part signs that subdivide this sign."
+    )
+    degrees: Tuple[
+        DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision,
+        DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision,
+        DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision,
+        DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision,
+        DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision,
+        DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision, DegreeDivision,
+    ] = Field(
+        ...,
+        title="Degrees",
+        description="The signs and symbols for each degree of this sign."
     )
 
 
