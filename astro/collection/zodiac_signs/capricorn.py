@@ -1,7 +1,7 @@
 from astro.schema import ZodiacSignTraits
 from astro.util import ZodiacSign, Polarity, Modality, Element, Point
 
-zodiac_sign_aries = ZodiacSignTraits(**{
+zodiac_sign_capricorn = ZodiacSignTraits(**{
     "sign": ZodiacSign.capricorn,
     "polarity": Polarity.yin,
     "modality": Modality.cardinal,

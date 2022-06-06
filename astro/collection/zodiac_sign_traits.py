@@ -12,7 +12,7 @@ zodiac_sign_traits = ZodiacSignCollection(
         ZodiacSign.libra: zodiac_sign_libra,
         ZodiacSign.scorpio: zodiac_sign_scorpio,
         ZodiacSign.sagittarius: zodiac_sign_sagittarius,
-        ZodiacSign.capricorn: zodiac_sign_aries,
+        ZodiacSign.capricorn: zodiac_sign_capricorn,
         ZodiacSign.aquarius: zodiac_sign_aquarius,
         ZodiacSign.pisces: zodiac_sign_pisces
     }
