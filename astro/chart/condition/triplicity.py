@@ -18,6 +18,6 @@ def calculate_triplicity(point: PointSchema, is_day_time: bool):
     point.condition.in_triplicity = point.name in traits.triplicity
 
     if is_day_time:
-        point.rulers.triplicity = traits.triplicity
+        point.divisions.triplicity_ruler = traits.triplicity
     else:
-        point.rulers.triplicity = (traits.triplicity[1], traits.triplicity[0], traits.triplicity[2])
+        point.divisions.triplicity_ruler = (traits.triplicity[1], traits.triplicity[0], traits.triplicity[2])

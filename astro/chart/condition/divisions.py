@@ -6,22 +6,24 @@ def calculate_divisions(point: PointSchema):
     """
     Calculates the bound and decan division rulers for the given planet.
 
-    - Sets the point's `rulers.bound` to the bound ruler of the division of the sign
-      that the point is within.
-    - If the point is in its own bound, sets its condition to `in_bound`.
-    - Sets the point's `rulers.decan` to the decan ruler of the division of the sign
-      that the point is within.
-    - If the point is in its own decan, sets its condition to `in_decan`.
+    - Sets the point's `divisions.sign_ruler` to this point's traditional sign ruler.
+    - Sets the point's `divisions.bound_ruler` to this point's bound ruler.
+    - Sets the point's `divisions.decan_ruler` to this point's decan ruler.
+    - Sets the point's `divisions.twelfth_part_sign` to this point's 12th part.
+    - Sets the point's `divisions.degree_sign` to this point's degree's sign.
+
+    - If the point is in its own bound, `condition.in_bound` will be set.
+    - If the point is in its own decan, `condition.in_decan` will be set.
 
     :param point: The point to calculate the division rulers for.
     """
     traits = zodiac_sign_traits.signs[point.sign]
-    point.rulers.sign = traits.domicile_traditional
+    point.divisions.sign_ruler = traits.domicile_traditional
 
     # Calculate bound ruler.
     for bound in traits.bounds:
         if point.degrees_in_sign < bound.to_degree:
-            point.rulers.bound = bound.ruler
+            point.divisions.bound_ruler = bound.ruler
 
             if point.name == bound.ruler:
                 point.condition.in_bound = True
@@ -29,21 +31,19 @@ def calculate_divisions(point: PointSchema):
             break
 
     # Calculate decan ruler.
-    for decan in traits.decans:
-        if point.degrees_in_sign < decan.to_degree:
-            point.rulers.decan = decan.ruler
+    decan = traits.decans[int(point.degrees_in_sign // 10)]
 
-            if point.name == decan.ruler:
-                point.condition.in_decan = True
+    point.divisions.decan_ruler = decan.ruler
 
-            break
+    if point.name == decan.ruler:
+        point.condition.in_decan = True
 
     # Calculate 12th part.
-    for part in traits.twelfth_parts:
-        if point.degrees_in_sign < part.to_degree:
-            point.twelfth_part = part.sign
+    part = traits.twelfth_parts[int(point.degrees_in_sign // 2.5)]
 
-            break
+    point.divisions.twelfth_part_sign = part.sign
 
     # Calculate degree sign.
-    point.degree_sign = traits.degrees[point.degrees_in_sign].sign
+    degree = traits.degrees[point.degrees_in_sign]
+
+    point.divisions.degree_sign = degree.sign

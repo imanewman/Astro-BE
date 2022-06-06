@@ -35,7 +35,11 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         houses_whole_sign, houses_secondary = calculate_houses(points, event, settings)
         is_day_time = calculate_is_day_time(points)
 
-        calculate_condition(points, is_day_time)
+        calculate_condition(
+            points,
+            is_day_time,
+            settings
+        )
 
         summary = create_summary(points, is_day_time)
 

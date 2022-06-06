@@ -158,7 +158,7 @@ class SettingsSchema(BaseSchema):
     - Default stationary speed is based on the equation described here:
       https://www.celestialinsight.com.au/2020/05/18/when-time-stands-still-exploring-stationary-planets/
 
-    - Default sun conjunction orbs uses ranges found here here:
+    - Default sun conjunction orbs uses ranges found here:
       https://crystalbastrology.com/meaning-of-cazimi-in-astrology/
     """
     events: List[EventSettingsSchema] = Field(
@@ -185,4 +185,15 @@ class SettingsSchema(BaseSchema):
         [RulershipType.traditional, RulershipType.modern],
         title="Rulership System",
         description="The list of rulership systems to use in sign rulership calculations."
+    )
+
+    do_calculate_condition: bool = Field(
+        True,
+        title="Do Calculate Condition",
+        description="This flag enables the calculation of the condition of points."
+    )
+    do_calculate_divisions: bool = Field(
+        True,
+        title="Do Calculate Divisions",
+        description="This flag enables the calculation of the condition of sign divisions."
     )
