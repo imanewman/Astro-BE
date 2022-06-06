@@ -176,3 +176,57 @@ def get_house_cusps(
     cusps = swe.houses(jul_day, lat, long, house_system_to_id[house_system])
 
     return cusps[0]
+
+
+def get_sunrise_time(
+        jul_day: float,
+        lat: float,
+        long: float
+) -> datetime:
+    """
+    Calculates the time of sunrise on a given day.
+
+    :param jul_day: The date to calculate for.
+    :param lat: The degrees of latitude of the event.
+    :param long: The degrees of longitude of the event.
+
+    :return: The UTC date time of sunrise.
+    """
+    times = swe.rise_trans(jul_day, swe.SUN, swe.CALC_RISE, [long, lat, 0])
+
+    return jul_day_to_datetime(times[1][0])
+
+
+def get_sunset_time(
+        jul_day: float,
+        lat: float,
+        long: float
+) -> datetime:
+    """
+    Calculates the time of sunset on a given day.
+
+    :param jul_day: The date to calculate for.
+    :param lat: The degrees of latitude of the event.
+    :param long: The degrees of longitude of the event.
+
+    :return: The UTC date time of sunset.
+    """
+    times = swe.rise_trans(jul_day, swe.SUN, swe.CALC_SET, [long, lat, 0])
+
+    return jul_day_to_datetime(times[1][0])
+
+
+def jul_day_to_datetime(jul_day: float) -> datetime:
+    """
+    Converts a julian day to a date time.
+
+    :param jul_day: The date to convert.
+
+    :return: The UTC converted date.
+    """
+    utc_date = swe.jdet_to_utc(jul_day)
+
+    return datetime.fromisoformat(
+        f"{str(utc_date[0])}-{str(utc_date[1]).rjust(2, '0')}-{str(utc_date[2]).rjust(2, '0')}" +
+        f"T{str(utc_date[3]).rjust(2, '0')}:{str(utc_date[4]).rjust(2, '0')}:{str(utc_date[5])[:6]}+00:00"
+    )

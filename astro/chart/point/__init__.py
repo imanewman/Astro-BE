@@ -2,7 +2,7 @@ from typing import Dict
 
 from astro.util import Point
 from astro.schema import PointSchema, SettingsSchema, EventSettingsSchema
-from .ephemeris import get_julian_day
+from .ephemeris import get_julian_day, get_sunrise_time, get_sunset_time
 from .point_attributes import calculate_point_attributes
 from .point_factory import create_points
 
@@ -23,6 +23,9 @@ def create_points_with_attributes(
     # Set the julian day for the time
     event_settings.event.julian_day = get_julian_day(event_settings.event.utc_date)
     points = create_points(event_settings)
+
+    get_sunrise_time(event_settings.event.julian_day, event_settings.event.latitude, event_settings.event.longitude)
+    get_sunset_time(event_settings.event.julian_day, event_settings.event.latitude, event_settings.event.longitude)
 
     # Calculate the derived point attributes for each point.
     for point in points.values():
