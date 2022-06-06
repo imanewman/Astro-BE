@@ -204,6 +204,17 @@ class PointSchema(BaseSchema):
         description="A secondary house system's house and ruled houses of this point."
     )
 
+    twelfth_part: Optional[ZodiacSign] = Field(
+        None,
+        title="12th Part",
+        description="The 12th part that this point is in."
+    )
+    degree_sign: Optional[ZodiacSign] = Field(
+        None,
+        title="Degree Sign",
+        description="The sign corresponding to the degree of this point."
+    )
+
     rulers: PointRulersSchema = Field(
         PointRulersSchema(),
         title="Point Rulers",

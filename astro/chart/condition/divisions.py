@@ -37,3 +37,13 @@ def calculate_divisions(point: PointSchema):
                 point.condition.in_decan = True
 
             break
+
+    # Calculate 12th part.
+    for part in traits.twelfth_parts:
+        if point.degrees_in_sign < part.to_degree:
+            point.twelfth_part = part.sign
+
+            break
+
+    # Calculate degree sign.
+    point.degree_sign = traits.degrees[point.degrees_in_sign].sign
