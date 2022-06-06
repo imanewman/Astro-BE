@@ -31,7 +31,7 @@ class SignSubdivision(BaseSchema):
         title="Zodiac Sign",
         description="The sign associated with this segment."
     )
-    to_degree: int = Field(
+    to_degree: float = Field(
         ...,
         title="Ending Degrees",
         description="The degrees of the current sign that this segment ends right before."
