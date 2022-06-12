@@ -7,8 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
     PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
-from astro.util import default_midpoints, AspectType, lot_points, \
-    major_aspects
+from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
+from astro.timezone import calculate_timezone
+from astro.util import default_midpoints, AspectType
 from astro.util.test_events import tim_natal, local_event
 from astro import create_chart, ChartCollectionSchema
 
@@ -58,6 +59,21 @@ async def get_aspects() -> AspectTraitsCollection:
     return aspect_traits
 
 
+@app.get("/timezone")
+async def calc_timezone() -> TimezoneSchema:
+    """
+    Returns the calculated geolocation, timezone, and UTC date for a location name and date.
+
+    :return: The calculated timezone
+    """
+    return calculate_timezone(
+        TimezoneQuerySchema(
+            location_name="Manhattan, NY",
+            local_date="1997-10-11T11:09:00.000Z"
+        )
+    )
+
+
 # Chart Calculations
 
 
@@ -83,6 +99,16 @@ async def calc_now() -> ChartCollectionSchema:
     return await calc_chart(SettingsSchema(
         events=[local_event()]
     ))
+
+
+@app.post("/timezone")
+async def calc_timezone(query: TimezoneQuerySchema) -> TimezoneSchema:
+    """
+    Returns the calculated geolocation, timezone, and UTC date for a location name and date.
+
+    :return: The calculated timezone
+    """
+    return calculate_timezone(query)
 
 
 # Tim Test Endpoints
@@ -185,3 +211,18 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, Dict[s
         descriptions_by_day[day][short_timestamp] = aspect
 
     return descriptions_by_day
+
+
+@app.get("/tim/timezone")
+async def tim_timezone() -> TimezoneSchema:
+    """
+    Returns the calculated geolocation, timezone, and UTC date for a location name and date.
+
+    :return: The calculated timezone
+    """
+    return calculate_timezone(
+        TimezoneQuerySchema(
+            location_name="Manhattan, NY",
+            local_date="1997-10-11T11:09:00.000Z"
+        )
+    )
