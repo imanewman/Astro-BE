@@ -3,7 +3,7 @@ import datetime
 import googlemaps
 
 from astro.schema.timezone import TimezoneQuerySchema, TimezoneSchema
-from ._key import google_api_key
+from ._api_keys import google_api_key
 
 gmaps = googlemaps.Client(key=google_api_key)
 
