@@ -42,7 +42,12 @@ class TimezoneSchema(TimezoneQuerySchema):
     raw_offset: int = Field(
         0,
         title="UTC Offset",
-        description="The UTC offset in milliseconds for this time zone."
+        description="The offset from UTC in milliseconds for this time zone."
+    )
+    utc_offset: str = Field(
+        "UTC00.00",
+        title="UTC Offset Code",
+        description="The UTC offset code for this time zone."
     )
     latitude: float = Field(
         0,

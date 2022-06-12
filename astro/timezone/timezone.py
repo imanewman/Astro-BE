@@ -62,8 +62,10 @@ def get_timezone(timezone: TimezoneSchema):
     timezone.raw_offset = tz["rawOffset"]
 
     time_offset = timezone.dst_offset + timezone.raw_offset
+    offset_hours = int(time_offset / 60 / 60)
     utc_date_ms = timezone.local_date.timestamp() - time_offset
 
     # Generate the UTC time by applying the timezone offset to the local time.
+    timezone.utc_offset = f"UTC{offset_hours}.00"
     timezone.utc_date = datetime.datetime.fromtimestamp(utc_date_ms, tz=datetime.timezone.utc)
 
