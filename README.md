@@ -14,6 +14,14 @@ To export the current package requirements to the requirements file, run:
 pip freeze > requirements.txt
 ```
 
+### Install the current packages
+
+To install the current package requirements in the requirements file, run:
+
+```shell
+pip install -r requirements.txt
+```
+
 ### Start the server
 
 To start the server, run:
