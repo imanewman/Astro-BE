@@ -14,6 +14,7 @@ def test_calculate_aspects():
     points = create_test_points(
         {"longitude": 0, "declination": 11, "house": 1},
         {"longitude": 5, "declination": -11, "house": 1},
+        do_init_point=True
     )
 
     points_and_event_type = (points, tim_natal)
@@ -48,7 +49,7 @@ def test_calculate_multiple_aspect_sets():
     Tests calculating all aspects between sets of points with different enabled aspects.
     """
 
-    points = create_test_points({"longitude": 0})
+    points = create_test_points({"longitude": 0}, do_init_point=True)
 
     aspects = calculate_relationships(
         (points, EventSettingsSchema(event=tim_natal)),
