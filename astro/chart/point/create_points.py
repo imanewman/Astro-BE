@@ -19,7 +19,6 @@ def create_points_with_attributes(
 
     :return: The calculated points.
     """
-
     # Set the julian day for the event.
     event_settings.event.julian_day = get_julian_day(event_settings.event.utc_date)
     points = create_points(event_settings)

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import List, Optional, Tuple
 
 from pydantic import Field
@@ -76,6 +77,33 @@ class EnabledPointsSchema(BaseSchema):
         return point.name in self.points
 
 
+class TransitSettingsSchema(BaseSchema):
+    """
+    Defines the transits to calculate the timing of for an event.
+    """
+    do_calculate_tropical: bool = Field(
+        False,
+        title="Do Calculate Transits",
+        description="Determines whether the timing of transits should be calculated for an event."
+    )
+    do_calculate_precession_corrected: bool = Field(
+        False,
+        title="Do Calculate Transits (Precession Corrected)",
+        description=
+        "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
+    )
+    start_date: datetime = Field(
+        datetime.utcnow(),
+        title="Transit Start Date",
+        description="The starting date of the period to calculate transits within."
+    )
+    end_date: datetime = Field(
+        datetime.utcnow() + timedelta(days=7),
+        title="Transit End Date",
+        description="The ending date of the period to calculate transits within."
+    )
+
+
 class EventSettingsSchema(BaseSchema):
     """
     Defines a single event to be calculated.
@@ -91,6 +119,11 @@ class EventSettingsSchema(BaseSchema):
         description="Defines what points should be enabled for calculations. " +
                     "When calculating aspect between points in different enabled objects, " +
                     "orbs and aspect types will be taken from the latter of the two points."
+    )
+    transits: TransitSettingsSchema = Field(
+        TransitSettingsSchema(),
+        title="Transit Settings",
+        description="The settings for transits to calculate for this event."
     )
 
     # progress_to: Optional[EventSchema] = Field(
