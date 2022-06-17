@@ -1,4 +1,5 @@
 import re
+from datetime import timedelta, datetime
 from typing import List, Dict
 
 from fastapi import FastAPI
@@ -11,7 +12,7 @@ from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
 from astro.timezone import calculate_timezone
 from astro.util import default_midpoints, AspectType
 from astro.util.test_events import tim_natal, local_event
-from astro import create_chart, ChartCollectionSchema
+from astro import create_chart, ChartCollectionSchema, create_points_with_attributes, calculate_relationships
 
 app = FastAPI()
 
@@ -213,16 +214,46 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, Dict[s
     return descriptions_by_day
 
 
-@app.get("/tim/timezone")
-async def tim_timezone() -> TimezoneSchema:
+@app.get("/tim/many-transits")
+async def tim_transit_polling() -> List[List[str]]:
     """
-    Returns the calculated geolocation, timezone, and UTC date for a location name and date.
+    Test endpoint for how long it takes to generate transits.
 
     :return: The calculated timezone
     """
-    return calculate_timezone(
-        TimezoneQuerySchema(
-            location_name="Manhattan, NY",
-            local_date="1997-10-11T11:09:00.000Z"
-        )
+    settings = SettingsSchema(
+        events=[local_event()],
+        do_calculate_point_attributes=False,
+        do_calculate_relationship_attributes=False
     )
+    event_settings = settings.events[0]
+    increments = 7 * 24  # Transits for 1 week polling 1 hour at a time.
+    all_relationships = []
+    points = [point for point in create_points_with_attributes(event_settings, settings).values()]
+    start_time = datetime.now()
+
+    for increment in range(0, increments):
+        event_settings.event.utc_date += timedelta(hours=1)
+        transit_points = [point for point in create_points_with_attributes(event_settings, settings).values()]
+        relationships = calculate_relationships(
+            (points, event_settings),
+            (transit_points, event_settings),
+            False,
+            settings
+        )
+        relationships_close_to_exact = list(map(
+            lambda rel: f"{rel.get_aspect_name()} {rel.ecliptic_aspect}",
+            filter(
+                lambda rel: rel.ecliptic_aspect.orb and rel.ecliptic_aspect.orb < 0.01,
+                relationships
+            )
+        ))
+
+        all_relationships.append(relationships_close_to_exact)
+
+    end_time = datetime.now()
+    run_time = end_time - start_time
+
+    print(f"Ran {increments} iterations in {run_time.seconds} seconds")
+
+    return all_relationships

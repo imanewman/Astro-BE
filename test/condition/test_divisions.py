@@ -12,9 +12,9 @@ def test_calculate_divisions__beginning():
 
     calculate_divisions(point)
 
-    assert point.rulers.sign == Point.venus
-    assert point.rulers.bound == Point.saturn
-    assert point.rulers.decan == Point.moon
+    assert point.divisions.sign_ruler == Point.venus
+    assert point.divisions.bound_ruler == Point.saturn
+    assert point.divisions.decan_ruler == Point.moon
 
 
 def test_calculate_divisions__middle():
@@ -26,9 +26,9 @@ def test_calculate_divisions__middle():
 
     calculate_divisions(point)
 
-    assert point.rulers.sign == Point.venus
-    assert point.rulers.bound == Point.jupiter
-    assert point.rulers.decan == Point.saturn
+    assert point.divisions.sign_ruler == Point.venus
+    assert point.divisions.bound_ruler == Point.jupiter
+    assert point.divisions.decan_ruler == Point.saturn
 
 
 def test_calculate_divisions__end():
@@ -40,9 +40,9 @@ def test_calculate_divisions__end():
 
     calculate_divisions(point)
 
-    assert point.rulers.sign == Point.venus
-    assert point.rulers.bound == Point.mars
-    assert point.rulers.decan == Point.jupiter
+    assert point.divisions.sign_ruler == Point.venus
+    assert point.divisions.bound_ruler == Point.mars
+    assert point.divisions.decan_ruler == Point.jupiter
 
 
 def test_calculate_divisions__cusp():
@@ -59,11 +59,11 @@ def test_calculate_divisions__cusp():
     calculate_divisions(bound_point)
     calculate_divisions(decan_point)
 
-    assert bound_point.rulers.bound == Point.mars
-    assert decan_point.rulers.decan == Point.jupiter
+    assert bound_point.divisions.bound_ruler == Point.mars
+    assert decan_point.divisions.decan_ruler == Point.jupiter
 
 
-def test_calculate_divisions__rulers():
+def test_calculate_divisions__divisions():
     """
     Tests calculating when a planet is ruling its own division of a sign.
     """

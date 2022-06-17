@@ -23,16 +23,18 @@ def calculate_condition(
     :param is_day_time: Whether the points given are during the day.
     :param settings: The settings to use in calculations.
     """
+    if not settings.do_calculate_condition:
+        return
 
     for point in points.values():
-        if settings.do_calculate_condition:
-            calculate_primary_dignities(point)
-            calculate_sect_placement(point, is_day_time)
+        calculate_primary_dignities(point)
+        calculate_sect_placement(point, is_day_time)
 
-            if Point.sun in points:
-                orbs = settings.events[0].enabled[0].orbs if len(settings.events[0].enabled) > 0 else AspectOrbsSchema()
+        if Point.sun in points:
+            use_given_orbs = len(settings.events) > 0 and len(settings.events[0].enabled) > 0
+            orbs = settings.events[0].enabled[0].orbs if use_given_orbs else AspectOrbsSchema()
 
-                calculate_sun_conjunctions(point, points[Point.sun], orbs)
+            calculate_sun_conjunctions(point, points[Point.sun], orbs)
 
         if settings.do_calculate_divisions:
             calculate_triplicity(point, is_day_time)

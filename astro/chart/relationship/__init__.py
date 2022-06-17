@@ -29,6 +29,9 @@ def calculate_relationships(
 
     :return: All calculated relationships.
     """
+    if not settings.do_calculate_relationships:
+        return []
+
     from_points, from_event = from_items
     to_points, to_event = to_items
     precession_correction = calculate_precession_correction_degrees(
@@ -54,7 +57,8 @@ def calculate_relationships(
                 (to_point, to_event),
                 is_one_chart,
                 precession_correction,
-                enabled_settings
+                enabled_settings,
+                settings
             ))
 
     sort_relationships(relationships, settings.aspect_sort)
@@ -69,7 +73,10 @@ def sort_relationships(relationships: List[RelationshipSchema], aspect_sort: Asp
     :param relationships: The relationships to sort.
     :param aspect_sort: The sort type to run.
     """
-    if aspect_sort == AspectSortType.smallest_orb:
+    if aspect_sort == AspectSortType.no_sort:
+        return
+
+    elif aspect_sort == AspectSortType.smallest_orb:
         # Sort ordered by the smallest orb.
         def sort_smallest_orb(rel: RelationshipSchema) -> float:
             aspect_orbs = map(
@@ -99,7 +106,8 @@ def create_relationship(
         to_item: Tuple[PointSchema, EventSettingsSchema],
         is_one_chart: bool,
         precession_correction: float = 0,
-        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema()
+        enabled_settings: EnabledPointsSchema() = EnabledPointsSchema(),
+        settings: SettingsSchema = SettingsSchema()
 ) -> RelationshipSchema:
     """
     Creates a relationship object, initializing all internal values.
@@ -109,6 +117,7 @@ def create_relationship(
     :param is_one_chart: If true, aspects will not be bi-directionally duplicated.
     :param precession_correction: The degrees of precession correction between events.
     :param enabled_settings: The settings to use for calculations.
+    :param settings: The settings to use for calculations.
 
     :return: The created relationship.
     """
@@ -121,18 +130,24 @@ def create_relationship(
         precession_correction=precession_correction
     )
 
-    calculate_sign_aspect(relationship, from_point, to_point)
-
-    if not is_one_chart or not do_points_form_axis(from_point.name, to_point.name):
+    if is_one_chart and do_points_form_axis(from_point.name, to_point.name):
         # Skip calculations for aspects that form an axis in the same chart.
-        calculate_ecliptic_aspect(relationship, from_point, to_point, enabled_settings)
-        calculate_aspect_phase(relationship, from_point, to_point)
-        calculate_declination_aspect(relationship, from_point, to_point, enabled_settings)
-        calculate_aspect_movement(
-            relationship,
-            (from_point, from_event.event),
-            (to_point, to_event.event)
-        )
+        return relationship
+
+    calculate_ecliptic_aspect(relationship, from_point, to_point, enabled_settings)
+    calculate_declination_aspect(relationship, from_point, to_point, enabled_settings)
+
+    if not settings.do_calculate_relationship_attributes:
+        # Skip phase and movement calculations if they are disabled.
+        return relationship
+
+    calculate_sign_aspect(relationship, from_point, to_point)
+    calculate_aspect_phase(relationship, from_point, to_point)
+    calculate_aspect_movement(
+        relationship,
+        (from_point, from_event.event),
+        (to_point, to_event.event)
+    )
 
     return relationship
 

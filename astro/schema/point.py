@@ -165,29 +165,29 @@ class PointSchema(BaseSchema):
         description="The degrees from the equatorial that this point is moving per day."
     )
 
-    sign: ZodiacSign = Field(
-        ZodiacSign.aries,
+    sign: Optional[ZodiacSign] = Field(
+        None,
         title="Zodiac Sign",
         description="The zodiac sign this point is located within."
     )
-    modality: Modality = Field(
-        Modality.cardinal,
+    modality: Optional[Modality] = Field(
+        None,
         title="Zodiac Sign Modality",
         description="The modality of this point's zodiac sign."
     )
-    element: Element = Field(
-        Element.fire,
+    element: Optional[Element] = Field(
+        None,
         title="Zodiac Sign Element",
         description="The element of this point's zodiac sign."
     )
 
-    degrees_in_sign: int = Field(
-        0,
+    degrees_in_sign: Optional[int] = Field(
+        None,
         title="Degrees of current sign",
         description="The degrees, out of 30, that this point is located at within a sign."
     )
-    minutes_in_degree: int = Field(
-        0,
+    minutes_in_degree: Optional[int] = Field(
+        None,
         title="Minutes of current degree",
         description="The minutes, out of 60, within a degree that this point is located at."
     )

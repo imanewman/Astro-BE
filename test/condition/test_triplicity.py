@@ -29,7 +29,7 @@ def test_calculate_triplicity_day():
     moon = create_moon(ZodiacSign.libra)
 
     assert moon.condition.in_triplicity is False
-    assert moon.rulers.triplicity == (Point.saturn, Point.mercury, Point.jupiter)
+    assert moon.divisions.triplicity_ruler == (Point.saturn, Point.mercury, Point.jupiter)
 
 
 def test_calculate_triplicity_night():
@@ -40,7 +40,7 @@ def test_calculate_triplicity_night():
     moon = create_moon(ZodiacSign.libra, False)
 
     assert moon.condition.in_triplicity is False
-    assert moon.rulers.triplicity == (Point.mercury, Point.saturn, Point.jupiter)
+    assert moon.divisions.triplicity_ruler == (Point.mercury, Point.saturn, Point.jupiter)
 
 
 def test_calculate_triplicity_ruler():
