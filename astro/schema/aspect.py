@@ -293,21 +293,27 @@ class RelationshipSchema(BaseSchema):
     def get_aspect_name(self) -> str:
         return f'{self.from_point} To {self.to_point}'
 
+    def get_aspects(self) -> List[AspectSchema]:
+        """
+        Returns all aspects in this relationship.
+
+        :return: A list of aspects.
+        """
+        return [
+            self.ecliptic_aspect,
+            self.precession_corrected_aspect,
+            self.declination_aspect
+        ]
+
     def get_applying_aspects(self) -> List[AspectSchema]:
         """
         Returns all aspects that have an upcoming approximate exact date.
 
         :return: A list of aspects.
         """
-        aspects = [
-            self.ecliptic_aspect,
-            self.precession_corrected_aspect,
-            self.declination_aspect
-        ]
-
         return list(filter(
             lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
-            aspects
+            self.get_aspects()
         ))
 
     def has_applying_aspects(self) -> bool:

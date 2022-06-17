@@ -81,10 +81,16 @@ class TransitSettingsSchema(BaseSchema):
     """
     Defines the transits to calculate the timing of for an event.
     """
-    do_calculate_tropical: bool = Field(
+    do_calculate_ecliptic: bool = Field(
         False,
         title="Do Calculate Transits",
         description="Determines whether the timing of transits should be calculated for an event."
+    )
+    do_calculate_declination: bool = Field(
+        False,
+        title="Do Calculate Transits (Precession Corrected)",
+        description=
+        "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
     )
     do_calculate_precession_corrected: bool = Field(
         False,
@@ -101,6 +107,13 @@ class TransitSettingsSchema(BaseSchema):
         datetime.utcnow() + timedelta(days=7),
         title="Transit End Date",
         description="The ending date of the period to calculate transits within."
+    )
+    enabled: List[EnabledPointsSchema] = Field(
+        [EnabledPointsSchema()],
+        title="Enabled Points",
+        description="Defines what points should be enabled for calculations. " +
+                    "When calculating aspect between points in different enabled objects, " +
+                    "orbs and aspect types will be taken from the latter of the two points."
     )
 
 

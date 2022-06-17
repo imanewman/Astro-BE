@@ -215,7 +215,7 @@ async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, Dict[s
 
 
 @app.get("/tim/many-transits")
-async def tim_transit_polling() -> List[List[str]]:
+async def tim_transit_test() -> List[List[str]]:
     """
     Test endpoint for how long it takes to generate transits.
 
@@ -257,3 +257,25 @@ async def tim_transit_polling() -> List[List[str]]:
     print(f"Ran {increments} iterations in {run_time.seconds} seconds")
 
     return all_relationships
+
+
+@app.get("/tim/new-transits")
+async def tim_transit_new() -> ChartCollectionSchema:
+    """
+    Test endpoint for how long it takes to generate transits.
+
+    :return: The calculated timezone
+    """
+    return await calc_chart(SettingsSchema(
+            events=[{
+                **tim_natal.dict(),
+                "transits": {
+                    "do_calculate_ecliptic": True,
+                    "start_date": "2022-06-17T00:00:00.000Z",
+                    "end_date": "2022-06-18T00:00:00.000Z",
+                    "enabled": local_event().enabled
+                }
+            }]
+        )
+    )
+
