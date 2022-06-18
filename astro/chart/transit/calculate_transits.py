@@ -238,6 +238,18 @@ def group_transits(
 
             groups[point].transits.append(transit)
 
+    elif event_settings.transits.group_by == TransitGroupType.by_relationship:
+        for transit in transits:
+            relationship = transit.get_name()
+
+            if relationship not in groups:
+                groups[relationship] = TransitGroupSchema(
+                    group_by=TransitGroupType.by_relationship,
+                    group_value=relationship
+                )
+
+            groups[relationship].transits.append(transit)
+
         return list(groups.values())
 
     else:

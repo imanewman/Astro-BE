@@ -210,8 +210,8 @@ async def calc_tim_transits_min(
             timestamp = transit.get_time()
 
             if timestamp in descriptions:
-                descriptions[timestamp] += f"; {transit.get_name()}"
+                descriptions[timestamp] += f"; {transit.get_full_name()}"
             else:
-                descriptions[timestamp] = transit.get_name()
+                descriptions[timestamp] = transit.get_full_name()
 
     return descriptions_by_group

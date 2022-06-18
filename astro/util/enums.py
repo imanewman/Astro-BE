@@ -268,6 +268,7 @@ class TransitGroupType(str, Enum):
     Enumerates all the possible transit group types.
     """
     all = "All"
+    by_relationship = "By Relationship"
     by_natal_point = "By Natal Point"
     by_transit_point = "By Transit Point"
     by_day = "By Day"

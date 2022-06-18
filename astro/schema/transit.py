@@ -54,11 +54,23 @@ class TransitSchema(AspectSchema):
         return f"{self.get_time()}: {self.get_name()}"
 
     def get_name(self) -> str:
-        pc = " PC" if self.is_precession_corrected else ""
+        """
+        :return: The aspect and points for this transit.
+        """
+        return f"{self.from_point} {self.type} {self.to_point}"
 
-        return f"{self.from_point} {self.type}{pc} {self.to_point}"
+    def get_full_name(self) -> str:
+        """
+        :return: The aspect and points for this transit, and whether it is precession corrected.
+        """
+        pc = " (PC)" if self.is_precession_corrected else ""
+
+        return f"{self.get_name}{pc}"
 
     def get_time(self) -> str:
+        """
+        :return: The date, hours, and minutes when this transit goes exact.
+        """
         timestamp = ':'.join(str(self.local_exact_date).split(':')[0:2])
 
         return re.sub(r"\d\d\d\d-", "", timestamp)
