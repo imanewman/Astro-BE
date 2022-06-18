@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 from pydantic import Field
 
 from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, \
-    AspectSortType, RulershipType, TransitType
+    AspectSortType, RulershipType, TransitType, TransitGroupType
 from .base import BaseSchema, EventSchema
 from .point import PointSchema
 from .aspect import AspectOrbsSchema
@@ -102,6 +102,11 @@ class TransitSettingsSchema(BaseSchema):
         TransitType.transit_to_chart,
         title="Transit Type",
         description="Whether to calculate aspects between transiting bodies, or to a static event."
+    )
+    group_by: TransitGroupType = Field(
+        TransitGroupType.all,
+        title="Group By",
+        description="How to group these transits."
     )
     event: TransitEventSchema = Field(
         TransitEventSchema(),

@@ -261,3 +261,14 @@ class TransitType(str, Enum):
     """
     transit_to_chart = "Transit To Chart"
     transit_to_transit = "Transit To Transit"
+
+
+class TransitGroupType(str, Enum):
+    """
+    Enumerates all the possible transit group types.
+    """
+    all = "All"
+    by_natal_point = "By Natal Point"
+    by_transit_point = "By Transit Point"
+    by_day = "By Day"
+

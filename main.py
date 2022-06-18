@@ -6,11 +6,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema, TransitSchema
+    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema, TransitSchema, \
+    TransitGroupSchema
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
 from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
 from astro.timezone import calculate_timezone
-from astro.util import default_midpoints, AspectType, TransitType
+from astro.util import default_midpoints, AspectType, TransitType, TransitGroupType
 from astro.util.test_events import tim_natal, local_event, tim_transits
 from astro import create_chart, ChartCollectionSchema, create_points_with_attributes, calculate_relationships
 
@@ -163,17 +164,24 @@ async def calc_tim_transits_chart(midpoints: bool = False) -> ChartCollectionSch
 
 
 @app.get("/tim/transits/upcoming")
-async def calc_tim_transits_upcoming(mundane: bool = False) -> List[TransitSchema]:
+async def calc_tim_transits_upcoming(
+        mundane: bool = False,
+        group_by: TransitGroupType = TransitGroupType.by_day
+) -> List[TransitGroupSchema]:
     """
     Generates upcoming transits.
 
     :param mundane: Whether to return mundane transits instead of transits to the natal chart.
+    :param group_by: How to group transits.
 
     :return: The calculated transits.
     """
     calculated = await calc_chart(SettingsSchema(
         events=[
-            tim_transits(TransitType.transit_to_transit if mundane else TransitType.transit_to_chart)
+            tim_transits(
+                TransitType.transit_to_transit if mundane else TransitType.transit_to_chart,
+                group_by
+            )
         ]
     ))
 
@@ -181,59 +189,29 @@ async def calc_tim_transits_upcoming(mundane: bool = False) -> List[TransitSchem
 
 
 @app.get("/tim/transits/min")
-async def calc_tim_transits_min(mundane: bool = False) -> Dict[str, Dict[str, str]]:
+async def calc_tim_transits_min(
+        mundane: bool = False,
+        group_by: TransitGroupType = TransitGroupType.by_day
+) -> Dict[str, Dict[str, str]]:
     """
     Generates upcoming transits in an easy-to-read format.
 
     :param mundane: Whether to return mundane transits instead of transits to the natal chart.
-
-    :return: The calculated transits.
-    """
-    descriptions_by_timestamp = {}
-    descriptions_by_day = {}
-
-    for transit in await calc_tim_transits_upcoming(mundane):
-        timestamp = transit.get_time()
-
-        if timestamp in descriptions_by_timestamp:
-            descriptions_by_timestamp[timestamp] += f"; {transit.get_name()}"
-        else:
-            descriptions_by_timestamp[timestamp] = transit.get_name()
-
-    for timestamp, aspect in descriptions_by_timestamp.items():
-        day = timestamp.split(" ")[0]
-
-        if day not in descriptions_by_day:
-            descriptions_by_day[day] = {}
-
-        descriptions_by_day[day][timestamp] = aspect
-
-    return descriptions_by_day
-
-
-@app.get("/tim/transits/grouped")
-async def calc_tim_transits_grouped() -> Dict[str, Dict[str, str]]:
-    """
-    Generates upcoming transits grouped by from and to points.
+    :param group_by: How to group transits.
 
     :return: The calculated transits.
     """
     descriptions_by_group = {}
 
-    for transit in await calc_tim_transits_upcoming():
-        keys = [
-            f"Transiting {transit.from_point}",
-            f"Natal {transit.to_point}",
-        ]
+    for group in await calc_tim_transits_upcoming(mundane, group_by):
+        descriptions = descriptions_by_group[group.group_value] = {}
 
-        for key in keys:
-            if key not in descriptions_by_group:
-                descriptions_by_group[key] = {}
+        for transit in group.transits:
+            timestamp = transit.get_time()
 
-            descriptions_by_group[key][transit.get_time()] = transit.get_name()
-
-    for key, group in [item for item in descriptions_by_group.items()]:
-        if len(group) < 3:
-            del descriptions_by_group[key]
+            if timestamp in descriptions:
+                descriptions[timestamp] += f"; {transit.get_name()}"
+            else:
+                descriptions[timestamp] = transit.get_name()
 
     return descriptions_by_group

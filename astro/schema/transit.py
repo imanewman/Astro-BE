@@ -1,15 +1,18 @@
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Union, List
 import re
 
 from pydantic import Field
 
-from astro.util import Point
-from .base import EventSchema
+from astro.util import Point, TransitGroupType
+from .base import EventSchema, BaseSchema
 from .aspect import AspectSchema
 
 
 class TransitEventSchema(EventSchema):
+    """
+    Represents an event that lasts some duration.
+    """
     local_end_date: datetime = Field(
         default_factory=lambda: datetime.utcnow() + timedelta(days=7),
         title="Local End Date",
@@ -59,3 +62,24 @@ class TransitSchema(AspectSchema):
         timestamp = ':'.join(str(self.local_exact_date).split(':')[0:2])
 
         return re.sub(r"\d\d\d\d-", "", timestamp)
+
+
+class TransitGroupSchema(BaseSchema):
+    """
+    Represents a group of transits with similar traits.
+    """
+    transits: List[TransitSchema] = Field(
+        [],
+        title="Transits",
+        description="The transits in this group."
+    )
+    group_by: TransitGroupType = Field(
+        TransitGroupType.all,
+        title="Group By",
+        description="How these transits are grouped."
+    )
+    group_value: str = Field(
+        "",
+        title="Grouped Group",
+        description="The value these transits are grouped by, such as the planet."
+    )

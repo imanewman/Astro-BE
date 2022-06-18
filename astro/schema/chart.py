@@ -6,7 +6,7 @@ from astro.util import ZodiacSign, Point, HouseSystem
 from .base import BaseSchema, EventSchema
 from .point import PointSchema
 from .relationship import RelationshipCollectionSchema
-from .transit import TransitSchema
+from .transit import TransitGroupSchema
 from .house import HouseSchema
 
 
@@ -70,7 +70,7 @@ class ChartSchema(BaseSchema):
         title="Secondary Houses",
         description="Each secondary house, its sign, and the points within it."
     )
-    transits: List[TransitSchema] = Field(
+    transits: List[TransitGroupSchema] = Field(
         [],
         title="Transits",
         description="A list of transits from this chart to transiting points in this time range."
