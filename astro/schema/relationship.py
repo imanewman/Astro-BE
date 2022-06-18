@@ -2,7 +2,7 @@ from typing import Optional, List, Union
 
 from pydantic import Field
 
-from astro.util import AspectType, Point, PhaseType, applying_aspects
+from astro.util import AspectType, Point, PhaseType
 from .base import BaseSchema
 from .aspect import AspectSchema
 
@@ -20,12 +20,6 @@ class RelationshipSchema(BaseSchema):
         ...,
         title="To Point",
         description="The point this aspect is to."
-    )
-
-    sign_aspect: Optional[AspectType] = Field(
-        None,
-        title="Sign Based Aspect",
-        description="The type of aspect by sign between the points."
     )
 
     arc_ordered: Optional[float] = Field(
@@ -63,6 +57,11 @@ class RelationshipSchema(BaseSchema):
         description="The precession correction in degrees from the first to the second event."
     )
 
+    sign_aspect: Optional[AspectType] = Field(
+        None,
+        title="Sign Based Aspect",
+        description="The type of aspect by sign between the points."
+    )
     ecliptic_aspect: AspectSchema = Field(
         AspectSchema(),
         title="Ecliptic Aspect",
