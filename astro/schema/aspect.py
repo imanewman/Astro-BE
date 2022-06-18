@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, Optional
 
 from pydantic import Field
 
-from astro.util import AspectType, AspectMovementType
+from astro.util import AspectType, AspectMovementType, max_approximate_days
 from .base import BaseSchema
 
 
@@ -181,34 +181,26 @@ class AspectSchema(BaseSchema):
         title="Aspect Movement",
         description="Whether the aspect is applying or separating."
     )
-    days_until_exact: Optional[float] = Field(
+    relative_velocity: Optional[float] = Field(
         None,
-        title="Degree Aspect Approximate Days Until Exact",
-        description="The approximate amount of days until this aspect goes exact, if less than a week."
-    )
-    utc_date_of_exact: Optional[datetime] = Field(
-        None,
-        title="Degree Aspect Approximate Exact Date (UTC)",
-        description="The approximate UTC date aspect goes exact, if in less than a week."
-    )
-    local_date_of_exact: Optional[datetime] = Field(
-        None,
-        title="Degree Aspect Approximate Exact Date (Local)",
-        description="The approximate local date aspect goes exact, if in less than a week."
+        title="Relative Velocity",
+        description="The relative velocity between the two points, if they are in aspect."
     )
 
     def __str__(self):
-        if self.orb is None:
-            return ""
-        elif self.local_date_of_exact:
-            return f"{self.get_date_stamp()} | {self.type}"
+        if self.movement and self.type and self.orb:
+            return f"{self.movement} {self.type} ({self.orb})"
         else:
-            return self.type
+            return ""
 
-    def get_date_stamp(self) -> str:
+    def get_approximate_timing(self) -> Optional[timedelta]:
         """
-        :return: A small date stamp of the minute of this exact aspect.
+        :return: The time delta until this aspect goes exact, if it does soon.
         """
-        correction = " PC" if self.is_precession_corrected else ""
+        if not self.relative_velocity or not self.orb:
+            return
 
-        return f"[{':'.join(str(self.local_date_of_exact).split(':')[0:2])}{correction}]"
+        approximate_days_until_exact = self.orb / self.relative_velocity
+
+        if abs(approximate_days_until_exact) < max_approximate_days:
+            return timedelta(days=approximate_days_until_exact)

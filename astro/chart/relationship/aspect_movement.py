@@ -1,8 +1,7 @@
-import datetime
 from typing import Tuple, Optional
 
 from astro.schema import RelationshipSchema, PointSchema, AspectSchema, EventSchema
-from astro.util import EventType, AspectMovementType, AspectType, max_approximate_days
+from astro.util import EventType, AspectMovementType, AspectType
 
 
 def calculate_aspect_movement(
@@ -104,13 +103,7 @@ def calculate_degree_types_from_speed(
         return
 
     from_is_faster = from_velocity >= to_velocity
-
-    calculate_degree_types_timing(
-        aspect,
-        (from_velocity, from_item[1]),
-        (to_velocity, to_item[1]),
-        orb
-    )
+    aspect.relative_velocity = from_velocity - to_velocity
 
     if orb >= 0 if from_is_faster else orb < 0:
         # If the orb is positive and first object is faster,
@@ -124,49 +117,6 @@ def calculate_degree_types_from_speed(
         # the aspect is separating.
         aspect.movement = AspectMovementType.separating if is_same_direction \
             else AspectMovementType.mutually_separating
-
-
-def calculate_degree_types_timing(
-        aspect: AspectSchema,
-        from_item: Tuple[float, EventSchema],
-        to_item: Tuple[float, EventSchema],
-        orb: float
-):
-    """
-    Calculates approximately when an aspect goes exact.
-
-    - Uses the time zone of the transit events, otherwise the second item.
-
-    - Sets the aspect's `movement` `days_until_exact`, `utc_date_of_exact`, and `local_date_of_exact`
-      if there is an orb of aspect and both objects have a speed.
-
-    :param aspect: The aspect object to update.
-    :param from_item: The starting velocity in the relationship, and the chart it is from.
-    :param to_item: The ending velocity in the relationship, and the chart it is from.
-    :param orb: The orb between the two points.
-    """
-    relative_velocity = from_item[0] - to_item[0]
-
-    if relative_velocity == 0:
-        return
-
-    approximate_days_until_exact = orb / relative_velocity
-
-    if abs(approximate_days_until_exact) < max_approximate_days:
-        # Set the approximate days until exact and date exact, if less than the threshold.
-        aspect.days_until_exact = approximate_days_until_exact
-
-        from_event = from_item[1]
-        to_event = to_item[1]
-
-        time_delta = datetime.timedelta(days=approximate_days_until_exact)
-
-        if from_event.type == EventType.transit:
-            aspect.utc_date_of_exact = from_event.utc_date + time_delta
-            aspect.local_date_of_exact = from_event.local_date + time_delta
-        else:
-            aspect.utc_date_of_exact = to_event.utc_date + time_delta
-            aspect.local_date_of_exact = to_event.local_date + time_delta
 
 
 def calculate_degree_types_direction(

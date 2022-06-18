@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from typing import List, Optional, Tuple
 
 from pydantic import Field
@@ -8,6 +7,7 @@ from astro.util import Point, default_enabled_points, HouseSystem, AspectType, d
 from .base import BaseSchema, EventSchema
 from .point import PointSchema
 from .aspect import AspectOrbsSchema
+from .transit import TransitEventSchema
 
 
 class MidpointSchema(BaseSchema):
@@ -82,7 +82,7 @@ class TransitSettingsSchema(BaseSchema):
     Defines the transits to calculate the timing of for an event.
     """
     do_calculate_ecliptic: bool = Field(
-        False,
+        True,
         title="Do Calculate Transits",
         description="Determines whether the timing of transits should be calculated for an event."
     )
@@ -98,20 +98,15 @@ class TransitSettingsSchema(BaseSchema):
         description=
         "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
     )
-    start_date: datetime = Field(
-        datetime.utcnow(),
-        title="Transit Start Date",
-        description="The starting date of the period to calculate transits within."
-    )
-    end_date: datetime = Field(
-        datetime.utcnow() + timedelta(days=7),
-        title="Transit End Date",
-        description="The ending date of the period to calculate transits within."
+    event: TransitEventSchema = Field(
+        TransitEventSchema(),
+        title="Transit Event",
+        description="The time range to calculate transits within."
     )
     enabled: List[EnabledPointsSchema] = Field(
         [EnabledPointsSchema()],
         title="Enabled Points",
-        description="Defines what points should be enabled for calculations. " +
+        description="Defines what points should be enabled for transits. " +
                     "When calculating aspect between points in different enabled objects, " +
                     "orbs and aspect types will be taken from the latter of the two points."
     )
@@ -133,8 +128,8 @@ class EventSettingsSchema(BaseSchema):
                     "When calculating aspect between points in different enabled objects, " +
                     "orbs and aspect types will be taken from the latter of the two points."
     )
-    transits: TransitSettingsSchema = Field(
-        TransitSettingsSchema(),
+    transits: Optional[TransitSettingsSchema] = Field(
+        None,
         title="Transit Settings",
         description="The settings for transits to calculate for this event."
     )
@@ -218,7 +213,7 @@ class SettingsSchema(BaseSchema):
         description="The secondary house system to calculate, besides the default whole sign.",
     )
     aspect_sort: AspectSortType = Field(
-        AspectSortType.closest_exact,
+        AspectSortType.no_sort,
         title="Aspect Sort",
         description="The way to sort the aspects."
     )
@@ -253,8 +248,13 @@ class SettingsSchema(BaseSchema):
         title="Do Calculate Relationships",
         description="This flag enables the calculation of relationships between points."
     )
-    do_calculate_relationship_attributes: bool = Field(
+    do_calculate_relationship_phase: bool = Field(
         True,
-        title="Do Calculate Relationship Attributes",
-        description="This flag enables the calculation the phase and application/separation between points."
+        title="Do Calculate Relationship Phase",
+        description="This flag enables the calculation the phase between points."
+    )
+    do_calculate_relationship_movement: bool = Field(
+        True,
+        title="Do Calculate Relationship Movement",
+        description="This flag enables the calculation the application/separation between points."
     )

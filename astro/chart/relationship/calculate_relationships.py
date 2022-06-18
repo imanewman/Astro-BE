@@ -88,18 +88,6 @@ def sort_relationships(relationships: List[RelationshipSchema], aspect_sort: Asp
 
         relationships.sort(key=sort_smallest_orb)
 
-    elif aspect_sort == AspectSortType.closest_exact:
-        # Sort ordered by the closest exact aspect.
-        def sort_closest_exact(rel: RelationshipSchema) -> float:
-            aspect_orbs = map(
-                lambda aspect: abs(aspect.days_until_exact or 7),
-                rel.get_applying_aspects()
-            )
-
-            return min(aspect_orbs, default=7)
-
-        relationships.sort(key=sort_closest_exact)
-
 
 def create_relationship(
         from_item: Tuple[PointSchema, EventSettingsSchema],
@@ -134,20 +122,19 @@ def create_relationship(
         # Skip calculations for aspects that form an axis in the same chart.
         return relationship
 
+    calculate_sign_aspect(relationship, from_point, to_point)
     calculate_ecliptic_aspect(relationship, from_point, to_point, enabled_settings)
     calculate_declination_aspect(relationship, from_point, to_point, enabled_settings)
 
-    if not settings.do_calculate_relationship_attributes:
-        # Skip phase and movement calculations if they are disabled.
-        return relationship
+    if settings.do_calculate_relationship_phase:
+        calculate_aspect_phase(relationship, from_point, to_point)
 
-    calculate_sign_aspect(relationship, from_point, to_point)
-    calculate_aspect_phase(relationship, from_point, to_point)
-    calculate_aspect_movement(
-        relationship,
-        (from_point, from_event.event),
-        (to_point, to_event.event)
-    )
+    if settings.do_calculate_relationship_movement:
+        calculate_aspect_movement(
+            relationship,
+            (from_point, from_event.event),
+            (to_point, to_event.event)
+        )
 
     return relationship
 

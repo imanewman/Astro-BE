@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 
 from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
@@ -17,8 +17,8 @@ def local_event() -> EventSettingsSchema:
             latitude=47.6769,
             longitude=-122.2060,
             type=EventType.transit,
-            utc_date=datetime.datetime.utcnow().astimezone(),
-            local_date=datetime.datetime.now(),
+            utc_date=datetime.utcnow().astimezone(),
+            local_date=datetime.now(),
             utc_offset="UTC-8.00",
             # utc_offset="UTC-4.00"
         ),
@@ -112,3 +112,19 @@ The date time of Tim's birth.
 """
 
 tim_natal.event.julian_day = get_julian_day(tim_natal.event.utc_date)
+
+tim_transits = EventSettingsSchema(**{
+    **tim_natal.dict(),
+    "transits": {
+        "do_calculate_ecliptic": True,
+        "do_calculate_precession_corrected": True,
+        "do_calculate_declination": True,
+        "event": {
+            "utc_date": datetime.utcnow().astimezone(),
+            "local_date": datetime.now(),
+            "utc_end_date": datetime.utcnow().astimezone() + timedelta(days=3),
+            "local_end_date": datetime.now() + timedelta(days=3),
+        },
+        "enabled": local_event().enabled
+    }
+})

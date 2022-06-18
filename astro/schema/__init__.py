@@ -2,6 +2,7 @@ from .base import *
 from .point import *
 from .aspect import *
 from .relationship import *
+from .transit import *
 from .house import *
 from .chart import *
 from .sign import *

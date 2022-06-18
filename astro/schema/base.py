@@ -48,12 +48,12 @@ class EventSchema(BaseSchema):
 
     local_date: datetime = Field(
         default_factory=lambda: datetime.utcnow(),
-        title="Date",
+        title="Local Date",
         description="The local time for the location, defaulting to now."
     )
     utc_date: datetime = Field(
         default_factory=lambda: datetime.utcnow(),
-        title="Date",
+        title="UTC Date",
         description="The UTC time for the location used for all calculations, defaulting to now."
     )
     timezone: str = Field(

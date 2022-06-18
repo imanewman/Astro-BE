@@ -6,12 +6,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema
+    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema, TransitSchema
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
 from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
 from astro.timezone import calculate_timezone
 from astro.util import default_midpoints, AspectType
-from astro.util.test_events import tim_natal, local_event
+from astro.util.test_events import tim_natal, local_event, tim_transits
 from astro import create_chart, ChartCollectionSchema, create_points_with_attributes, calculate_relationships
 
 app = FastAPI()
@@ -127,8 +127,8 @@ async def calc_tim() -> ChartCollectionSchema:
     ))
 
 
-@app.get("/tim/transits")
-async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
+@app.get("/tim/transits/chart")
+async def calc_tim_transits_chart(midpoints: bool = False) -> ChartCollectionSchema:
     """
     Calculates the natal chart of tim with current transits.
 
@@ -162,120 +162,44 @@ async def calc_tim_transits(midpoints: bool = False) -> ChartCollectionSchema:
     ))
 
 
-@app.get("/tim/upcoming")
-async def calc_tim_upcoming(midpoints: bool = False) -> List[RelationshipSchema]:
+@app.get("/tim/transits/upcoming")
+async def calc_tim_transits_upcoming() -> List[TransitSchema]:
     """
-    Calculates the natal chart of tim with current transits.
-    Returns ordered upcoming aspects.
+    Generates upcoming transits.
 
-    :param midpoints: Whether midpoints should be calculated.
-
-    :return: Calculated aspects.
+    :return: The calculated transits.
     """
-    calculated_transits = await calc_tim_transits(midpoints)
-    aspects = calculated_transits.relationships[2].relationships
+    calculated = await calc_chart(SettingsSchema(
+        events=[tim_transits]
+    ))
 
-    return list(filter(lambda rel: rel.has_applying_aspects(), aspects))
+    return calculated.charts[0].transits
 
 
-@app.get("/tim/upcoming-min")
-async def calc_tim_upcoming_minimal(midpoints: bool = False) -> Dict[str, Dict[str, str]]:
+@app.get("/tim/transits/min")
+async def calc_tim_transits_min() -> Dict[str, Dict[str, str]]:
     """
-    Calculates the natal chart of tim with current transits.
-    Returns ordered upcoming aspects concisely.
+    Generates upcoming transits.
 
-    :param midpoints: Whether midpoints should be calculated.
-
-    :return: Calculated aspects.
+    :return: The calculated transits.
     """
     descriptions_by_timestamp = {}
     descriptions_by_day = {}
 
-    for aspect in await calc_tim_upcoming(midpoints):
-        aspect_descriptions = aspect.get_applying_aspect_descriptions()
+    for transit in await calc_tim_transits_upcoming():
+        timestamp = transit.get_time()
 
-        for description in aspect_descriptions:
-            timestamp, aspect = description.split(" | ")
-
-            if timestamp in descriptions_by_timestamp:
-                descriptions_by_timestamp[timestamp] += f"; {aspect}"
-            else:
-                descriptions_by_timestamp[timestamp] = aspect
+        if timestamp in descriptions_by_timestamp:
+            descriptions_by_timestamp[timestamp] += f"; {transit.get_name()}"
+        else:
+            descriptions_by_timestamp[timestamp] = transit.get_name()
 
     for timestamp, aspect in descriptions_by_timestamp.items():
-        day = timestamp.split(" ")[0][1:]
-        short_timestamp = re.sub(r"\d\d\d\d-", "", timestamp)
+        day = timestamp.split(" ")[0]
 
         if day not in descriptions_by_day:
             descriptions_by_day[day] = {}
 
-        descriptions_by_day[day][short_timestamp] = aspect
+        descriptions_by_day[day][timestamp] = aspect
 
     return descriptions_by_day
-
-
-@app.get("/tim/many-transits")
-async def tim_transit_test() -> List[List[str]]:
-    """
-    Test endpoint for how long it takes to generate transits.
-
-    :return: The calculated timezone
-    """
-    settings = SettingsSchema(
-        events=[local_event()],
-        do_calculate_point_attributes=False,
-        do_calculate_relationship_attributes=False
-    )
-    event_settings = settings.events[0]
-    increments = 7 * 24  # Transits for 1 week polling 1 hour at a time.
-    all_relationships = []
-    points = [point for point in create_points_with_attributes(event_settings, settings).values()]
-    start_time = datetime.now()
-
-    for increment in range(0, increments):
-        event_settings.event.utc_date += timedelta(hours=1)
-        transit_points = [point for point in create_points_with_attributes(event_settings, settings).values()]
-        relationships = calculate_relationships(
-            (points, event_settings),
-            (transit_points, event_settings),
-            False,
-            settings
-        )
-        relationships_close_to_exact = list(map(
-            lambda rel: f"{rel.get_aspect_name()} {rel.ecliptic_aspect}",
-            filter(
-                lambda rel: rel.ecliptic_aspect.orb and rel.ecliptic_aspect.orb < 0.01,
-                relationships
-            )
-        ))
-
-        all_relationships.append(relationships_close_to_exact)
-
-    end_time = datetime.now()
-    run_time = end_time - start_time
-
-    print(f"Ran {increments} iterations in {run_time.seconds} seconds")
-
-    return all_relationships
-
-
-@app.get("/tim/new-transits")
-async def tim_transit_new() -> ChartCollectionSchema:
-    """
-    Test endpoint for how long it takes to generate transits.
-
-    :return: The calculated timezone
-    """
-    return await calc_chart(SettingsSchema(
-            events=[{
-                **tim_natal.dict(),
-                "transits": {
-                    "do_calculate_ecliptic": True,
-                    "start_date": "2022-06-17T00:00:00.000Z",
-                    "end_date": "2022-06-18T00:00:00.000Z",
-                    "enabled": local_event().enabled
-                }
-            }]
-        )
-    )
-

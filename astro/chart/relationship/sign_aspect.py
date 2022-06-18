@@ -16,6 +16,9 @@ def calculate_sign_aspect(
     :param from_point: The starting point in the relationship.
     :param to_point: The ending point in the relationship.
     """
+    if not from_point.sign or not to_point.sign:
+        return
+
     from_sign_index = zodiac_sign_order.index(from_point.sign)
     to_sign_index = zodiac_sign_order.index(to_point.sign)
     separation = (from_sign_index - to_sign_index) % 12

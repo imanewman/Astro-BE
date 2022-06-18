@@ -80,9 +80,9 @@ class RelationshipSchema(BaseSchema):
     )
 
     def __str__(self):
-        return f'{self.get_aspect_name()}: {", ".join(self.get_applying_aspect_descriptions())}'
+        return f"{self.get_name}: {self.get_aspects()}"
 
-    def get_aspect_name(self) -> str:
+    def get_name(self) -> str:
         return f'{self.from_point} To {self.to_point}'
 
     def get_aspects(self) -> List[AspectSchema]:
@@ -96,42 +96,6 @@ class RelationshipSchema(BaseSchema):
             self.precession_corrected_aspect,
             self.declination_aspect
         ]
-
-    def get_applying_aspects(self) -> List[AspectSchema]:
-        """
-        Returns all aspects that have an upcoming approximate exact date.
-
-        :return: A list of aspects.
-        """
-        return list(filter(
-            lambda aspect: aspect.days_until_exact and aspect.movement in applying_aspects,
-            self.get_aspects()
-        ))
-
-    def has_applying_aspects(self) -> bool:
-        """
-        Returns whether any aspect has an upcoming date.
-
-        :return: Whether any aspect is closely applying.
-        """
-        return len(self.get_applying_aspects()) > 0
-
-    def get_applying_aspect_descriptions(self) -> List[str]:
-        aspects_strings = []
-        aspect_types = []
-
-        for aspect in self.get_applying_aspects():
-            try:
-                existing_type_index = aspect_types.index(aspect.type)
-
-                aspects_strings[existing_type_index] = \
-                    aspects_strings[existing_type_index].replace("]", f"]{aspect.get_date_stamp()}")
-            except ValueError:
-                aspects_strings.append(f'{aspect} From {self.get_aspect_name()}')
-
-            aspect_types.append(aspect.type)
-
-        return aspects_strings
 
 
 class RelationshipCollectionSchema(BaseSchema):
