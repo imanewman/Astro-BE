@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 from astro.schema import PointSchema, RelationshipSchema, SettingsSchema, EventSettingsSchema, EventSchema, \
     EnabledPointsSchema

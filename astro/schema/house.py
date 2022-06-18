@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from pydantic import Field
 
+from astro.util import ZodiacSign, Point
 from .base import BaseSchema
-from ..util import ZodiacSign, Point
 
 
 class HouseSchema(BaseSchema):

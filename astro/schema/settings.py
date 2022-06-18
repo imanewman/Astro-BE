@@ -3,11 +3,11 @@ from typing import List, Optional, Tuple
 
 from pydantic import Field
 
-from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, AspectSortType, \
-    RulershipType
-from . import PointSchema
-from .aspect import AspectOrbsSchema
+from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, \
+    AspectSortType, RulershipType
 from .base import BaseSchema, EventSchema
+from .point import PointSchema
+from .aspect import AspectOrbsSchema
 
 
 class MidpointSchema(BaseSchema):

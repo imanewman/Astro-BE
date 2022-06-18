@@ -3,10 +3,10 @@ from typing import Optional, Dict, List, Union
 from pydantic import Field
 
 from astro.util import ZodiacSign, Point, HouseSystem
-from .aspect import RelationshipCollectionSchema
-from .house import HouseSchema
 from .base import BaseSchema, EventSchema
 from .point import PointSchema
+from .relationship import RelationshipCollectionSchema
+from .house import HouseSchema
 
 
 class SummarySchema(BaseSchema):

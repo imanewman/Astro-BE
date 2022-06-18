@@ -2,7 +2,7 @@ from typing import Optional, List, Dict
 
 from pydantic import Field
 
-from astro.util.enums import PointCategory, ZodiacSign, Point, AspectType
+from astro.util import PointCategory, ZodiacSign, Point, AspectType
 from .base import BaseSchema
 from .aspect import AspectOrbsSchema
 

@@ -2,14 +2,14 @@ from typing import Optional, List, Union
 
 from pydantic import Field
 
-from astro.util.enums import ZodiacSign, Point, SectPlacement, Modality, Element, HouseSystem, SunCondition
+from astro.util import ZodiacSign, Point, SectPlacement, Modality, Element, HouseSystem, SunCondition
 from .base import BaseSchema
 
 
 class PointConditionSchema(BaseSchema):
     """
     Defines the bonification and maltreatment of a planet.
-    For points that arent planets, all values are false.
+    For points that aren't planets, all values are false.
     """
     in_joy: bool = Field(
         False,
