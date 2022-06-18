@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 from pydantic import Field
 
 from astro.util import Point, default_enabled_points, HouseSystem, AspectType, default_enabled_aspects, \
-    AspectSortType, RulershipType
+    AspectSortType, RulershipType, TransitType
 from .base import BaseSchema, EventSchema
 from .point import PointSchema
 from .aspect import AspectOrbsSchema
@@ -97,6 +97,11 @@ class TransitSettingsSchema(BaseSchema):
         title="Do Calculate Transits (Precession Corrected)",
         description=
         "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
+    )
+    type: TransitType = Field(
+        TransitType.transit_to_chart,
+        title="Transit Type",
+        description="Whether to calculate aspects between transiting bodies, or to a static event."
     )
     event: TransitEventSchema = Field(
         TransitEventSchema(),

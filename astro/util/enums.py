@@ -253,3 +253,11 @@ class RulershipType(str, Enum):
     traditional = "Traditional"
     modern = "Modern"
     asteroids = "Asteroids"
+
+
+class TransitType(str, Enum):
+    """
+    Enumerates all the possible transit calculation types.
+    """
+    transit_to_chart = "Transit To Chart"
+    transit_to_transit = "Transit To Transit"

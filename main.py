@@ -10,7 +10,7 @@ from astro.schema import ZodiacSignCollection, SettingsSchema, \
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
 from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
 from astro.timezone import calculate_timezone
-from astro.util import default_midpoints, AspectType
+from astro.util import default_midpoints, AspectType, TransitType
 from astro.util.test_events import tim_natal, local_event, tim_transits
 from astro import create_chart, ChartCollectionSchema, create_points_with_attributes, calculate_relationships
 
@@ -163,30 +163,36 @@ async def calc_tim_transits_chart(midpoints: bool = False) -> ChartCollectionSch
 
 
 @app.get("/tim/transits/upcoming")
-async def calc_tim_transits_upcoming() -> List[TransitSchema]:
+async def calc_tim_transits_upcoming(mundane: bool = False) -> List[TransitSchema]:
     """
     Generates upcoming transits.
+
+    :param mundane: Whether to return mundane transits instead of transits to the natal chart.
 
     :return: The calculated transits.
     """
     calculated = await calc_chart(SettingsSchema(
-        events=[tim_transits]
+        events=[
+            tim_transits(TransitType.transit_to_transit if mundane else TransitType.transit_to_chart)
+        ]
     ))
 
     return calculated.charts[0].transits
 
 
 @app.get("/tim/transits/min")
-async def calc_tim_transits_min() -> Dict[str, Dict[str, str]]:
+async def calc_tim_transits_min(mundane: bool = False) -> Dict[str, Dict[str, str]]:
     """
     Generates upcoming transits in an easy-to-read format.
+
+    :param mundane: Whether to return mundane transits instead of transits to the natal chart.
 
     :return: The calculated transits.
     """
     descriptions_by_timestamp = {}
     descriptions_by_day = {}
 
-    for transit in await calc_tim_transits_upcoming():
+    for transit in await calc_tim_transits_upcoming(mundane):
         timestamp = transit.get_time()
 
         if timestamp in descriptions_by_timestamp:

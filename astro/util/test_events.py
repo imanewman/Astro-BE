@@ -4,7 +4,7 @@ from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import EventType, Point, calculated_points, modern_points, centaur_points, \
     primary_asteroid_points, traditional_points, major_aspects, eighth_harmonic_aspects, declination_aspects, \
-    lot_points, lunar_nodes
+    lot_points, lunar_nodes, TransitType
 
 
 def local_event() -> EventSettingsSchema:
@@ -113,18 +113,26 @@ The date time of Tim's birth.
 
 tim_natal.event.julian_day = get_julian_day(tim_natal.event.utc_date)
 
-tim_transits = EventSettingsSchema(**{
-    **tim_natal.dict(),
-    "transits": {
-        "do_calculate_ecliptic": True,
-        "do_calculate_precession_corrected": True,
-        "do_calculate_declination": True,
-        "event": {
-            "utc_date": datetime.utcnow().astimezone(),
-            "local_date": datetime.now(),
-            "utc_end_date": datetime.utcnow().astimezone() + timedelta(days=3),
-            "local_end_date": datetime.now() + timedelta(days=3),
-        },
-        "enabled": local_event().enabled
-    }
-})
+
+def tim_transits(transit_type: TransitType = TransitType.transit_to_chart) -> EventSettingsSchema:
+    """
+    Settings for Tim Natal X Transits.
+
+    :param transit_type: The type of transits to calculate.
+    """
+    return EventSettingsSchema(**{
+        **tim_natal.dict(),
+        "transits": {
+            "do_calculate_ecliptic": True,
+            "do_calculate_precession_corrected": True,
+            "do_calculate_declination": True,
+            "type": transit_type,
+            "event": {
+                "utc_date": datetime.utcnow().astimezone(),
+                "local_date": datetime.now(),
+                "utc_end_date": datetime.utcnow().astimezone() + timedelta(days=3),
+                "local_end_date": datetime.now() + timedelta(days=3),
+            },
+            "enabled": local_event().enabled
+        }
+    })

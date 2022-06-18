@@ -53,7 +53,7 @@ class TransitSchema(AspectSchema):
     def get_name(self) -> str:
         pc = " PC" if self.is_precession_corrected else ""
 
-        return f"{self.from_point} {self.type} Natal{pc} {self.to_point}"
+        return f"{self.from_point} {self.type}{pc} {self.to_point}"
 
     def get_time(self) -> str:
         timestamp = ':'.join(str(self.local_exact_date).split(':')[0:2])

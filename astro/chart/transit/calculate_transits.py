@@ -1,10 +1,11 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
 from typing import List, Tuple, Optional, Dict
 
 from astro.chart.relationship import calculate_relationships
 from astro.chart.point import create_points_with_attributes
 from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, RelationshipSchema, AspectSchema, \
     TransitSchema
+from astro.util import TransitType
 
 
 def calculate_transits(
@@ -29,33 +30,42 @@ def calculate_transits(
         return []
 
     calculated_increments = []
-    current_utc_date = transit_settings.event.utc_date
-    current_local_date = transit_settings.event.local_date
+    is_one_chart = transit_settings.type == TransitType.transit_to_transit
+    current_settings = EventSettingsSchema(
+        enabled=transit_settings.enabled,
+        event=transit_settings.event
+    )
 
-    while current_utc_date < transit_settings.event.utc_end_date:
+    while current_settings.event.utc_date < transit_settings.event.utc_end_date:
         calculated_increments.append(create_increment(
             (points, event_settings),
-            current_utc_date,
-            current_local_date
+            current_settings,
+            is_one_chart
         ))
 
-        current_utc_date += timedelta(hours=1)
-        current_local_date += timedelta(hours=1)
+        current_settings = EventSettingsSchema(
+            enabled=transit_settings.enabled,
+            event={
+                **current_settings.event.dict(),
+                "utc_date": current_settings.event.utc_date + timedelta(hours=1),
+                "local_date": current_settings.event.utc_date + timedelta(hours=1)
+            }
+        )
 
-    return calculate_transit_timing(event_settings, calculated_increments)
+    return calculate_transit_timing(event_settings, calculated_increments, is_one_chart)
 
 
 def create_increment(
         base_items: Tuple[List[PointSchema], EventSettingsSchema],
-        current_utc_date: datetime,
-        current_local_date: datetime,
+        event_settings: EventSettingsSchema,
+        is_one_chart: bool
 ) -> Tuple[EventSettingsSchema, Dict[str, RelationshipSchema]]:
     """
     Generates the relationships for an increment of time.
 
     :param base_items: The base charts points and event.
-    :param current_utc_date: The current UTC date to calculate transits for.
-    :param current_local_date: The current local date to calculate transits for.
+    :param event_settings: The current event settings to calculate transits for.
+    :param is_one_chart: If true, transits are calculated during the time frame, and not to the base chart.
 
     :return: The calculated event and relationships at the current time.
     """
@@ -63,21 +73,16 @@ def create_increment(
         do_calculate_point_attributes=False,
         do_calculate_relationship_phase=False,
     )
-    current_event = EventSettingsSchema(
-        event={
-            "utc_date": current_utc_date,
-            "local_date": current_local_date
-        },
-        enabled=base_items[1].transits.enabled
-    )
     current_points = create_points_with_attributes(
-        current_event,
+        event_settings,
         settings
     )
+    current_items = ([point for point in current_points.values()], event_settings)
+
     current_relationships = calculate_relationships(
-        ([point for point in current_points.values()], current_event),
-        base_items,
-        False,
+        current_items,
+        current_items if is_one_chart else base_items,
+        is_one_chart,
         settings
     )
 
@@ -86,18 +91,20 @@ def create_increment(
     for relationship in current_relationships:
         relationship_map[relationship.get_name()] = relationship
 
-    return current_event, relationship_map
+    return event_settings, relationship_map
 
 
 def calculate_transit_timing(
         event_settings: EventSettingsSchema,
         calculated_increments: List[Tuple[EventSettingsSchema, Dict[str, RelationshipSchema]]],
+        is_one_chart: bool
 ) -> List[TransitSchema]:
     """
     Calculates the timing of transits going exact.
 
     :param event_settings: The current time, location, enabled points, and transit settings.
     :param calculated_increments: The relationships calculated over the set duration.
+    :param is_one_chart: If true, transits are calculated during the time frame, and not to the base chart.
 
     :return: All calculated transits.
     """
@@ -127,7 +134,7 @@ def calculate_transit_timing(
                 )
                 if transit:
                     transits.append(transit)
-            if event_settings.transits.do_calculate_precession_corrected:
+            if event_settings.transits.do_calculate_precession_corrected and not is_one_chart:
                 transit = find_exact_aspect(
                     current_event_settings, current_relationship,
                     last_relationship.precession_corrected_aspect,
