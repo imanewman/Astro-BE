@@ -179,7 +179,7 @@ async def calc_tim_transits_upcoming() -> List[TransitSchema]:
 @app.get("/tim/transits/min")
 async def calc_tim_transits_min() -> Dict[str, Dict[str, str]]:
     """
-    Generates upcoming transits.
+    Generates upcoming transits in an easy-to-read format.
 
     :return: The calculated transits.
     """
@@ -203,3 +203,31 @@ async def calc_tim_transits_min() -> Dict[str, Dict[str, str]]:
         descriptions_by_day[day][timestamp] = aspect
 
     return descriptions_by_day
+
+
+@app.get("/tim/transits/grouped")
+async def calc_tim_transits_grouped() -> Dict[str, Dict[str, str]]:
+    """
+    Generates upcoming transits grouped by from and to points.
+
+    :return: The calculated transits.
+    """
+    descriptions_by_group = {}
+
+    for transit in await calc_tim_transits_upcoming():
+        keys = [
+            f"Transiting {transit.from_point}",
+            f"Natal {transit.to_point}",
+        ]
+
+        for key in keys:
+            if key not in descriptions_by_group:
+                descriptions_by_group[key] = {}
+
+            descriptions_by_group[key][transit.get_time()] = transit.get_name()
+
+    for key, group in [item for item in descriptions_by_group.items()]:
+        if len(group) < 3:
+            del descriptions_by_group[key]
+
+    return descriptions_by_group
