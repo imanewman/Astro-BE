@@ -65,7 +65,7 @@ class TransitSchema(AspectSchema):
         """
         pc = " (PC)" if self.is_precession_corrected else ""
 
-        return f"{self.get_name}{pc}"
+        return f"{self.get_name()}{pc}"
 
     def get_time(self) -> str:
         """
