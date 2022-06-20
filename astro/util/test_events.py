@@ -133,8 +133,7 @@ def tim_transits(
             "type": transit_type,
             "group_by": group_by,
             "event": {
-                "utc_date": datetime.utcnow().astimezone(),
-                "local_date": datetime.now(),
+                **local_event().event.dict(),
                 "utc_end_date": datetime.utcnow().astimezone() + timedelta(days=3),
                 "local_end_date": datetime.now() + timedelta(days=3),
             },

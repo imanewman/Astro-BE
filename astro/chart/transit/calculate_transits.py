@@ -48,7 +48,7 @@ def calculate_transits(
             event={
                 **current_settings.event.dict(),
                 "utc_date": current_settings.event.utc_date + timedelta(hours=1),
-                "local_date": current_settings.event.utc_date + timedelta(hours=1)
+                "local_date": current_settings.event.local_date + timedelta(hours=1)
             }
         )
 
@@ -172,10 +172,12 @@ def find_exact_aspect(
     current_orb_is_positive = current_aspect.orb >= 0
     aspect_is_same = last_aspect.type == current_aspect.type
 
-    if aspect_is_same and last_orb_is_positive is not current_orb_is_positive:
+    if aspect_is_same and (last_orb_is_positive is not current_orb_is_positive):
         time_delta = current_aspect.get_approximate_timing()
         local_exact_date = current_event_settings.event.local_date + time_delta
         utc_exact_date = current_event_settings.event.utc_date + time_delta
+
+        print(current_relationship.get_name(), current_event_settings.event.utc_date)
 
         return TransitSchema(**{
             **current_aspect.dict(),
