@@ -4,12 +4,12 @@ from astro.schema import EventSettingsSchema, TransitGroupSchema
 from .group_transits import group_transits
 from .time_aspects import calculate_all_aspects_timing
 from .time_points import calculate_all_points_timing
-from ...schema.types import Increment
+from ...schema.types import TransitIncrement
 
 
 def calculate_transit_timing(
         event_settings: EventSettingsSchema,
-        calculated_increments: List[Increment]
+        calculated_increments: List[TransitIncrement]
 ) -> List[TransitGroupSchema]:
     """
     Calculates the timing of transits going exact.

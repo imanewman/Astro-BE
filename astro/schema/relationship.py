@@ -16,16 +16,16 @@ class Point2PointSchema(BaseSchema):
         title="From Point",
         description="The point this aspect is from."
     )
-    to_point: Union[Point, str] = Field(
-        ...,
-        title="To Point",
-        description="The point this aspect is to."
-    )
-
     from_type: Optional[EventType] = Field(
         None,
         title="From Type",
         description="The type of event this aspect is from."
+    )
+
+    to_point: Union[Point, str] = Field(
+        ...,
+        title="To Point",
+        description="The point this aspect is to."
     )
     to_type: Optional[EventType] = Field(
         None,

@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 from astro.chart.relationship import calculate_relationships
 from astro.chart.point import create_points_with_attributes
-from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, Increment
+from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, TransitIncrement
 from astro.util import EventType
 from .time_transits import calculate_transit_timing
 
@@ -59,7 +59,7 @@ def calculate_transits(
 def create_increment(
         base_items: Tuple[List[PointSchema], EventSettingsSchema],
         event_settings: EventSettingsSchema
-) -> Increment:
+) -> TransitIncrement:
     """
     Generates the relationships for an increment of time.
 
