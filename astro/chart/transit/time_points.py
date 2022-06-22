@@ -7,6 +7,7 @@ from astro.util import AspectMovementType, EventType, TransitType
 
 
 def calculate_all_points_timing(
+        base_event_settings: EventSettingsSchema,
         current_event_settings: EventSettingsSchema,
         current_points: Dict[str, PointSchema],
         last_points: Dict[str, PointSchema],
@@ -15,6 +16,7 @@ def calculate_all_points_timing(
     """
     Calculates the timing of all points making ingresses and stationing.
 
+    :param base_event_settings: The base time, location, enabled points, and transit settings.
     :param current_event_settings: The event for the current moment.
     :param current_points: The points at the current time.
     :param last_points: The points at the last time.
@@ -22,22 +24,29 @@ def calculate_all_points_timing(
 
     :return: All calculated transits.
     """
+    transit_settings = base_event_settings.transits
     transits = []
 
-    if is_one_chart:
-        for last_point in last_points.values():
-            current_point = current_points[last_point.name]
+    if not is_one_chart or (not transit_settings.do_calculate_ingress and not transit_settings.do_calculate_station):
+        return transits
 
-            if not current_point:
-                continue
+    for last_point in last_points.values():
+        current_point = current_points[last_point.name]
 
-            for transit in calculate_point_timing(current_event_settings, current_point, last_point):
-                transits.append(transit)
+        if not current_point:
+            continue
+
+        for transit in calculate_point_timing(
+                base_event_settings, current_event_settings,
+                current_point, last_point
+        ):
+            transits.append(transit)
 
     return transits
 
 
 def calculate_point_timing(
+        base_event_settings: EventSettingsSchema,
         current_event_settings: EventSettingsSchema,
         current_point: PointSchema,
         last_point: PointSchema,
@@ -45,20 +54,27 @@ def calculate_point_timing(
     """
     Calculates the timing of points making ingresses and stationing.
 
+    :param base_event_settings: The base time, location, enabled points, and transit settings.
     :param current_event_settings: The event for the current moment.
     :param current_point: The point at the current time.
     :param last_point: The point at the last time.
 
     :return: All calculated transits.
     """
+    transit_settings = base_event_settings.transits
     transits = []
-    ingress = calculate_ingress_timing(current_event_settings, current_point, last_point)
-    station = calculate_station_timing(current_event_settings, current_point, last_point)
 
-    if ingress:
-        transits.append(ingress)
-    if station:
-        transits.append(station)
+    if transit_settings.do_calculate_ingress:
+        ingress = calculate_ingress_timing(current_event_settings, current_point, last_point)
+
+        if ingress:
+            transits.append(ingress)
+
+    if transit_settings.do_calculate_station:
+        station = calculate_station_timing(current_event_settings, current_point, last_point)
+
+        if station:
+            transits.append(station)
 
     return transits
 

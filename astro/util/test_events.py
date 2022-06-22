@@ -130,6 +130,8 @@ def tim_transits(
             "do_calculate_ecliptic": True,
             "do_calculate_precession_corrected": True,
             "do_calculate_declination": True,
+            "do_calculate_ingress": True,
+            "do_calculate_station": True,
             "type": transit_type,
             "group_by": group_by,
             "event": {

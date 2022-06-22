@@ -33,7 +33,11 @@ def calculate_transit_timing(
     transits = []
 
     for current_event_settings, current_points, current_relationships in calculated_increments:
-        for transit in calculate_all_points_timing(current_event_settings, current_points, last_points, is_one_chart):
+        for transit in calculate_all_points_timing(
+                event_settings, current_event_settings,
+                current_points, last_points,
+                is_one_chart
+        ):
             transits.append(transit)
 
         for transit in calculate_all_aspects_timing(

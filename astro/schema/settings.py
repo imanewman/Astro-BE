@@ -98,6 +98,16 @@ class TransitSettingsSchema(BaseSchema):
         description=
         "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
     )
+    do_calculate_ingress: bool = Field(
+        False,
+        title="Do Calculate Ingresses",
+        description="Determines whether to calculate ingresses. Only works for mundane transits."
+    )
+    do_calculate_station: bool = Field(
+        False,
+        title="Do Calculate Stations",
+        description="Determines whether to calculate stations. Only works for mundane transits."
+    )
     type: TransitCalculationType = Field(
         TransitCalculationType.transit_to_chart,
         title="Transit Type",
