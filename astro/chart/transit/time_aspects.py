@@ -8,8 +8,7 @@ def calculate_all_aspects_timing(
         base_event_settings: EventSettingsSchema,
         current_event_settings: EventSettingsSchema,
         current_relationships: Dict[str, RelationshipSchema],
-        last_relationships: Dict[str, RelationshipSchema],
-        is_one_chart: bool,
+        last_relationships: Dict[str, RelationshipSchema]
 ) -> List[TransitSchema]:
     """
     Calculates the timing of all transits going exact.
@@ -18,7 +17,6 @@ def calculate_all_aspects_timing(
     :param current_event_settings: The current time, location, enabled points, and transit settings.
     :param current_relationships: The current relationships between points.
     :param last_relationships: The previous relationships between points.
-    :param is_one_chart: If true, corrected transits are omitted.
 
     :return: All calculated transits.
     """
@@ -37,8 +35,7 @@ def calculate_all_aspects_timing(
                 base_event_settings,
                 current_event_settings,
                 current_relationship,
-                last_relationship,
-                is_one_chart
+                last_relationship
         ):
             transits.append(transit)
 
@@ -49,8 +46,7 @@ def calculate_aspect_timing(
         base_event_settings: EventSettingsSchema,
         current_event_settings: EventSettingsSchema,
         current_relationship: RelationshipSchema,
-        last_relationship: RelationshipSchema,
-        is_one_chart: bool,
+        last_relationship: RelationshipSchema
 ) -> List[TransitSchema]:
     """
     Calculates the timing of transits going exact.
@@ -59,10 +55,10 @@ def calculate_aspect_timing(
     :param current_event_settings: The current time, location, enabled points, and transit settings.
     :param current_relationship: The current relationship between points.
     :param last_relationship: The previous relationship between points.
-    :param is_one_chart: If true, corrected transits are omitted.
 
     :return: All calculated transits.
     """
+    settings = base_event_settings.transits
     transits = []
 
     def find_transit(last: AspectSchema, current: AspectSchema):
@@ -75,17 +71,17 @@ def calculate_aspect_timing(
         if transit:
             transits.append(transit)
 
-    if base_event_settings.transits.do_calculate_ecliptic:
+    if settings.do_calculate_ecliptic:
         find_transit(
             last_relationship.ecliptic_aspect,
             current_relationship.ecliptic_aspect
         )
-    if base_event_settings.transits.do_calculate_declination:
+    if settings.do_calculate_declination:
         find_transit(
             last_relationship.declination_aspect,
             current_relationship.declination_aspect
         )
-    if base_event_settings.transits.do_calculate_precession_corrected and not is_one_chart:
+    if settings.do_calculate_precession_corrected and not settings.is_one_chart():
         find_transit(
             last_relationship.precession_corrected_aspect,
             current_relationship.precession_corrected_aspect

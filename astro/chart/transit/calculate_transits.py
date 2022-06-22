@@ -3,9 +3,9 @@ from typing import List, Tuple
 
 from astro.chart.relationship import calculate_relationships
 from astro.chart.point import create_points_with_attributes
-from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema
-from astro.util import TransitCalculationType, EventType
-from .time_transits import calculate_transit_timing, Increment
+from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, Increment
+from astro.util import EventType
+from .time_transits import calculate_transit_timing
 
 
 def calculate_transits(
@@ -21,31 +21,29 @@ def calculate_transits(
     :return: All calculated transits.
     """
     transit_settings = event_settings.transits
+    transit_event = transit_settings.event
 
     if not transit_settings or not transit_settings.do_calculate():
         return []
 
     calculated_increments = []
-    is_one_chart = transit_settings.type == TransitCalculationType.transit_to_transit
     current_settings = EventSettingsSchema(
         enabled=transit_settings.enabled,
         event={
-            **transit_settings.event.dict(),
-            "local_date": transit_settings.event.local_date.replace(minute=0, second=0, microsecond=0),
-            "utc_date": transit_settings.event.utc_date.replace(minute=0, second=0, microsecond=0),
+            **transit_event.dict(),
+            "local_date": transit_event.local_date.replace(minute=0, second=0, microsecond=0),
+            "utc_date": transit_event.utc_date.replace(minute=0, second=0, microsecond=0),
             "type": EventType.transit
         }
     )
 
-    while current_settings.event.utc_date < transit_settings.event.utc_end_date:
+    while current_settings.event.utc_date < transit_event.utc_end_date:
         calculated_increments.append(create_increment(
             (points, event_settings),
-            current_settings,
-            is_one_chart
+            current_settings
         ))
 
         delta_increment = timedelta(hours=transit_settings.hours_per_poll)
-
         current_settings = EventSettingsSchema(
             enabled=transit_settings.enabled,
             event={
@@ -55,31 +53,28 @@ def calculate_transits(
             }
         )
 
-    return calculate_transit_timing(event_settings, calculated_increments, is_one_chart)
+    return calculate_transit_timing(event_settings, calculated_increments)
 
 
 def create_increment(
         base_items: Tuple[List[PointSchema], EventSettingsSchema],
-        event_settings: EventSettingsSchema,
-        is_one_chart: bool
+        event_settings: EventSettingsSchema
 ) -> Increment:
     """
     Generates the relationships for an increment of time.
 
     :param base_items: The base charts points and event.
     :param event_settings: The current event settings to calculate transits for.
-    :param is_one_chart: If true, transits are calculated during the time frame, and not to the base chart.
 
     :return: The calculated event and relationships at the current time.
     """
+    relationship_map = {}
+    is_one_chart = base_items[1].transits.is_one_chart()
     settings = SettingsSchema(
         do_calculate_point_attributes=False,
         do_calculate_relationship_phase=False,
     )
-    current_points = create_points_with_attributes(
-        event_settings,
-        settings
-    )
+    current_points = create_points_with_attributes(event_settings, settings)
     current_items = ([point for point in current_points.values()], event_settings)
 
     current_relationships = calculate_relationships(
@@ -88,8 +83,6 @@ def create_increment(
         is_one_chart,
         settings
     )
-
-    relationship_map = {}
 
     for relationship in current_relationships:
         relationship_map[relationship.get_name()] = relationship

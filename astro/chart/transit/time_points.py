@@ -10,8 +10,7 @@ def calculate_all_points_timing(
         base_event_settings: EventSettingsSchema,
         current_event_settings: EventSettingsSchema,
         current_points: Dict[str, PointSchema],
-        last_points: Dict[str, PointSchema],
-        is_one_chart: bool
+        last_points: Dict[str, PointSchema]
 ) -> List[TransitSchema]:
     """
     Calculates the timing of all points making ingresses and stationing.
@@ -20,13 +19,13 @@ def calculate_all_points_timing(
     :param current_event_settings: The event for the current moment.
     :param current_points: The points at the current time.
     :param last_points: The points at the last time.
-    :param is_one_chart: If false, no ingresses or stations will be calculated.
 
     :return: All calculated transits.
     """
+    settings = base_event_settings.transits
     transits = []
 
-    if not is_one_chart or not base_event_settings.transits.do_calculate_points():
+    if not settings.is_one_chart() or not settings.do_calculate_points():
         return transits
 
     for last_point in last_points.values():

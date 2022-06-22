@@ -4,8 +4,10 @@ import re
 
 from pydantic import Field
 
-from astro.util import TransitGroupType, TransitType, ZodiacSign
-from .base import EventSchema, BaseSchema
+from astro.util import TransitGroupType, TransitType, ZodiacSign, TransitCalculationType
+from .base import BaseSchema
+from .event import EventSchema
+from .enabled_points import EnabledPointsSchema
 from .aspect import AspectSchema
 from .relationship import Point2PointSchema
 
@@ -24,6 +26,95 @@ class TransitEventSchema(EventSchema):
         title="UTC End Date",
         description="The UTC time for the end of the date range, defaulting to 7 days from now."
     )
+
+
+class TransitSettingsSchema(BaseSchema):
+    """
+    Defines the transits to calculate the timing of for an event.
+    """
+    type: TransitCalculationType = Field(
+        TransitCalculationType.transit_to_chart,
+        title="Transit Type",
+        description="Whether to calculate aspects between transiting bodies, or to a static event."
+    )
+    event: TransitEventSchema = Field(
+        TransitEventSchema(),
+        title="Transit Event",
+        description="The time range to calculate transits within."
+    )
+    enabled: List[EnabledPointsSchema] = Field(
+        [EnabledPointsSchema()],
+        title="Enabled Points",
+        description="Defines what points should be enabled for transits. " +
+                    "When calculating aspect between points in different enabled objects, " +
+                    "orbs and aspect types will be taken from the latter of the two points."
+    )
+
+    hours_per_poll: float = Field(
+        1,
+        title="Hours Per Poll",
+        description="How many times to poll before approximating transits." +
+                    "Defaults to 1 hour. 0.5 will poll every 30 minutes. 2 will poll every 2 hours."
+    )
+    group_by: TransitGroupType = Field(
+        TransitGroupType.all,
+        title="Group By",
+        description="How to group these transits."
+    )
+
+    do_calculate_ecliptic: bool = Field(
+        True,
+        title="Do Calculate Transits",
+        description="Determines whether the timing of transits should be calculated for an event."
+    )
+    do_calculate_declination: bool = Field(
+        False,
+        title="Do Calculate Transits (Precession Corrected)",
+        description=
+        "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
+    )
+    do_calculate_precession_corrected: bool = Field(
+        False,
+        title="Do Calculate Transits (Precession Corrected)",
+        description=
+        "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
+    )
+    do_calculate_ingress: bool = Field(
+        False,
+        title="Do Calculate Ingresses",
+        description="Determines whether to calculate ingresses. Only works for mundane transits."
+    )
+    do_calculate_station: bool = Field(
+        False,
+        title="Do Calculate Stations",
+        description="Determines whether to calculate stations. Only works for mundane transits."
+    )
+
+    def is_one_chart(self) -> bool:
+        """
+        :return: Whether these transit settings are for calculating mundane transits.
+        """
+        return self.type == TransitCalculationType.transit_to_transit
+
+    def do_calculate_aspects(self) -> bool:
+        """
+        :return: Whether to calculate aspects.
+        """
+        return self.do_calculate_ecliptic or self.do_calculate_declination or self.do_calculate_precession_corrected
+
+    def do_calculate_points(self) -> bool:
+        """
+        :return: Whether to calculate points.
+        """
+        return self.do_calculate_ingress or self.do_calculate_station
+
+    def do_calculate(self) -> bool:
+        """
+        :return: Whether to calculate transits at all.
+        """
+        time_is_valid = self.event.utc_date < self.event.utc_end_date
+
+        return time_is_valid and (self.do_calculate_aspects() or self.do_calculate_points())
 
 
 class TransitSchema(AspectSchema, Point2PointSchema):
