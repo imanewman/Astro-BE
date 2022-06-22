@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Optional
 import re
 
 from pydantic import Field
 
-from astro.util import TransitGroupType
+from astro.util import TransitGroupType, TransitType, ZodiacSign
 from .base import EventSchema, BaseSchema
 from .aspect import AspectSchema
 from .relationship import Point2PointSchema
@@ -34,6 +34,16 @@ class TransitSchema(AspectSchema, Point2PointSchema):
         ...,
         title="Name",
         description="The name of this transit."
+    )
+    transit_type: TransitType = Field(
+        TransitType.aspect,
+        title="Transit",
+        description="The type of this transit."
+    )
+    sign: Optional[ZodiacSign] = Field(
+        None,
+        title="Ingress Sign",
+        description="For ingresses, the sign of the ingress."
     )
 
     local_exact_date: datetime = Field(

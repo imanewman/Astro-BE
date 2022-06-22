@@ -258,6 +258,15 @@ class RulershipType(str, Enum):
 
 class TransitType(str, Enum):
     """
+    Enumerates all the possible transit types.
+    """
+    aspect = "Aspect"
+    ingress = "Ingress"
+    station = "Station"
+
+
+class TransitCalculationType(str, Enum):
+    """
     Enumerates all the possible transit calculation types.
     """
     transit_to_chart = "Transit To Chart"

@@ -4,7 +4,7 @@ from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
 from astro.util import EventType, Point, calculated_points, modern_points, centaur_points, \
     primary_asteroid_points, traditional_points, major_aspects, eighth_harmonic_aspects, declination_aspects, \
-    lot_points, lunar_nodes, TransitType, TransitGroupType
+    lot_points, lunar_nodes, TransitCalculationType, TransitGroupType
 
 
 def local_event() -> EventSettingsSchema:
@@ -115,7 +115,7 @@ tim_natal.event.julian_day = get_julian_day(tim_natal.event.utc_date)
 
 
 def tim_transits(
-        transit_type: TransitType = TransitType.transit_to_chart,
+        transit_type: TransitCalculationType = TransitCalculationType.transit_to_chart,
         group_by: TransitGroupType = TransitGroupType.by_day
 ) -> EventSettingsSchema:
     """

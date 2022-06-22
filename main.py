@@ -11,7 +11,7 @@ from astro.schema import ZodiacSignCollection, SettingsSchema, \
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
 from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
 from astro.timezone import calculate_timezone
-from astro.util import default_midpoints, AspectType, TransitType, TransitGroupType
+from astro.util import default_midpoints, AspectType, TransitCalculationType, TransitGroupType
 from astro.util.test_events import tim_natal, local_event, tim_transits
 from astro import create_chart, ChartCollectionSchema, create_points_with_attributes, calculate_relationships
 
@@ -179,7 +179,7 @@ async def calc_tim_transits_upcoming(
     calculated = await calc_chart(SettingsSchema(
         events=[
             tim_transits(
-                TransitType.transit_to_transit if mundane else TransitType.transit_to_chart,
+                TransitCalculationType.transit_to_transit if mundane else TransitCalculationType.transit_to_chart,
                 group_by
             )
         ]
