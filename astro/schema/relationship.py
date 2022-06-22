@@ -2,14 +2,14 @@ from typing import Optional, List, Union
 
 from pydantic import Field
 
-from astro.util import AspectType, Point, PhaseType
+from astro.util import AspectType, Point, PhaseType, EventType
 from .base import BaseSchema
 from .aspect import AspectSchema
 
 
-class RelationshipSchema(BaseSchema):
+class Point2PointSchema(BaseSchema):
     """
-    Represents information about the relationship between two points.
+    Represents 2 points between one or two events.
     """
     from_point: Union[Point, str] = Field(
         ...,
@@ -22,6 +22,34 @@ class RelationshipSchema(BaseSchema):
         description="The point this aspect is to."
     )
 
+    from_type: Optional[EventType] = Field(
+        None,
+        title="From Type",
+        description="The type of event this aspect is from."
+    )
+    to_type: Optional[EventType] = Field(
+        None,
+        title="To Type",
+        description="The type of event this aspect is to."
+    )
+
+    def get_from(self) -> str:
+        """
+        :return: The point and event type this aspect is from.
+        """
+        return f'{self.from_type} {self.from_point}'
+
+    def get_to(self) -> str:
+        """
+        :return: The point and event type this aspect is to.
+        """
+        return f'{self.to_type} {self.to_point}'
+
+
+class RelationshipSchema(Point2PointSchema):
+    """
+    Represents information about the relationship between two points.
+    """
     arc_ordered: Optional[float] = Field(
         None,
         title="Ecliptic Degrees Between",

@@ -232,6 +232,7 @@ class AspectMovementType(str, Enum):
     mutually_applying = "Applying (M)"
     separating = "Separating"
     mutually_separating = "Separating (M)"
+    exact = "Exact"
 
 
 applying_aspects = [AspectMovementType.applying, AspectMovementType.mutually_applying]

@@ -176,15 +176,15 @@ class AspectSchema(BaseSchema):
         title="Aspect Orb",
         description="The current orb in degrees of the aspect."
     )
-    movement: Optional[AspectMovementType] = Field(
-        None,
-        title="Aspect Movement",
-        description="Whether the aspect is applying or separating."
-    )
     relative_velocity: Optional[float] = Field(
         None,
         title="Relative Velocity",
         description="The relative velocity between the two points, if they are in aspect."
+    )
+    movement: Optional[AspectMovementType] = Field(
+        None,
+        title="Aspect Movement",
+        description="Whether the aspect is applying or separating."
     )
 
     def __str__(self):

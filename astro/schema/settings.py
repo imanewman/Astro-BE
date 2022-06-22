@@ -103,6 +103,12 @@ class TransitSettingsSchema(BaseSchema):
         title="Transit Type",
         description="Whether to calculate aspects between transiting bodies, or to a static event."
     )
+    hours_per_poll: float = Field(
+        1,
+        title="Hours Per Poll",
+        description="How many times to poll before approximating transits." +
+                    "Defaults to 1 hour. 0.5 will poll every 30 minutes. 2 will poll every 2 hours."
+    )
     group_by: TransitGroupType = Field(
         TransitGroupType.all,
         title="Group By",

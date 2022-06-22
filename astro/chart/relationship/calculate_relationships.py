@@ -115,6 +115,8 @@ def create_relationship(
     relationship = RelationshipSchema(
         from_point=from_point.name,
         to_point=to_point.name,
+        from_type=from_event.event.type,
+        to_type=to_event.event.type,
         precession_correction=precession_correction
     )
 

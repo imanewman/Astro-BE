@@ -1,12 +1,13 @@
 from datetime import datetime, timedelta
-from typing import Union, List
+from typing import List
 import re
 
 from pydantic import Field
 
-from astro.util import Point, TransitGroupType
+from astro.util import TransitGroupType
 from .base import EventSchema, BaseSchema
 from .aspect import AspectSchema
+from .relationship import Point2PointSchema
 
 
 class TransitEventSchema(EventSchema):
@@ -25,20 +26,16 @@ class TransitEventSchema(EventSchema):
     )
 
 
-class TransitSchema(AspectSchema):
+class TransitSchema(AspectSchema, Point2PointSchema):
     """
     Represents information about the relationship between two points.
     """
-    from_point: Union[Point, str] = Field(
+    name: str = Field(
         ...,
-        title="From Point",
-        description="The point this aspect is from."
+        title="Name",
+        description="The name of this transit."
     )
-    to_point: Union[Point, str] = Field(
-        ...,
-        title="To Point",
-        description="The point this aspect is to."
-    )
+
     local_exact_date: datetime = Field(
         default_factory=lambda: datetime.utcnow(),
         title="Local Exact Date",
@@ -51,21 +48,13 @@ class TransitSchema(AspectSchema):
     )
 
     def __str__(self):
-        return f"{self.get_time()}: {self.get_name()}"
-
-    def get_name(self) -> str:
-        """
-        :return: The aspect and points for this transit.
-        """
-        return f"{self.from_point} {self.type} {self.to_point}"
+        return f"{self.get_time()}: {self.name}"
 
     def get_full_name(self) -> str:
         """
         :return: The aspect and points for this transit, and whether it is precession corrected.
         """
-        pc = " (PC)" if self.is_precession_corrected else ""
-
-        return f"{self.get_name()}{pc}"
+        return f"{self.name} (PC)" if self.is_precession_corrected else self.name
 
     def get_time(self) -> str:
         """

@@ -5,7 +5,7 @@ from astro.chart.relationship import calculate_relationships
 from astro.chart.point import create_points_with_attributes
 from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, RelationshipSchema, AspectSchema, \
     TransitSchema, TransitGroupSchema
-from astro.util import TransitType, TransitGroupType
+from astro.util import TransitType, TransitGroupType, EventType, AspectMovementType
 
 
 def calculate_transits(
@@ -33,7 +33,12 @@ def calculate_transits(
     is_one_chart = transit_settings.type == TransitType.transit_to_transit
     current_settings = EventSettingsSchema(
         enabled=transit_settings.enabled,
-        event=transit_settings.event
+        event={
+            **transit_settings.event.dict(),
+            "local_date": transit_settings.event.local_date.replace(minute=0, second=0, microsecond=0),
+            "utc_date": transit_settings.event.utc_date.replace(minute=0, second=0, microsecond=0),
+            "type": EventType.transit
+        }
     )
 
     while current_settings.event.utc_date < transit_settings.event.utc_end_date:
@@ -43,12 +48,14 @@ def calculate_transits(
             is_one_chart
         ))
 
+        delta_increment = timedelta(hours=transit_settings.hours_per_poll)
+
         current_settings = EventSettingsSchema(
             enabled=transit_settings.enabled,
             event={
                 **current_settings.event.dict(),
-                "utc_date": current_settings.event.utc_date + timedelta(hours=1),
-                "local_date": current_settings.event.local_date + timedelta(hours=1)
+                "utc_date": current_settings.event.utc_date + delta_increment,
+                "local_date": current_settings.event.local_date + delta_increment
             }
         )
 
@@ -118,35 +125,67 @@ def calculate_transit_timing(
             if not current_relationship:
                 continue
 
-            def find_transit(last: AspectSchema, current: AspectSchema):
-                transit = find_exact_aspect(
+            for transit in calculate_aspect_timing(
+                    event_settings,
                     current_event_settings,
                     current_relationship,
-                    last,
-                    current
-                )
-                if transit:
-                    transits.append(transit)
-
-            if event_settings.transits.do_calculate_ecliptic:
-                find_transit(
-                    last_relationship.ecliptic_aspect,
-                    current_relationship.ecliptic_aspect
-                )
-            if event_settings.transits.do_calculate_declination:
-                find_transit(
-                    last_relationship.declination_aspect,
-                    current_relationship.declination_aspect
-                )
-            if event_settings.transits.do_calculate_precession_corrected and not is_one_chart:
-                find_transit(
-                    last_relationship.precession_corrected_aspect,
-                    current_relationship.precession_corrected_aspect
-                )
+                    last_relationship,
+                    is_one_chart
+            ):
+                transits.append(transit)
 
         last_relationships = current_relationships
 
     return group_transits(event_settings, transits)
+
+
+def calculate_aspect_timing(
+        base_event_settings: EventSettingsSchema,
+        current_event_settings: EventSettingsSchema,
+        current_relationship: RelationshipSchema,
+        last_relationship: RelationshipSchema,
+        is_one_chart: bool,
+) -> List[TransitSchema]:
+    """
+    Calculates the timing of transits going exact.
+
+    :param base_event_settings: The base time, location, enabled points, and transit settings.
+    :param current_event_settings: The current time, location, enabled points, and transit settings.
+    :param current_relationship: The current relationship between points.
+    :param last_relationship: The previous relationship between points.
+    :param is_one_chart: If true, corrected transits are omitted.
+
+    :return: All calculated transits.
+    """
+    transits = []
+
+    def find_transit(last: AspectSchema, current: AspectSchema):
+        transit = find_exact_aspect(
+            current_event_settings,
+            current_relationship,
+            last,
+            current
+        )
+        if transit:
+            transits.append(transit)
+
+    if base_event_settings.transits.do_calculate_ecliptic:
+        find_transit(
+            last_relationship.ecliptic_aspect,
+            current_relationship.ecliptic_aspect
+        )
+    if base_event_settings.transits.do_calculate_declination:
+        find_transit(
+            last_relationship.declination_aspect,
+            current_relationship.declination_aspect
+        )
+    if base_event_settings.transits.do_calculate_precession_corrected and not is_one_chart:
+        find_transit(
+            last_relationship.precession_corrected_aspect,
+            current_relationship.precession_corrected_aspect
+        )
+
+    return transits
 
 
 def find_exact_aspect(
@@ -177,14 +216,15 @@ def find_exact_aspect(
         local_exact_date = current_event_settings.event.local_date + time_delta
         utc_exact_date = current_event_settings.event.utc_date + time_delta
 
-        print(current_relationship.get_name(), current_event_settings.event.utc_date)
+        print(current_event_settings.event.local_date, "|", time_delta)
 
         return TransitSchema(**{
             **current_aspect.dict(),
-            "from_point": current_relationship.from_point,
-            "to_point": current_relationship.to_point,
+            **current_relationship.dict(),
+            "name": f"{current_relationship.get_from()} {current_aspect.type} {current_relationship.get_to()}",
             "local_exact_date": local_exact_date,
-            "utc_exact_date": utc_exact_date
+            "utc_exact_date": utc_exact_date,
+            "movement": AspectMovementType.exact
         })
 
 
@@ -242,15 +282,13 @@ def group_transits(
 
     elif event_settings.transits.group_by == TransitGroupType.by_relationship:
         for transit in transits:
-            relationship = transit.get_name()
-
-            if relationship not in groups:
-                groups[relationship] = TransitGroupSchema(
+            if transit.name not in groups:
+                groups[transit.name] = TransitGroupSchema(
                     group_by=TransitGroupType.by_relationship,
-                    group_value=relationship
+                    group_value=transit.name
                 )
 
-            groups[relationship].transits.append(transit)
+            groups[transit.name].transits.append(transit)
 
         return list(groups.values())
 
