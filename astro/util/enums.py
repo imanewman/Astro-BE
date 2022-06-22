@@ -261,8 +261,10 @@ class TransitType(str, Enum):
     Enumerates all the possible transit types.
     """
     aspect = "Aspect"
-    ingress = "Ingress"
-    station = "Station"
+    ingress_direct = "Ingress"
+    ingress_retrograde = "Retrograde Ingress"
+    station_direct = "Station Direct"
+    station_retrograde = "Station Retrograde"
 
 
 class TransitCalculationType(str, Enum):

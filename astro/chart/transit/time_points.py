@@ -85,16 +85,16 @@ def calculate_ingress_timing(
 
     if current_point.longitude_velocity > 0:
         orb = -(current_point.longitude % 30)
-        ingress_type = "Ingress"
+        transit_type = TransitType.ingress_direct
     else:
         orb = (30 - current_point.longitude % 30)
-        ingress_type = "Retrograde Ingress"
+        transit_type = TransitType.ingress_retrograde
 
     approximate_days_until_exact = orb / current_point.longitude_velocity
     time_delta = timedelta(days=approximate_days_until_exact)
     local_exact_date = current_event_settings.event.local_date + time_delta
     utc_exact_date = current_event_settings.event.utc_date + time_delta
-    name = f"{current_point.name} {ingress_type} Into {current_sign}"
+    name = f"{current_point.name} {transit_type} Into {current_sign}"
 
     return TransitSchema(**{
         "from_point": current_point.name,
@@ -102,7 +102,7 @@ def calculate_ingress_timing(
         "from_type": EventType.transit,
         "to_type": EventType.transit,
         "name": name,
-        "transit_type": TransitType.ingress,
+        "transit_type": transit_type,
         "sign": current_sign,
         "local_exact_date": local_exact_date,
         "utc_exact_date": utc_exact_date,
@@ -133,8 +133,8 @@ def calculate_station_timing(
     current_sign = calculate_sign(current_point.longitude)
     local_exact_date = current_event_settings.event.local_date
     utc_exact_date = current_event_settings.event.utc_date
-    station_type = "Direct" if current_is_positive else "Retrograde"
-    name = f"{current_point.name} Station {station_type} In {current_sign}"
+    transit_type = TransitType.station_direct if current_is_positive else TransitType.station_retrograde
+    name = f"{current_point.name} {transit_type} In {current_sign}"
 
     return TransitSchema(**{
         "from_point": current_point.name,
@@ -142,9 +142,9 @@ def calculate_station_timing(
         "from_type": EventType.transit,
         "to_type": EventType.transit,
         "name": name,
-        "transit_type": TransitType.station,
+        "transit_type": transit_type,
         "sign": current_sign,
         "local_exact_date": local_exact_date,
         "utc_exact_date": utc_exact_date,
-        "movement": AspectMovementType.exact
+        "movement": AspectMovementType.exact,
     })
