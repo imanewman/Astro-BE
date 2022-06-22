@@ -24,6 +24,9 @@ def calculate_all_aspects_timing(
     """
     transits = []
 
+    if not base_event_settings.transits.do_calculate_aspects():
+        return transits
+
     for last_relationship in last_relationships.values():
         current_relationship = current_relationships[last_relationship.get_name()]
 

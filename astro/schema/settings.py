@@ -137,6 +137,26 @@ class TransitSettingsSchema(BaseSchema):
                     "orbs and aspect types will be taken from the latter of the two points."
     )
 
+    def do_calculate_aspects(self) -> bool:
+        """
+        :return: Whether to calculate aspects.
+        """
+        return self.do_calculate_ecliptic or self.do_calculate_declination or self.do_calculate_precession_corrected
+
+    def do_calculate_points(self) -> bool:
+        """
+        :return: Whether to calculate points.
+        """
+        return self.do_calculate_ingress or self.do_calculate_station
+
+    def do_calculate(self) -> bool:
+        """
+        :return: Whether to calculate transits at all.
+        """
+        time_is_valid = self.event.utc_date < self.event.utc_end_date
+
+        return time_is_valid and (self.do_calculate_aspects() or self.do_calculate_points())
+
 
 class EventSettingsSchema(BaseSchema):
     """

@@ -22,11 +22,7 @@ def calculate_transits(
     """
     transit_settings = event_settings.transits
 
-    if not transit_settings \
-            or transit_settings.event.utc_date > transit_settings.event.utc_end_date \
-            or (not transit_settings.do_calculate_ecliptic
-                and not transit_settings.do_calculate_declination
-                and not transit_settings.do_calculate_precession_corrected):
+    if not transit_settings or not transit_settings.do_calculate():
         return []
 
     calculated_increments = []

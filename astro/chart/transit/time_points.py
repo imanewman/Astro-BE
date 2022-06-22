@@ -24,10 +24,9 @@ def calculate_all_points_timing(
 
     :return: All calculated transits.
     """
-    transit_settings = base_event_settings.transits
     transits = []
 
-    if not is_one_chart or (not transit_settings.do_calculate_ingress and not transit_settings.do_calculate_station):
+    if not is_one_chart or not base_event_settings.transits.do_calculate_points():
         return transits
 
     for last_point in last_points.values():
