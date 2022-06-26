@@ -1,41 +1,33 @@
-from typing import List, Tuple, Dict
+from typing import List
 
-from astro.schema import EventSettingsSchema, TransitGroupSchema
+from astro.schema import TransitGroupSchema, TransitIncrement
 from .group_transits import group_transits
 from .time_aspects import calculate_all_aspects_timing
 from .time_points import calculate_all_points_timing
-from ...schema.types import TransitIncrement
 
 
 def calculate_transit_timing(
-        event_settings: EventSettingsSchema,
+        base_increment: TransitIncrement,
         calculated_increments: List[TransitIncrement]
 ) -> List[TransitGroupSchema]:
     """
     Calculates the timing of transits going exact.
 
-    :param event_settings: The current time, location, enabled points, and transit settings.
+    :param base_increment: The base [0] event, [1] points, and [2] relationships.
     :param calculated_increments: The relationships calculated over the set duration.
 
     :return: All calculated transits.
     """
-    last_relationships = {}
-    last_points = {}
+    event_settings = base_increment[0]
+    last_increment = (event_settings, {}, {})
     transits = []
 
-    for current_event_settings, current_points, current_relationships in calculated_increments:
+    for increment in calculated_increments:
         transits += [
-            *calculate_all_points_timing(
-                event_settings, current_event_settings,
-                current_points, last_points
-            ),
-            *calculate_all_aspects_timing(
-                event_settings, current_event_settings,
-                current_relationships, last_relationships
-            )
+            *calculate_all_points_timing(event_settings, increment, last_increment),
+            *calculate_all_aspects_timing(base_increment, increment, last_increment)
         ]
 
-        last_relationships = current_relationships
-        last_points = current_points
+        last_increment = increment
 
     return group_transits(event_settings, transits)

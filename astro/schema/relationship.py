@@ -7,9 +7,9 @@ from .base import BaseSchema
 from .aspect import AspectSchema
 
 
-class Point2PointSchema(BaseSchema):
+class RelationshipSchema(BaseSchema):
     """
-    Represents 2 points between one or two events.
+    Represents information about the relationship between two points.
     """
     from_point: Union[Point, str] = Field(
         ...,
@@ -33,23 +33,6 @@ class Point2PointSchema(BaseSchema):
         description="The type of event this aspect is to."
     )
 
-    def get_from(self) -> str:
-        """
-        :return: The point and event type this aspect is from.
-        """
-        return f'{self.from_type} {self.from_point}'
-
-    def get_to(self) -> str:
-        """
-        :return: The point and event type this aspect is to.
-        """
-        return f'{self.to_type} {self.to_point}'
-
-
-class RelationshipSchema(Point2PointSchema):
-    """
-    Represents information about the relationship between two points.
-    """
     arc_ordered: Optional[float] = Field(
         None,
         title="Ecliptic Degrees Between",
@@ -108,6 +91,18 @@ class RelationshipSchema(Point2PointSchema):
 
     def __str__(self):
         return f"{self.get_name}: {self.get_aspects()}"
+
+    def get_from(self) -> str:
+        """
+        :return: The point and event type this aspect is from.
+        """
+        return f'{self.from_type} {self.from_point}'
+
+    def get_to(self) -> str:
+        """
+        :return: The point and event type this aspect is to.
+        """
+        return f'{self.to_type} {self.to_point}'
 
     def get_name(self) -> str:
         return f'{self.from_point} To {self.to_point}'

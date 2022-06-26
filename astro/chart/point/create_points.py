@@ -24,8 +24,7 @@ def create_points_with_attributes(
     points = create_points(event_settings)
 
     # Calculate the derived attributes for each point.
-    if settings.do_calculate_point_attributes:
-        for point in points.values():
-            calculate_point_attributes(point, settings.stationary_pct_of_avg_speed)
+    for point in points.values():
+        calculate_point_attributes(point, settings)
 
     return points

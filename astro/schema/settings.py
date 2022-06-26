@@ -126,11 +126,6 @@ class SettingsSchema(BaseSchema):
         description="The list of rulership systems to use in sign rulership calculations."
     )
 
-    do_calculate_point_attributes: bool = Field(
-        True,
-        title="Do Calculate Point Attributes",
-        description="This flag enables the calculation of all point attributes that arent directly from the ephemeris."
-    )
     do_calculate_condition: bool = Field(
         True,
         title="Do Calculate Condition",

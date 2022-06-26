@@ -1,10 +1,13 @@
 from astro.collection import zodiac_sign_traits
-from astro.schema import PointSchema
+from astro.schema import PointSchema, SettingsSchema
 from astro.util import ZodiacSign, zodiac_sign_order
 from astro.collection.point_traits import point_traits
 
 
-def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: float = 0.3):
+def calculate_point_attributes(
+        point: PointSchema,
+        settings: SettingsSchema = SettingsSchema()
+):
     """
     Calculates all derived attributes for a point.
 
@@ -12,8 +15,7 @@ def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: 
       and `is_retrograde` within the point object.
 
     :param point: The point to calculate attributes for.
-    :param stationary_pct_of_avg_speed: The percent of the average speed of the point
-     that a point must be under to be considered stationary.
+    :param settings: Settings used for calculations.
     """
     point.sign = calculate_sign(point.longitude)
     sign_traits = zodiac_sign_traits.signs[point.sign]
@@ -23,7 +25,7 @@ def calculate_point_attributes(point: PointSchema, stationary_pct_of_avg_speed: 
     point.degrees_in_sign = calculate_degrees_in_sign(point.longitude)
     point.minutes_in_degree = calculate_minutes_in_degree(point.longitude)
 
-    calculate_velocity_properties(point, stationary_pct_of_avg_speed)
+    calculate_velocity_properties(point, settings.stationary_pct_of_avg_speed)
 
 
 def calculate_sign(longitude: float) -> ZodiacSign:

@@ -126,9 +126,9 @@ class PointHousesSchema(BaseSchema):
     )
 
 
-class PointSchema(BaseSchema):
+class MinimalPointSchema(BaseSchema):
     """
-    Defines any planetary body's position relative to Earth.
+    Minimally defines any planetary body's position relative to Earth.
     """
     name: Union[Point, str] = Field(
         ...,
@@ -141,6 +141,33 @@ class PointSchema(BaseSchema):
         description="THe points composited to create this point."
     )
 
+    sign: Optional[ZodiacSign] = Field(
+        None,
+        title="Zodiac Sign",
+        description="The zodiac sign this point is located within."
+    )
+    modality: Optional[Modality] = Field(
+        None,
+        title="Zodiac Sign Modality",
+        description="The modality of this point's zodiac sign."
+    )
+    element: Optional[Element] = Field(
+        None,
+        title="Zodiac Sign Element",
+        description="The element of this point's zodiac sign."
+    )
+
+    def is_midpoint(self):
+        """
+        :return: Returns true if this point represents a midpoint.
+        """
+        return len(self.points) == 2
+
+
+class PointSchema(MinimalPointSchema):
+    """
+    Defines any planetary body's position relative to Earth.
+    """
     longitude: float = Field(
         ...,
         title="Ecliptic Longitude",
@@ -165,20 +192,15 @@ class PointSchema(BaseSchema):
         description="The degrees from the equatorial that this point is moving per day."
     )
 
-    sign: Optional[ZodiacSign] = Field(
+    is_stationary: Optional[bool] = Field(
         None,
-        title="Zodiac Sign",
-        description="The zodiac sign this point is located within."
+        title="Is Stationary",
+        description="Whether this point is stationary on the ecliptic."
     )
-    modality: Optional[Modality] = Field(
+    is_retrograde: Optional[bool] = Field(
         None,
-        title="Zodiac Sign Modality",
-        description="The modality of this point's zodiac sign."
-    )
-    element: Optional[Element] = Field(
-        None,
-        title="Zodiac Sign Element",
-        description="The element of this point's zodiac sign."
+        title="Is Retrograde",
+        description="Whether this point is retrograde on the ecliptic."
     )
 
     degrees_in_sign: Optional[int] = Field(
@@ -190,17 +212,6 @@ class PointSchema(BaseSchema):
         None,
         title="Minutes of current degree",
         description="The minutes, out of 60, within a degree that this point is located at."
-    )
-
-    is_stationary: Optional[bool] = Field(
-        None,
-        title="Is Stationary",
-        description="Whether this point is stationary on the ecliptic."
-    )
-    is_retrograde: Optional[bool] = Field(
-        None,
-        title="Is Retrograde",
-        description="Whether this point is retrograde on the ecliptic."
     )
 
     houses_whole_sign: PointHousesSchema = Field(
@@ -224,9 +235,3 @@ class PointSchema(BaseSchema):
         title="Condition",
         description="The state of bonification and maltreatment if this is a planet."
     )
-
-    def is_midpoint(self):
-        """
-        :return: Returns trie if this point represents a midpoint.
-        """
-        return len(self.points) == 2

@@ -3,30 +3,32 @@ from typing import List, Tuple
 
 from astro.chart.relationship import calculate_relationships
 from astro.chart.point import create_points_with_attributes
-from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, TransitIncrement
+from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, TransitIncrement, \
+    PointMap
 from astro.util import EventType
 from .time_transits import calculate_transit_timing
 
 
 def calculate_transits(
         event_settings: EventSettingsSchema,
-        points: List[PointSchema]
+        points: PointMap
 ) -> List[TransitGroupSchema]:
     """
     Calculates the timing of transits for an event.
 
-    :param event_settings: The current time, location, enabled points, and transit settings.
+    :param event_settings: The current event settings.
     :param points: The calculated points for this event.
 
     :return: All calculated transits.
     """
+    points_array = [point for point in points.values()]
     transit_settings = event_settings.transits
     transit_event = transit_settings.event
+    calculated_increments = []
 
     if not transit_settings or not transit_settings.do_calculate():
         return []
 
-    calculated_increments = []
     current_settings = EventSettingsSchema(
         enabled=transit_settings.enabled,
         event={
@@ -39,7 +41,7 @@ def calculate_transits(
 
     while current_settings.event.utc_date < transit_event.utc_end_date:
         calculated_increments.append(create_increment(
-            (points, event_settings),
+            (points_array, event_settings),
             current_settings
         ))
 
@@ -53,7 +55,10 @@ def calculate_transits(
             }
         )
 
-    return calculate_transit_timing(event_settings, calculated_increments)
+    return calculate_transit_timing(
+        (event_settings, points, {}),
+        calculated_increments
+    )
 
 
 def create_increment(
@@ -71,7 +76,6 @@ def create_increment(
     relationship_map = {}
     is_one_chart = base_items[1].transits.is_one_chart()
     settings = SettingsSchema(
-        do_calculate_point_attributes=False,
         do_calculate_relationship_phase=False,
     )
     current_points = create_points_with_attributes(event_settings, settings)
