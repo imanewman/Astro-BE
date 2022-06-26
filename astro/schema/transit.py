@@ -5,11 +5,11 @@ import re
 from pydantic import Field
 
 from astro.util import TransitGroupType, TransitType, TransitCalculationType
-from . import Point2PointSchema
 from .base import BaseSchema
 from .event import EventSchema
 from .enabled_points import EnabledPointsSchema
 from .aspect import AspectSchema
+from .relationship import Point2PointSchema
 
 
 class TransitEventSchema(EventSchema):
