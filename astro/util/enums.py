@@ -242,7 +242,6 @@ class AspectSortType(str, Enum):
     """
     Enumerates all the aspect sort types.
     """
-    point_order = "Point Order"
     smallest_orb = "Smallest Orb"
     no_sort = "No Sort"
 

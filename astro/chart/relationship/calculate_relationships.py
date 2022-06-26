@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+from astro.util import AspectSortType, do_points_form_axis
 from astro.schema import PointSchema, RelationshipSchema, SettingsSchema, EventSettingsSchema, EventSchema, \
     EnabledPointsSchema
 from .declination_aspect import calculate_declination_aspect
@@ -7,7 +8,6 @@ from .ecliptic_aspect import calculate_ecliptic_aspect
 from .aspect_movement import calculate_aspect_movement
 from .phase import calculate_aspect_phase
 from .sign_aspect import calculate_sign_aspect
-from astro.util import AspectSortType, do_points_form_axis
 
 
 def calculate_relationships(
@@ -77,11 +77,10 @@ def sort_relationships(relationships: List[RelationshipSchema], aspect_sort: Asp
         return
 
     elif aspect_sort == AspectSortType.smallest_orb:
-        # Sort ordered by the smallest orb.
         def sort_smallest_orb(rel: RelationshipSchema) -> float:
             aspect_orbs = map(
                 lambda aspect: abs(aspect.orb or 360),
-                rel.get_applying_aspects()
+                rel.get_aspects()
             )
 
             return min(aspect_orbs, default=360)
