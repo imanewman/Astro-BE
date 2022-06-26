@@ -111,10 +111,11 @@ def create_relationship(
     """
     from_point, from_event = from_item
     to_point, to_event = to_item
-
     relationship = RelationshipSchema(
         from_point=from_point.name,
+        from_sign=from_point.sign,
         to_point=to_point.name,
+        to_sign=to_point.sign,
         from_type=from_event.event.type,
         to_type=to_event.event.type,
         precession_correction=precession_correction

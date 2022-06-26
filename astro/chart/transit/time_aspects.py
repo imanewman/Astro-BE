@@ -1,24 +1,23 @@
 from typing import List, Optional
 
-from astro.schema import RelationshipSchema, AspectSchema, TransitSchema, TransitIncrement, PointMap
+from astro.schema import RelationshipSchema, AspectSchema, TransitSchema, TransitIncrement, EventSettingsSchema
 from astro.util import AspectMovementType, TransitType
 
 
 def calculate_all_aspects_timing(
-        base_increment: TransitIncrement,
+        base_event_settings: EventSettingsSchema,
         current_increment: TransitIncrement,
         last_increment: TransitIncrement,
 ) -> List[TransitSchema]:
     """
     Calculates the timing of all transits going exact.
 
-    :param base_increment: The base [0] event, [1] points, and [2] relationships.
+    :param base_event_settings: The base event settings.
     :param current_increment: The current [0] event, [1] points, and [2] relationships.
     :param last_increment: The last [0] event, [1] points, and [2] relationships.
 
     :return: All calculated transits.
     """
-    base_event_settings = base_increment[0]
     last_relationships, current_relationships = last_increment[2], current_increment[2]
     transits = []
 
@@ -32,7 +31,7 @@ def calculate_all_aspects_timing(
             continue
 
         for transit in calculate_aspect_timing(
-                base_increment,
+                base_event_settings,
                 current_increment,
                 current_relationship,
                 last_relationship
@@ -43,7 +42,7 @@ def calculate_all_aspects_timing(
 
 
 def calculate_aspect_timing(
-        base_increment: TransitIncrement,
+        base_event_settings: EventSettingsSchema,
         current_increment: TransitIncrement,
         current_relationship: RelationshipSchema,
         last_relationship: RelationshipSchema
@@ -51,15 +50,14 @@ def calculate_aspect_timing(
     """
     Calculates the timing of transits going exact.
 
-    :param base_increment: The base [0] event, [1] points, and [2] relationships.
+    :param base_event_settings: The base event settings.
     :param current_increment: The current [0] event, [1] points, and [2] relationships.
     :param current_relationship: The current relationship between points.
     :param last_relationship: The previous relationship between points.
 
     :return: All calculated transits.
     """
-    settings = base_increment[0].transits
-    to_points = current_increment[1] if settings.is_one_chart()  else base_increment[1]
+    settings = base_event_settings.transits
     transits = []
 
     def find_transit(last: AspectSchema, current: AspectSchema):
@@ -67,8 +65,7 @@ def calculate_aspect_timing(
             current_increment,
             current_relationship,
             last,
-            current,
-            to_points
+            current
         )
         if transit:
             transits.append(transit)
@@ -96,8 +93,7 @@ def find_exact_aspect(
         current_increment: TransitIncrement,
         current_relationship: RelationshipSchema,
         last_aspect: AspectSchema,
-        current_aspect: AspectSchema,
-        to_points: PointMap
+        current_aspect: AspectSchema
 ) -> Optional[TransitSchema]:
     """
     Finds an exact aspect between two moments in time.
@@ -106,7 +102,6 @@ def find_exact_aspect(
     :param current_relationship: The relationship between points in the current moment.
     :param last_aspect: The aspect between points in the last moment.
     :param current_aspect:  The aspect between points in the current moment.
-    :param to_points:  The collection of points this aspect is to.
 
     :return: The exact transit, if one exists.
     """
@@ -122,18 +117,16 @@ def find_exact_aspect(
         time_delta = current_aspect.get_approximate_timing()
         local_exact_date = current_event_settings.event.local_date + time_delta
         utc_exact_date = current_event_settings.event.utc_date + time_delta
-        name = f"{current_relationship.get_from()} {current_aspect.type} {current_relationship.get_to()}"
-        from_point = current_points[current_relationship.from_point]
-        to_point = to_points[current_relationship.from_point]
+        name = f"({current_relationship.get_from()}) {current_aspect.type} ({current_relationship.get_to()})"
 
         return TransitSchema(
             **current_aspect.dict(exclude={"movement"}),
             from_type=current_relationship.from_type,
             to_type=current_relationship.to_type,
-            from_point=from_point.name,
-            to_point=to_point.name,
-            from_sign=from_point.sign,
-            to_sign=to_point.sign,
+            from_point=current_relationship.from_point,
+            to_point=current_relationship.to_point,
+            from_sign=current_relationship.from_sign,
+            to_sign=current_relationship.to_sign,
             name=name,
             movement=AspectMovementType.exact,
             transit_type=TransitType.aspect,

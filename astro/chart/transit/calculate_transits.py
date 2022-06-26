@@ -3,15 +3,14 @@ from typing import List, Tuple
 
 from astro.chart.relationship import calculate_relationships
 from astro.chart.point import create_points_with_attributes
-from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, TransitIncrement, \
-    PointMap
+from astro.schema import EventSettingsSchema, PointSchema, SettingsSchema, TransitGroupSchema, TransitIncrement
 from astro.util import EventType
 from .time_transits import calculate_transit_timing
 
 
 def calculate_transits(
         event_settings: EventSettingsSchema,
-        points: PointMap
+        points: List[PointSchema]
 ) -> List[TransitGroupSchema]:
     """
     Calculates the timing of transits for an event.
@@ -21,7 +20,6 @@ def calculate_transits(
 
     :return: All calculated transits.
     """
-    points_array = [point for point in points.values()]
     transit_settings = event_settings.transits
     transit_event = transit_settings.event
     calculated_increments = []
@@ -41,7 +39,7 @@ def calculate_transits(
 
     while current_settings.event.utc_date < transit_event.utc_end_date:
         calculated_increments.append(create_increment(
-            (points_array, event_settings),
+            (points, event_settings),
             current_settings
         ))
 
@@ -56,7 +54,7 @@ def calculate_transits(
         )
 
     return calculate_transit_timing(
-        (event_settings, points, {}),
+        event_settings,
         calculated_increments
     )
 

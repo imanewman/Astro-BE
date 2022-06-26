@@ -2,28 +2,33 @@ from typing import Optional, List, Union
 
 from pydantic import Field
 
-from astro.util import AspectType, Point, PhaseType, EventType
+from astro.util import AspectType, Point, PhaseType, EventType, ZodiacSign
 from .base import BaseSchema
 from .aspect import AspectSchema
 
 
-class RelationshipSchema(BaseSchema):
+class Point2PointSchema(BaseSchema):
     """
-    Represents information about the relationship between two points.
+    Represents a relationship between two points.
     """
     from_point: Union[Point, str] = Field(
         ...,
         title="From Point",
         description="The point this aspect is from."
-    )
+    ),
+    from_sign: Optional[ZodiacSign] = Field(
+        None,
+        title="From Sign",
+        description="The sign the from point is in."
+    ),
     from_type: Optional[EventType] = Field(
         None,
         title="From Type",
         description="The type of event this aspect is from."
     )
 
-    to_point: Union[Point, str] = Field(
-        ...,
+    to_point: Optional[Union[Point, str]] = Field(
+        None,
         title="To Point",
         description="The point this aspect is to."
     )
@@ -32,6 +37,17 @@ class RelationshipSchema(BaseSchema):
         title="To Type",
         description="The type of event this aspect is to."
     )
+    to_sign: Optional[ZodiacSign] = Field(
+        None,
+        title="To Sign",
+        description="The sign the to point is in."
+    )
+
+
+class RelationshipSchema(Point2PointSchema):
+    """
+    Represents information about the relationship between two points.
+    """
 
     arc_ordered: Optional[float] = Field(
         None,
@@ -96,13 +112,17 @@ class RelationshipSchema(BaseSchema):
         """
         :return: The point and event type this aspect is from.
         """
-        return f'{self.from_type} {self.from_point}'
+        from_type = self.from_type.replace("Transit", "Transiting")
+
+        return f'{from_type} {self.from_point} in {self.from_sign}'
 
     def get_to(self) -> str:
         """
         :return: The point and event type this aspect is to.
         """
-        return f'{self.to_type} {self.to_point}'
+        to_type = self.to_type.replace("Transit", "Transiting")
+
+        return f'{to_type} {self.to_point} in {self.to_sign}'
 
     def get_name(self) -> str:
         return f'{self.from_point} To {self.to_point}'

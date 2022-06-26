@@ -29,7 +29,7 @@ def create_chart(settings: SettingsSchema) -> ChartCollectionSchema:
         summary = create_summary(points, is_day_time)
         houses_whole_sign, houses_secondary = calculate_houses(points, event, settings)
         calculate_condition(points, is_day_time, settings)
-        transits = calculate_transits(event_settings, points)
+        transits = calculate_transits(event_settings, points_array)
 
         relationships = calculate_relationships(
             points_and_event,

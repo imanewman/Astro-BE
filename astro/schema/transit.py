@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
-from typing import List, Optional, Union
+from typing import List
 import re
 
 from pydantic import Field
 
-from astro.util import TransitGroupType, TransitType, TransitCalculationType, EventType, Point, ZodiacSign
-from .point import MinimalPointSchema
+from astro.util import TransitGroupType, TransitType, TransitCalculationType
+from . import Point2PointSchema
 from .base import BaseSchema
 from .event import EventSchema
 from .enabled_points import EnabledPointsSchema
@@ -117,42 +117,10 @@ class TransitSettingsSchema(BaseSchema):
         return time_is_valid and (self.do_calculate_aspects() or self.do_calculate_points())
 
 
-class TransitSchema(AspectSchema):
+class TransitSchema(AspectSchema, Point2PointSchema):
     """
     Represents information about the relationship between two points.
     """
-    from_point: Union[Point, str] = Field(
-        ...,
-        title="From Point",
-        description="The point this aspect is from."
-    )
-    from_sign: Optional[ZodiacSign] = Field(
-        None,
-        title="From Sign",
-        description="The sign the from point is in."
-    )
-    from_type: Optional[EventType] = Field(
-        None,
-        title="From Type",
-        description="The type of event this aspect is from."
-    )
-
-    to_point: Optional[Union[Point, str]] = Field(
-        None,
-        title="To Point",
-        description="The point this aspect is to."
-    )
-    to_type: Optional[EventType] = Field(
-        None,
-        title="To Type",
-        description="The type of event this aspect is to."
-    )
-    to_sign: Optional[ZodiacSign] = Field(
-        None,
-        title="To Sign",
-        description="The sign the to point is in."
-    )
-
     name: str = Field(
         ...,
         title="Name",
