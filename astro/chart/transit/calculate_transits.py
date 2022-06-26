@@ -20,13 +20,13 @@ def calculate_transits(
 
     :return: All calculated transits.
     """
-    transit_settings = event_settings.transits
-    transit_event = transit_settings.event
     calculated_increments = []
+    transit_settings = event_settings.transits
 
     if not transit_settings or not transit_settings.do_calculate():
         return []
 
+    transit_event = transit_settings.event
     current_settings = EventSettingsSchema(
         enabled=transit_settings.enabled,
         event={
