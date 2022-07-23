@@ -1,19 +1,16 @@
-import re
-from datetime import timedelta, datetime
 from typing import List, Dict
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from astro.schema import ZodiacSignCollection, SettingsSchema, \
-    PointTraitsCollection, AspectTraitsCollection, RelationshipSchema, EventSettingsSchema, TransitSchema, \
-    TransitGroupSchema
+    PointTraitsCollection, AspectTraitsCollection, EventSettingsSchema, TransitGroupSchema
 from astro.collection import aspect_traits, point_traits, zodiac_sign_traits
 from astro.schema.timezone import TimezoneSchema, TimezoneQuerySchema
 from astro.timezone import calculate_timezone
 from astro.util import default_midpoints, AspectType, TransitCalculationType, TransitGroupType
 from astro.util.test_events import tim_natal, local_event, tim_transits
-from astro import create_chart, ChartCollectionSchema, create_points_with_attributes, calculate_relationships
+from astro import create_chart, ChartCollectionSchema
 
 app = FastAPI()
 
