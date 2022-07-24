@@ -1,11 +1,11 @@
-from typing import Optional, Dict, List, Union
+from typing import Optional, List
 
 from pydantic import Field
 
-from astro.util import ZodiacSign, Point, HouseSystem
+from astro.util import ZodiacSign, HouseSystem
+from .types import PointMap
 from .base import BaseSchema
 from .event import EventSchema
-from .point import PointSchema
 from .relationship import RelationshipCollectionSchema
 from .transit import TransitGroupSchema
 from .house import HouseSchema
@@ -51,7 +51,7 @@ class ChartSchema(BaseSchema):
         title="Chart Summary",
         description="Summarizes the most important information in a chart."
     )
-    points: Dict[Union[Point, str], PointSchema] = Field(
+    points: PointMap = Field(
         [],
         title="Planets and Points",
         description="A map of the base planets and points calculated."

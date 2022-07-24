@@ -6,8 +6,8 @@ from .enabled_points import *
 from .relationship import *
 from .transit import *
 from .house import *
-from .chart import *
 from .sign import *
 from .traits import *
 from .settings import *
 from .types import *
+from .chart import *

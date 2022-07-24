@@ -1,9 +1,9 @@
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Union
 
 from astro.schema import EventSettingsSchema, PointSchema, RelationshipSchema
 from astro.util import Point
 
-PointMap = Dict[Point, PointSchema]
+PointMap = Dict[Union[Point, str], PointSchema]
 """
 A map from point names to calculated points.
 """
