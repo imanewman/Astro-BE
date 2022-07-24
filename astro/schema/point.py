@@ -8,7 +8,7 @@ from .base import BaseSchema
 
 class PointConditionSchema(BaseSchema):
     """
-    Defines the bonification and maltreatment of a planet.
+    Defines the condition of a planet.
     For points that aren't planets, all values are false.
     """
     in_joy: bool = Field(
@@ -138,7 +138,7 @@ class MinimalPointSchema(BaseSchema):
     points: List[Point] = Field(
         ...,
         title="Points",
-        description="THe points composited to create this point."
+        description="The points composited to create this point."
     )
 
     sign: Optional[ZodiacSign] = Field(
@@ -233,5 +233,5 @@ class PointSchema(MinimalPointSchema):
     condition: PointConditionSchema = Field(
         PointConditionSchema(),
         title="Condition",
-        description="The state of bonification and maltreatment if this is a planet."
+        description="The condition of this is a planet."
     )

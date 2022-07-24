@@ -8,7 +8,7 @@ from .base import BaseSchema
 
 class HouseSchema(BaseSchema):
     """
-    Defines the input parameters for running a calculation.
+    Defines a house within a chart.
     """
     number: int = Field(
         ...,

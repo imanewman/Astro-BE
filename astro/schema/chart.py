@@ -74,7 +74,7 @@ class ChartSchema(BaseSchema):
     transits: List[TransitGroupSchema] = Field(
         [],
         title="Transits",
-        description="A list of transits from this chart to transiting points in this time range."
+        description="A list of transits from this chart to transiting points in the given time range."
     )
 
 
