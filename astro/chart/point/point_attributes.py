@@ -61,9 +61,9 @@ def calculate_minutes_in_degree(longitude: float) -> int:
     :return: The point's integer minutes of the current degree, out of 60.
     """
     fraction_of_degree = longitude % 1
-    degrees_per_minute = 60
+    minutes_per_degree = 60
 
-    return int(fraction_of_degree * degrees_per_minute)
+    return int(fraction_of_degree * minutes_per_degree)
 
 
 def calculate_velocity_properties(point: PointSchema, stationary_pct_of_avg_speed: float = 0.3):

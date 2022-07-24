@@ -70,17 +70,17 @@ def calculate_aspect_timing(
         if transit:
             transits.append(transit)
 
-    if settings.do_calculate_ecliptic:
+    if settings.calculate_ecliptic:
         find_transit(
             last_relationship.ecliptic_aspect,
             current_relationship.ecliptic_aspect
         )
-    if settings.do_calculate_declination:
+    if settings.calculate_declination:
         find_transit(
             last_relationship.declination_aspect,
             current_relationship.declination_aspect
         )
-    if settings.do_calculate_precession_corrected and not settings.is_one_chart():
+    if settings.calculate_precession_corrected and not settings.is_one_chart():
         find_transit(
             last_relationship.precession_corrected_aspect,
             current_relationship.precession_corrected_aspect

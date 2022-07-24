@@ -17,58 +17,30 @@ def group_transits(
     :return: The grouped transits.
     """
     groups = {}
+    groupings = event_settings.transits.group_by
 
-    if event_settings.transits.group_by == TransitGroupType.by_day:
-        for transit in transits:
-            day = transit.get_time().split(" ")[0]
+    for transit in transits:
+        group_values = []
 
-            if day not in groups:
-                groups[day] = TransitGroupSchema(
-                    group_by=TransitGroupType.by_day,
-                    group_value=day
-                )
+        if TransitGroupType.by_day in groupings:
+            group_values.append(transit.get_time().split(" ")[0])
+        if TransitGroupType.by_natal_point in groupings:
+            group_values.append(transit.to_point)
+        if TransitGroupType.by_transit_point in groupings:
+            group_values.append(transit.from_point)
+        if TransitGroupType.by_relationship in groupings:
+            group_values.append(transit.name)
+        if TransitGroupType.all in groupings:
+            group_values.append("all")
 
-            groups[day].transits.append(transit)
+        group = ", ".join(group_values)
 
-    elif event_settings.transits.group_by == TransitGroupType.by_natal_point:
-        for transit in transits:
-            point = transit.to_point
+        if group not in groups:
+            groups[group] = TransitGroupSchema(
+                group_by=groupings,
+                group_value=group
+            )
 
-            if point not in groups:
-                groups[point] = TransitGroupSchema(
-                    group_by=TransitGroupType.by_natal_point,
-                    group_value=point
-                )
-
-            groups[point].transits.append(transit)
-
-        return list(groups.values())
-
-    elif event_settings.transits.group_by == TransitGroupType.by_transit_point:
-        for transit in transits:
-            point = transit.from_point
-
-            if point not in groups:
-                groups[point] = TransitGroupSchema(
-                    group_by=TransitGroupType.by_transit_point,
-                    group_value=point
-                )
-
-            groups[point].transits.append(transit)
-
-    elif event_settings.transits.group_by == TransitGroupType.by_relationship:
-        for transit in transits:
-            if transit.name not in groups:
-                groups[transit.name] = TransitGroupSchema(
-                    group_by=TransitGroupType.by_relationship,
-                    group_value=transit.name
-                )
-
-            groups[transit.name].transits.append(transit)
-
-        return list(groups.values())
-
-    else:
-        groups["all"] = TransitGroupSchema(transits=transits)
+        groups[group].transits.append(transit)
 
     return list(groups.values())

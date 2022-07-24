@@ -29,7 +29,7 @@ def calculate_relationships(
 
     :return: All calculated relationships.
     """
-    if not settings.do_calculate_relationships:
+    if not settings.calculate_relationships:
         return []
 
     from_points, from_event = from_items
@@ -62,6 +62,12 @@ def calculate_relationships(
             ))
 
     sort_relationships(relationships, settings.aspect_sort)
+
+    if settings.remove_empty_relationships:
+        filter(
+            lambda rel: rel.ecliptic_aspect.type or rel.declination_aspect.type,
+            relationships,
+        )
 
     return relationships
 
@@ -128,10 +134,10 @@ def create_relationship(
     calculate_ecliptic_aspect(relationship, from_point, to_point, enabled_settings)
     calculate_declination_aspect(relationship, from_point, to_point, enabled_settings)
 
-    if settings.do_calculate_relationship_phase:
+    if settings.calculate_relationship_phase:
         calculate_aspect_phase(relationship, from_point, to_point)
 
-    if settings.do_calculate_relationship_movement:
+    if settings.calculate_relationship_movement:
         calculate_aspect_movement(
             relationship,
             (from_point, from_event.event),

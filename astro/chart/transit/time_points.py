@@ -60,13 +60,13 @@ def calculate_point_timing(
     transit_settings = base_event_settings.transits
     transits = []
 
-    if transit_settings.do_calculate_ingress:
+    if transit_settings.calculate_ingress:
         ingress = calculate_ingress_timing(current_increment, current_point, last_point)
 
         if ingress:
             transits.append(ingress)
 
-    if transit_settings.do_calculate_station:
+    if transit_settings.calculate_station:
         station = calculate_station_timing(current_increment, current_point, last_point)
 
         if station:

@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -163,7 +163,7 @@ async def calc_tim_transits_chart(midpoints: bool = False) -> ChartCollectionSch
 @app.get("/tim/transits/upcoming")
 async def calc_tim_transits_upcoming(
         mundane: bool = False,
-        group_by: TransitGroupType = TransitGroupType.by_day
+        group_by: Optional[List[TransitGroupType]] = None
 ) -> List[TransitGroupSchema]:
     """
     Generates upcoming transits.
@@ -177,7 +177,10 @@ async def calc_tim_transits_upcoming(
         events=[
             tim_transits(
                 TransitCalculationType.transit_to_transit if mundane else TransitCalculationType.transit_to_chart,
-                group_by
+                group_by or [
+                    TransitGroupType.by_day,
+                    TransitGroupType.by_transit_point,
+                ]
             )
         ]
     ))
@@ -188,7 +191,7 @@ async def calc_tim_transits_upcoming(
 @app.get("/tim/transits/min")
 async def calc_tim_transits_min(
         mundane: bool = False,
-        group_by: TransitGroupType = TransitGroupType.by_day
+        group_by: Optional[List[TransitGroupType]] = None
 ) -> Dict[str, Dict[str, str]]:
     """
     Generates upcoming transits in an easy-to-read format.

@@ -126,28 +126,33 @@ class SettingsSchema(BaseSchema):
         description="The list of rulership systems to use in sign rulership calculations."
     )
 
-    do_calculate_condition: bool = Field(
+    calculate_condition: bool = Field(
         True,
         title="Do Calculate Condition",
         description="This flag enables the calculation of the condition of points."
     )
-    do_calculate_divisions: bool = Field(
+    calculate_divisions: bool = Field(
         True,
         title="Do Calculate Divisions",
         description="This flag enables the calculation of the condition of sign divisions."
     )
-    do_calculate_relationships: bool = Field(
+    calculate_relationships: bool = Field(
         True,
         title="Do Calculate Relationships",
         description="This flag enables the calculation of relationships between points."
     )
-    do_calculate_relationship_phase: bool = Field(
+    calculate_relationship_phase: bool = Field(
         True,
         title="Do Calculate Relationship Phase",
         description="This flag enables the calculation the phase between points."
     )
-    do_calculate_relationship_movement: bool = Field(
+    calculate_relationship_movement: bool = Field(
         True,
         title="Do Calculate Relationship Movement",
         description="This flag enables the calculation the application/separation between points."
+    )
+    remove_empty_relationships: bool = Field(
+        True,
+        title="Do Remove Empty Relationships",
+        description="This flag will remove any point relationships with no ecliptic or declination aspects."
     )

@@ -56,35 +56,35 @@ class TransitSettingsSchema(BaseSchema):
         description="How many times to poll before approximating transits." +
                     "Defaults to 1 hour. 0.5 will poll every 30 minutes. 2 will poll every 2 hours."
     )
-    group_by: TransitGroupType = Field(
-        TransitGroupType.all,
+    group_by:  List[TransitGroupType] = Field(
+        [TransitGroupType.all],
         title="Group By",
         description="How to group these transits."
     )
 
-    do_calculate_ecliptic: bool = Field(
+    calculate_ecliptic: bool = Field(
         True,
         title="Do Calculate Transits",
         description="Determines whether the timing of transits should be calculated for an event."
     )
-    do_calculate_declination: bool = Field(
+    calculate_declination: bool = Field(
         False,
         title="Do Calculate Transits (Precession Corrected)",
         description=
         "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
     )
-    do_calculate_precession_corrected: bool = Field(
+    calculate_precession_corrected: bool = Field(
         False,
         title="Do Calculate Transits (Precession Corrected)",
         description=
         "Determines whether the timing of transits, accounting for precession, should be calculated for an event."
     )
-    do_calculate_ingress: bool = Field(
+    calculate_ingress: bool = Field(
         False,
         title="Do Calculate Ingresses",
         description="Determines whether to calculate ingresses. Only works for mundane transits."
     )
-    do_calculate_station: bool = Field(
+    calculate_station: bool = Field(
         False,
         title="Do Calculate Stations",
         description="Determines whether to calculate stations. Only works for mundane transits."
@@ -100,13 +100,13 @@ class TransitSettingsSchema(BaseSchema):
         """
         :return: Whether to calculate aspects.
         """
-        return self.do_calculate_ecliptic or self.do_calculate_declination or self.do_calculate_precession_corrected
+        return self.calculate_ecliptic or self.calculate_declination or self.calculate_precession_corrected
 
     def do_calculate_points(self) -> bool:
         """
         :return: Whether to calculate points.
         """
-        return self.do_calculate_ingress or self.do_calculate_station
+        return self.calculate_ingress or self.calculate_station
 
     def do_calculate(self) -> bool:
         """
@@ -170,13 +170,14 @@ class TransitGroupSchema(BaseSchema):
         title="Transits",
         description="The transits in this group."
     )
-    group_by: TransitGroupType = Field(
-        TransitGroupType.all,
+    group_by:  List[TransitGroupType] = Field(
+        [TransitGroupType.all],
         title="Group By",
         description="How these transits are grouped."
     )
-    group_value: str = Field(
+    group_value:  str = Field(
         "",
         title="Grouped Group",
         description="The value these transits are grouped by, such as the planet."
+                    "If multiple groups are applied, their values will be concatenated by commas."
     )

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import List
 
 from astro.chart.point.ephemeris import get_julian_day
 from astro.schema import EventSchema, EventSettingsSchema
@@ -116,7 +117,7 @@ tim_natal.event.julian_day = get_julian_day(tim_natal.event.utc_date)
 
 def tim_transits(
         transit_type: TransitCalculationType = TransitCalculationType.transit_to_chart,
-        group_by: TransitGroupType = TransitGroupType.by_day
+        group_by: List[TransitGroupType] = [TransitGroupType.by_day]
 ) -> EventSettingsSchema:
     """
     Settings for Tim Natal X Transits.
@@ -127,11 +128,11 @@ def tim_transits(
     return EventSettingsSchema(**{
         **tim_natal.dict(),
         "transits": {
-            "do_calculate_ecliptic": True,
-            "do_calculate_precession_corrected": True,
-            "do_calculate_declination": True,
-            "do_calculate_ingress": True,
-            "do_calculate_station": True,
+            "calculate_ecliptic": True,
+            "calculate_precession_corrected": True,
+            "calculate_declination": True,
+            "calculate_ingress": True,
+            "calculate_station": True,
             "type": transit_type,
             "group_by": group_by,
             "event": {

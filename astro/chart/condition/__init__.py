@@ -23,7 +23,7 @@ def calculate_condition(
     :param is_day_time: Whether the points given are during the day.
     :param settings: The settings to use in calculations.
     """
-    if not settings.do_calculate_condition:
+    if not settings.calculate_condition:
         return
 
     for point in points.values():
@@ -36,6 +36,6 @@ def calculate_condition(
 
             calculate_sun_conjunctions(point, points[Point.sun], orbs)
 
-        if settings.do_calculate_divisions:
+        if settings.calculate_divisions:
             calculate_triplicity(point, is_day_time)
             calculate_divisions(point)

@@ -74,7 +74,7 @@ def create_increment(
     relationship_map = {}
     is_one_chart = base_items[1].transits.is_one_chart()
     settings = SettingsSchema(
-        do_calculate_relationship_phase=False,
+        calculate_relationship_phase=False,
     )
     current_points = create_points_with_attributes(event_settings, settings)
     current_items = ([point for point in current_points.values()], event_settings)
